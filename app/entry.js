@@ -1,0 +1,237 @@
+'use strict';
+import $ from 'jquery';
+const global = Function('return this;')();
+global.jQuery = $;
+import * as Vibrant from 'node-vibrant';
+
+const imageValidate = (fileInput, form) => {
+  let img = fileInput.prop('files')[0]; 
+  if (!img) { return; }
+  if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(img.name) || !/(jpg|jpeg|png|gif)$/.test(img.type)) {
+    alert('JPG、GIF、PNGファイルの画像を添付してください。');
+  } else if (2*(1024**2) < img.size) {
+    alert('2MB以下の画像を添付してください。');
+  }
+} 
+
+// 編集モード/閲覧モード
+$('#editLink').prop('href', location.href.split('?')[0] + "?mode=edit");
+$('#viewLink').prop('href', location.href.split('?')[0]);
+
+// 検索Enter
+$('#QueryInput').keypress((e) => {
+  if (e.which == 13) {
+    $('#SearchForm').submit();
+  }
+});
+
+//// プロフィール
+// プレビュー表示
+$('#ProfileImageFileInput').change((e) => {
+  let file = e.target.files[0];
+  let blobUrl = window.URL.createObjectURL(file);
+  let uploadPreview = $('.profileImagePreview.upload.imagePreview');
+  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  $(`.profileImagePreview.imagePreview`).hide();
+  uploadPreview.show();
+});
+// 更新
+$('#BasicInfoSubmitBtn').on('click', () => {
+  $('#BasicInfoForm').submit();
+});
+// 削除
+$('#BasicInfoDeleteBtn').hide();
+
+//// ハッシュタグ
+// ターゲット切り替え
+$('#HashTagSelection').change(() => {
+  if (idx == "new") {
+    $('#HashTagDeleteBtn').hide();
+  } else {
+    $('#HashTagDeleteBtn').show();
+  }
+  let idx = $('#HashTagSelection').val();
+  $(`#HashTagNameForm`).val($(`.${idx}.hashTagHidden`).attr('name'));
+  $(`#HashTagCommentForm`).val($(`.${idx}.hashTagHidden`).attr('comment'));
+});
+// 更新
+$('#HashTagSubmitBtn').on('click', () => {
+  $('#HashTagForm').submit();
+});
+// ハッシュタグ削除
+$('#HashTagDeleteBtn').hide();
+$('#HashTagDeleteBtn').on('click', () => {
+  let form = $('#HashTagForm');
+  $('#HashTagDeleted').val(1);
+  form.submit();
+});
+
+//// 活動場所
+// ターゲット切り替え
+$('#ActivitySelection').change(() => {
+  if (idx == "new") {
+    $('#ActivityDeleteBtn').hide();
+  } else {
+    $('#ActivityDeleteBtn').show();
+  }
+  let idx = $('#ActivitySelection').val();
+  $(`#ActivityNameForm`).val($(`.${idx}.activityHidden`).attr('name'));
+  $(`#ActivityLinkForm`).val($(`.${idx}.activityHidden`).attr('link'));
+});
+// 更新
+$('#ActivitySubmitBtn').on('click', () => {
+  $('#ActivityForm').submit();
+});
+// 削除
+$('#ActivityDeleteBtn').hide();
+$('#ActivityDeleteBtn').on('click', () => {
+  let form = $('#ActivityForm');
+  $('#ActivityDeleted').val(1);
+  form.submit();
+});
+
+//// 応援方法
+// ターゲット切り替え
+$('#CheeringSelection').change(() => {
+  if (idx == "new") {
+    $('#CheeringDeleteBtn').hide();
+  } else {
+    $('#CheeringDeleteBtn').show();
+  }
+  let idx = $('#CheeringSelection').val();
+  $(`#CheeringNameForm`).val($(`.${idx}.cheeringHidden`).attr('name'));
+  $(`#CheeringLinkForm`).val($(`.${idx}.cheeringHidden`).attr('link'));
+});
+// 更新
+$('#CheeringSubmitBtn').on('click', () => {
+  $('#CheeringForm').submit();
+});
+// 削除
+$('#CheeringDeleteBtn').hide();
+$('#CheeringDeleteBtn').on('click', () => {
+  let form = $('#CheeringForm');
+  $('#CheeringDeleted').val(1);
+  form.submit();
+});
+
+//// パパ/ママ
+// ターゲット切り替え
+$('#ParentSelection').change(() => {
+  if (idx == "new") {
+    $('#ParentDeleteBtn').hide();
+  } else {
+    $('#ParentDeleteBtn').show();
+  }
+  let idx = $('#ParentSelection').val();
+  $(`#ParentRelationshipForm`).val($(`.${idx}.parentHidden`).attr('relationship'));
+  $(`#ParentNameForm`).val($(`.${idx}.parentHidden`).attr('name'));
+  $(`#ParentLinkForm`).val($(`.${idx}.parentHidden`).attr('link'));
+});
+// 更新
+$('#ParentSubmitBtn').on('click', () => {
+  $('#ParentForm').submit();
+});
+// 削除
+$('#ParentDeleteBtn').hide();
+$('#ParentDeleteBtn').on('click', () => {
+  let form = $('#ParentForm');
+  $('#ParentDeleted').val(1);
+  form.submit();
+});
+
+//// 立ち絵
+// ターゲット切り替え
+$('#TachieSelection').change(() => {
+  let idx = $('#TachieSelection').val();
+  // ボタン表示制御
+  if (idx == "new") {
+    $('#TachieDeleteBtn').hide();
+  } else {
+    $('#TachieDeleteBtn').show();
+  }
+  // プレビュー画像切り替え
+  $(`.tachie.imagePreview`).hide();
+  $(`.${idx}.tachie.imagePreview`).show();
+  $(`.tachieNameForm`).val($(`.${idx}.tachieNameHidden`).val());
+  $(`.tachieCommentForm`).val($(`.${idx}.tachieCommentHidden`).val());
+  $('#TachieFileInput').val(""); // ファイル入力クリア
+});
+// プレビュー表示
+$('#TachieFileInput').change((e) => {
+  let file = e.target.files[0];
+  let blobUrl = window.URL.createObjectURL(file);
+  let uploadPreview = $('.tachie.upload.imagePreview');
+  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  $(`.tachie.imagePreview`).hide();
+  uploadPreview.show();
+});
+// 更新
+$('#TachieSubmitBtn').on('click', () => {
+  imageValidate($('#TachieFileInput'));
+  $('#TachieForm').submit();
+});
+// 削除
+$('#TachieDeleteBtn').hide();
+$('#TachieDeleteBtn').on('click', () => {
+  let form = $('#TachieForm');
+  $('#TachieDeleted').val(1);
+  form.submit();
+});
+
+//// キャラクターデザイン
+// プレビューを表示
+$('#DesignFileInput').change((e) => {
+  let file = e.target.files[0];
+  let blobUrl = window.URL.createObjectURL(file);
+  let uploadPreview = $('.design.upload.imagePreview');
+  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  $(`.design.imagePreview`).hide();
+  uploadPreview.show();
+});
+// 更新
+$('#DesignSubmitBtn').on('click', () => {
+  imageValidate($('#DesignFileInput'));
+  $('#DesignForm').submit();
+});
+// 削除
+$('#DesignDeleteBtn').on('click', () => {
+  let form = $('#DesignForm');
+  $('#DesignDeleted').val(1);
+  form.submit();
+});
+
+//// ロゴ
+// プレビューを表示
+$('#LogoFileInput').change((e) => {
+  let file = e.target.files[0];
+  let blobUrl = window.URL.createObjectURL(file);
+  let uploadPreview = $('.logo.upload.imagePreview');
+  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  $(`.logo.imagePreview`).hide();
+  uploadPreview.show();
+});
+// 更新
+$('#LogoSubmitBtn').on('click', () => {
+  imageValidate($('#LogoFileInput'));
+  $('#LogoForm').submit();
+});
+// 削除
+$('#LogoDeleteBtn').on('click', () => {
+  let form = $('#LogoForm');
+  $('#LogoDeleted').val(1);
+  form.submit();
+});
+
+// カラーパレット更新
+const image = new Image();
+image.onload = () => {
+  Vibrant.from($(image).attr('src')).getPalette((err, palette) => {
+    console.log(palette);
+    $('#about').css('border-color', palette.LightVibrant.getHex());
+    $('.line').css('color', palette.DarkMuted.getHex());
+    $('.nameEn').css('color', palette.LightMuted.getHex());
+    //$('.parallax-logo').css('background-color', palette.LightVibrant.getHex());
+    $('hr').css('border-color', palette.Vibrant.getHex());
+  });
+};
+image.src = $('#tachieSource').val();

@@ -1,0 +1,303 @@
+extends layout/layout
+
+block content
+  section(style="border-top: solid 1px; padding-bottom:80px;")#about.page-section.bg-gray
+    div.container.justify-content-center.rounded
+      - var style_tachie_for_prof = "";
+      div(style="background-image:url("+personality.tachie+");").profileImage.row
+        input(type="hidden" value=personality.tachie)#tachieSource
+        div(style="width:550px;").personalities.py-2
+          div
+            // 操作パネル
+            if isMe 
+              p
+                div
+                  // 編集/プレビュー
+                  if mode == "edit"
+                    a#viewLink
+                      button.btn-sm.btn-outline-success.mx-2 
+                         i.fas.fa-eye
+                  else
+                    a#editLink
+                      button.btn-sm.btn-outline-info.mx-2 
+                        i.fas.fa-pen
+
+                  // 公開/非公開
+                  form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit.mx-2
+                    input(type="hidden" name="visibility" value=visibility)
+                    if visibility
+                      button(type="submit").btn-sm.btn-outline-info 公開中
+                    else
+                      button(type="submit").btn-sm.btn-outline-danger 非公開
+
+            // メイン情報
+            h1.name 
+              b #{personality.nameJa}
+              if personality.nameEn
+                small.mx-2.nameEn  - #{personality.nameEn} -
+                  small
+                    i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
+            small.line ･････････････････････････････････････････････････････････････････････････････････
+            h5.my-3.text-secondary
+              span #{personality.label}
+            p(style="white-space:pre-wrap;") #{personality.introduction}
+            small.line ･････････････････････････････････････････････････････････････････････････････････
+
+          // カテゴリ情報
+          .container.my-3
+            .row
+              mixin categorizedInfo(title, name)
+                div(style="min-width:250px;")
+                  div(style=" margin-bottom: 0.5rem;").d-flex.align-items-center
+                    h3.category #{title}
+                      small
+                        i(data-toggle="modal" data-target="#"+name+"Modal" style="cursor: pointer;").mx-2.fas.fa-pen.text-info.edit
+                  div
+                    block
+
+              // ハッシュタグ
+              if hashTags.length > 0 || mode == "edit"
+                +categorizedInfo('ハッシュタグ', 'HashTag')
+                  each tag in hashTags
+                    p
+                      a(href="https://twitter.com/hashtag/"+tag.name target="_blank").mx-2 ##{tag.name}
+                      if tag.comment
+                        span.text-secondary  - #{tag.comment}
+
+              // 活動場所
+              if activities.length > 0 || mode == "edit"
+                +categorizedInfo('活動場所', 'Activity')
+                  each activity in activities
+                    p
+                      a(href=activity.link target="_blank").mx-2
+                        - var serviceIcons = {}
+                        - serviceIcons["twitter.com"] = "twitter.png"
+                        - serviceIcons["www.youtube.com"] = "youtube.png"
+                        - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
+                        - serviceIcon = serviceIcons[activity.link.split('/')[2]]
+                        if serviceIcon
+                          img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                        span  #{activity.name}
+
+              // 応援方法
+              if cheerings.length > 0 || mode == "edit"
+                +categorizedInfo('応援する', 'Cheering')
+                  each cheer in cheerings
+                    p
+                      a(href=cheer.link target="_blank").mx-2 #{cheer.name}
+          
+          // 検索タグ
+          div
+            h5
+              p
+                each tag in tags
+                  - var tagLink = "/search?query=" + tag.tagname
+                  - var tagText = tag.tagname
+                  - var tagHue = tagText.charCodeAt(0) % 36 * 10;
+                  a(href=tagLink)
+                    span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+
+      // ママ/パパ（キャラ絵右下）
+      .text-right
+        if parents.length != 0
+          each parent in parents
+            div
+              a(href=parent.link) #{parent.relationship}: #{parent.name}
+        else
+          h5.edit ママ/パパ
+        i(data-toggle="modal" data-target="#ParentModal" style="cursor: pointer;").fas.fa-pen.text-info.edit
+
+  // サブセクション雛形
+  mixin subSection(title,bg)
+    section(class=bg)#about.page-section
+      .container
+        .row.justify-content-center
+          .text-center
+            h1 #{title}
+            hr.divider.my-4
+            block
+
+  // 立ち絵表示
+  if tachies.length > 0 || mode == "edit"
+    // 背景
+    div(style="background-image: url('"+personality.logo_path+"');").parallax-logo
+      //div(style="background-image: url('"+personality.tachie+"');").parallax-chara
+      div.parallax-filter
+        // コンテンツ
+        div.parallax-content
+          +subSection('Tachie')
+            .container
+              .row
+                // 初期表示
+                if tachies.length == 0
+                  - tachies = [{path: '/img/imageadd_t.png', name: 'Image Title', comment: 'Image Text Image Text Image Text Image Text Image Text Image Text Image Text'}]
+                
+                each tachie in tachies
+                  div.col-sm.mx-auto
+                    div(style="max-width:400px;background-color:rgba(255,255,255,0.50);").card
+                      // 画像
+                      img(src=tachie.path style="width:100%;" data-toggle="modal" data-target="#TachieModal").card-img-top
+                      div(style="background-color:rgba(255,255,255,1.00);").card-body
+                        // タイトル、コメント
+                        h5.card-title #{tachie.name}
+                        p.card-text #{tachie.comment}
+                        // ダウンロードボタン
+                        - var filename = tachie.path.split('/').pop();
+                        a(href=tachie.path download=filename).btn.btn-primary.text-white
+                          i.fas.fa-file-download  Download
+
+  // キャラデザ表示
+  if personality.design_path || mode == "edit"
+    +subSection('Character Design', 'bg-white')
+      .container.mx-auto
+        div.card
+          if !personality.design_path
+            - personality.design_path = "/img/imageadd_t.png"
+            - personality.design_comment = "Comment"
+          div.rounded.img-fluid.card-img-top
+            img(src=personality.design_path style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
+          .card-body
+            p(style="white-space:pre-wrap;").card-text #{personality.design_comment}
+            - var filename = personality.design_path.split('/').pop();
+            a(href=personality.design_path download=filename).btn.btn-primary.text-white
+              i.fas.fa-file-download  Download
+
+  // ロゴ表示
+  if mode == "edit"
+    div.edit
+      +subSection('Logo')
+        .container.mx-auto
+          if !personality.logo_path
+            - personality.logo_path = "/img/imageadd_t.png"
+          .text-center
+            img(src=personality.logo_path style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
+
+  if mode == "edit"
+    // モーダル雛形
+    mixin modal(modalParams)
+      div(tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
+        div(role="document").modal-dialog
+          .modal-content
+            form(method='post' action='/i/'+me.username+modalParams.action enctype=modalParams.enctype id=modalParams.name+"Form")
+              .modal-header
+                h5(id=modalParams.name+"ModalLabel").modal-title #{modalParams.title}
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                  span(aria-hidden="true") &times;
+              .modal-body
+                input(type="hidden" name="deleted" value="0" id=modalParams.name+"Deleted")
+                if block
+                  block
+              .modal-footer
+                button(type="button" id=modalParams.name+"DeleteBtn").btn.btn-danger 削除
+                button(type="button" data-dismiss="modal").btn.btn-secondary キャンセル
+                button(type="button" id=modalParams.name+"SubmitBtn").btn.btn-primary 更新
+
+    // プロフィールモーダル
+    +modal({name: 'BasicInfo', action: '/basicinfo', title: '基本プロフィール', enctype: "multipart/form-data"})
+      .form-group
+      div(class=personality.tachie style="display:none;").profileImagePreview.upload.imagePreview
+      div(class=personality.tachie style="background-image: url('"+personality.tachie+"');").profileImagePreview.imagePreview
+      label.input-group-btn.m-0
+        span.btn.btn-primary ファイルを選択
+          input(type="file" name="img" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+      input(type="text" placeholder="名前" value=personality.nameJa name="nameJa").form-control.my-2
+      input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn").form-control.my-2
+      input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" value=personality.label name="label").form-control.my-2
+      textarea(placeholder="自己紹介" rows="6" name="introduction").form-control.my-2
+        | #{personality.introduction}
+      - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
+      textarea(placeholder="検索タグ" rows="2" name="tags").form-control.my-2
+        | #{tagtext}
+
+    // ハッシュタグモーダル
+    +modal({name: 'HashTag', action: '/hashtag', title: 'ハッシュタグ', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+      select(name="target")#HashTagSelection.form-control
+        option(value="new" selected) 新規追加
+          each hashTag in hashTags
+            option(value=hashTag.tagId) #{hashTag.name}
+      each hashTag in hashTags
+        input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
+      input(type="text" placeholder="タグ名（#不要）" name="name")#HashTagNameForm.form-control.my-2
+      input(type="text" placeholder="説明" name="comment")#HashTagCommentForm.form-control.my-2
+
+    // 活動場所モーダル
+    +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+        select(name="target")#ActivitySelection.form-control
+          option(value="new" selected) 新規追加
+          each activity in activities
+            option(value=activity.activityId) #{activity.name}
+        each activity in activities
+          input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
+        input(type="text" placeholder="表示名" name="name")#ActivityNameForm.form-control.my-2
+        input(type="text" placeholder="URL" name="link")#ActivityLinkForm.form-control.my-2
+
+    // 応援方法モーダル
+    +modal({name: 'Cheering', action: '/cheering', title: '応援方法', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+      select(name="target")#CheeringSelection.form-control
+        option(value="new" selected) 新規追加
+        each cheering in cheerings
+          option(value=cheering.cheeringId) #{cheering.name}
+      each cheering in cheerings
+        input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
+      input(type="text" placeholder="表示名" name="name")#CheeringNameForm.form-control.my-2
+      input(type="text" placeholder="URL" name="link")#CheeringLinkForm.form-control.my-2
+
+    // ママ/パパモーダル
+    +modal({name: 'Parent', action: '/parent', title: 'ママ/パパ', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+      select(name="target")#ParentSelection.form-control
+        option(value="new" selected) 新規追加
+        each parent in parents
+          option(value=parent.parentId) #{parent.name}
+      each parent in parents
+        input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
+      input(type="text" placeholder="ツヅキガラ" name="relationship")#ParentRelationshipForm.form-control.my-2
+      input(type="text" placeholder="名前" name="name")#ParentNameForm.form-control.my-2
+      input(type="text" placeholder="URL" name="link")#ParentLinkForm.form-control.my-2
+
+    // 立ち絵モーダル
+    +modal({name: 'Tachie', action: '/img/tachie', title: '立ち絵', enctype: "multipart/form-data"})
+      .form-group.m-0
+        // 対象
+        select(name="target")#TachieSelection.form-control.my-2
+          option(value="new" selected) 新規追加
+          if tachies.length > 0
+            each tachie in tachies
+              option(value=tachie.tachieId) #{tachie.name}
+        // プレビュー
+        div(style="display:none;").tachie.imagePreview.upload
+        each tachie in tachies
+          div(class=tachie.tachieId style="background-image: url('"+tachie.path+"'); display:none;").tachie.imagePreview
+        // ファイル選択
+        label.input-group-btn.m-0
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#TachieFileInput.form-control.my-2
+        // タイトル、説明
+        each tachie in tachies
+          input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
+          input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
+        input(type="text" placeholder="タイトル" name="name").tachieNameForm.form-control.my-2
+        input(type="text" placeholder="コメント" name="comment").tachieCommentForm.form-control.my-2
+
+    // キャラクターデザインモーダル
+    +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none;").design.upload.imagePreview
+        div(style="background-image: url('"+personality.design_path+"');").design.imagePreview
+        label.input-group-btn.m-0
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
+        textarea(placeholder="コメント" rows="4" name="comment").form-control.my-2
+          | #{personality.design_comment}
+
+    // ロゴモーダル
+    +modal({name: 'Logo', action: '/img/logo', title: 'ロゴ', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none;").logo.upload.imagePreview
+        div(style="background-image: url('"+personality.logo_path+"');").logo.imagePreview
+        label.input-group-btn.m-0
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2

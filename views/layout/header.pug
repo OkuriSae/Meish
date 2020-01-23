@@ -1,0 +1,31 @@
+header
+  nav(style="padding:0 6%; width: 100%; position: fixed;z-index:1;")#mainNav.navbar.navbar-expand-lg.navbar-light.d-flex.justify-content-between
+    div
+      a(href="/").navbar-brand.js-scroll-trigger Sette*
+
+    div(style="padding:0 3%; flex-grow:1;")
+      form(method='get' action='/search')#SearchForm
+        div.input-group
+          div.input-group-prepend
+            div(style="border-radius: 1rem 0 0 1rem;").input-group-text 
+              i.fas.fa-search
+          input(type="text" name="query" placeholder="Search for tag" style="border-radius: 0 1rem 1rem 0;")#QueryInput.form-control.form-control-sm
+
+    div.text-right
+      if me
+        - var iconUrl = me._json.profile_image_url_https.replace("normal", "bigger");
+        div.dropdown
+          img(src=iconUrl style="border-radius:50%; width:30px;" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false").dropdown-toggle
+          div(aria-labelledby="dropdownMenuButton" style="min-width: 6rem; left:-50px;").dropdown-menu
+            small
+              h6.dropdown-header  #{me.username}
+              a(href="/i/"+me.username).dropdown-item 
+                span MyPage
+              .dropdown-divider
+              a(href="/logout").dropdown-item
+                span Logout
+      else
+        a(href="/auth/twitter")
+          button.btn-sm.btn-twitter
+            i.fab.fa-twitter  ログイン
+  div(style="height:40px;")

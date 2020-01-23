@@ -1,0 +1,15 @@
+extends layout/layout
+
+block content
+  
+  section(style='background-image: url("img/3135117.jpg"); background-size: cover; background-attachment: fixed;')#about.page-section
+    div.text-center.text-white
+      h1 Sette*
+        small (仮)
+      p キャラ設定共有サービス
+      h3.p-3 キャラクターに『いのち』を吹き込もう
+    div.d-flex.flex-wrap.justify-content-around
+      each tachie in tachies
+        div.m-3
+          a(href=tachie.link)
+            img(src=tachie.path style="width:180px; height:320px; object-fit: contain; background-color: rgba(255,255,255,0.5); border-radius: 8px;")

@@ -1,0 +1,175 @@
+body{
+  font-family: 游ゴシック Medium,游ゴシック体,Yu Gothic Medium,YuGothic,ヒラギノ角ゴ ProN,Hiragino Kaku Gothic ProN,メイリオ,Meiryo,ＭＳ Ｐゴシック,MS PGothic,BlinkMacSystemFont,-apple-system,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
+  color: #444;
+}
+
+.navbar{
+  padding: 0px;
+  background: #F6F6F6;
+  box-shadow: 1px 0px 4px rgb(184, 184, 184);
+}
+
+.bg-gray{
+  background-color: rgb(255, 255, 255);
+}
+
+/* 通常のボタン色 */
+.btn-primary,
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #488;
+  border-color: #488;
+}
+
+/* focusされた時の枠線の色 */
+.btn-primary:focus, .btn-primary.focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(116, 216, 194, 0.5);
+}
+
+/* hover時（マウスカーソルを重ねた時）の色（通常より濃いor暗めの色を指定）*/
+.btn-primary:hover {
+  background-color: #477;
+  border-color: #477;
+}
+
+/* active時の色（hover時と同等かさらに濃いor暗めの色を指定） */
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: #466;
+  border-color: #466;
+}
+
+section{
+  padding: 50px;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  width: 50px;
+  border-top: 5px solid ;
+}
+
+a{
+  color: rgb(83, 153, 118);
+}
+
+a:hover{
+  color: rgb(36, 97, 66);
+}
+
+.parallax-logo {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+.parallax-logo::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  background: inherit;
+  filter: blur(0px);
+  z-index: -1;
+}
+
+.parallax-chara {
+  height: 100%;
+  width:100%;
+  background-attachment: fixed;
+  background-position: right;
+  background-size: 60%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+.parallax-chara::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  background: inherit;
+  filter: blur(1px);
+  z-index: -1;
+}
+
+.parallax-filter {
+  height: 100%;
+  width:100%;
+  background-color: rgb(255,255,255,0.5);
+}
+
+.parallax-content {
+  height: 100%;
+  background-attachment: fixed;
+  background-position: right;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.imagePreview {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 200px;
+}
+
+.personalities {
+  background-color: rgb(255,255,255,0.7);
+  border-radius:30px;
+}
+
+.profileImage {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom right;
+}
+
+/* Twitterのボタン色 */
+.btn-twitter,
+.btn-twitter.disabled, .btn-twitter:disabled {
+  color: #fff;
+  border-radius:5px;
+  background-color: #55acee;
+  border-color: transparent;
+}
+
+/* focusされた時の枠線の色 */
+.btn-twitter:focus, .btn-twitter.focus,
+.btn-twitter:not(:disabled):not(.disabled):active:focus, .btn-twitter:not(:disabled):not(.disabled).active:focus,
+.show > .btn-twitter.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(104, 192, 219, 0.5);
+  border: none;
+  outline: 0;
+}
+
+/* hover時（マウスカーソルを重ねた時）の色（通常より濃いor暗めの色を指定）*/
+.btn-twitter:hover {
+  background-color: #55acee;
+  border-color: transparent;
+}
+
+/* active時の色（hover時と同等かさらに濃いor暗めの色を指定） */
+.btn-twitter:not(:disabled):not(.disabled):active, .btn-twitter:not(:disabled):not(.disabled).active,
+.show > .btn-twitter.dropdown-toggle {
+  background-color: #55acee;
+  border-color: transparent;
+}

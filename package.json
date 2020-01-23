@@ -1,0 +1,61 @@
+{
+  "name": "prov",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "node_modules/mocha/bin/mocha --timeout 10000 --exit"
+  },
+  "keywords": [
+    "css",
+    "sass",
+    "html",
+    "responsive",
+    "theme",
+    "template"
+  ],
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "4.3.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.0",
+    "express-session": "^1.15.6",
+    "helmet": "^3.8.2",
+    "http-errors": "~1.6.2",
+    "jimp": "^0.9.3",
+    "jquery": "3.4.1",
+    "jquery.easing": "^1.4.1",
+    "magnific-popup": "^1.1.0",
+    "morgan": "~1.9.0",
+    "multer": "^1.4.2",
+    "node-vibrant": "^3.1.5",
+    "passport": "^0.3.2",
+    "passport-twitter": "^1.0.4",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "popper.js": "^1.14.0",
+    "pug": "2.0.0-beta11",
+    "sanitize-filename": "^1.6.3",
+    "sequelize": "^4.33.4",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babel-loader": "^8.0.4",
+    "browser-sync": "2.26.7",
+    "del": "5.1.0",
+    "merge-stream": "2.0.0",
+    "mocha": "^4.0.1",
+    "passport-stub": "^1.1.1",
+    "supertest": "^3.1.0",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "engines": {
+    "node": "~10"
+  }
+}

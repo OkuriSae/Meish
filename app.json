@@ -1,0 +1,7 @@
+{
+  "name": "Sette",
+  "description": "設定共有サービス",
+  "logo": "",
+  "keywords": ["node"],
+  "image": "heroku/nodejs"
+}
