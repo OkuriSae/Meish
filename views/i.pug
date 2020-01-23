@@ -25,6 +25,7 @@ block content
                   // 公開/非公開
                   form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit.mx-2
                     input(type="hidden" name="visibility" value=visibility)
+                    input(type="hidden" name="_csrf" value=csrfToken)
                     if visibility
                       button(type="submit").btn-sm.btn-outline-info 公開中
                     else
@@ -178,7 +179,8 @@ block content
       div(tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
         div(role="document").modal-dialog
           .modal-content
-            form(method='post' action='/i/'+me.username+modalParams.action enctype=modalParams.enctype id=modalParams.name+"Form")
+            - var actionString = `/i/${me.username+modalParams.action}?_csrf=${csrfToken}`; 
+            form(method='post' action=actionString enctype=modalParams.enctype id=modalParams.name+"Form")
               .modal-header
                 h5(id=modalParams.name+"ModalLabel").modal-title #{modalParams.title}
                 button.close(type="button" data-dismiss="modal" aria-label="Close")

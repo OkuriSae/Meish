@@ -16,6 +16,7 @@ const Cheering = require('./models/cheering');
 const Parent = require('./models/parent');
 const Tachie = require('./models/tachie');
 const Personality = require('./models/personality');
+var cookieParser = require('cookie-parser');
 
 // DB初期化
 User.sync().then(() => {
@@ -46,6 +47,7 @@ const profileRouter = require('./routes/profile');
 const app = express();
 app.use(helmet());
 
+app.use(cookieParser());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -61,12 +63,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'e55be81b307c1c09', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use('/', indexRouter);
-app.use('/login', loginRouter);
-app.use('/logout', logoutRouter);
-app.use('/u', profileRouter);
-app.use('/i/', iRouter);
 
 // セッションに保存
 passport.serializeUser(function(user, done) {
@@ -103,6 +99,12 @@ app.get(
     res.redirect(`/i/${req.user.username}?mode=edit`);
   }
 );
+
+app.use('/', indexRouter);
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
+app.use('/u', profileRouter);
+app.use('/i/', iRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

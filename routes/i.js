@@ -19,6 +19,8 @@ const upload = multer({
 })
 const sanitize = require("sanitize-filename");
 const path = require('path');
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
 
 const dummyData={
   personality: {
@@ -109,7 +111,7 @@ const dummyData={
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
 
 // GET:ユーザーページ
-router.get('/:username', (req, res, next) => {
+router.get('/:username', csrfProtection, (req, res, next) => {
   User.findOne({where: {username: req.params.username}}).then(user => {
     if (!user) {
       if (isMe(req)) {
@@ -150,7 +152,8 @@ router.get('/:username', (req, res, next) => {
       me: req.user,
       visibility: user.visibility,
       isMe: isMe(req),
-      mode: req.query.mode ? req.query.mode : "view"
+      mode: req.query.mode ? req.query.mode : "view",
+      csrfToken: req.csrfToken()
     };
     let where = {where: {userId: user.userId , deleted: 0}, order: [["createdAt", "asc"]]};
     (async () => {
@@ -184,7 +187,7 @@ let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
 let isDeletePost = (req) => { return req.body.deleted == 1; };
 
 // POST:公開状態
-router.post('/:username/visibility', authenticationEnsurer, (req, res, next) => {
+router.post('/:username/visibility', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findByPk(req.user.id).then(user => {
     user.update({
       visibility : req.body.visibility == '0' ? '1' : '0'
@@ -193,7 +196,7 @@ router.post('/:username/visibility', authenticationEnsurer, (req, res, next) => 
 });
 
 // POST:基本情報
-router.post('/:username/basicinfo', authenticationEnsurer, upload.single('img'), (req, res, next) => {
+router.post('/:username/basicinfo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   Personality.findOne({where: { userId: req.user.id }}).then(personality => {
     (async () => {
       let data = {
@@ -228,7 +231,7 @@ router.post('/:username/basicinfo', authenticationEnsurer, upload.single('img'),
 });
 
 // POST:ハッシュタグ
-router.post('/:username/hashtag', authenticationEnsurer, (req, res, next) => {
+router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, res, next) => {
   HashTag.findOne({
     where: {userId : req.user.id, tagId: targetParse(req.body.target), deleted: 0}
   }).then(hashtag => {
@@ -250,7 +253,7 @@ router.post('/:username/hashtag', authenticationEnsurer, (req, res, next) => {
 });
 
 // POST:活動情報
-router.post('/:username/activity', authenticationEnsurer, (req, res, next) => {
+router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Activity.findOne({
     where: {userId : req.user.id, activityId: targetParse(req.body.target), deleted: 0}
   }).then(activity => {
@@ -272,7 +275,7 @@ router.post('/:username/activity', authenticationEnsurer, (req, res, next) => {
 });
 
 // POST:応援情報
-router.post('/:username/cheering', authenticationEnsurer, (req, res, next) => {
+router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Cheering.findOne({
     where: {userId : req.user.id, cheeringId: targetParse(req.body.target), deleted: 0}
   }).then(cheering => {
@@ -294,7 +297,7 @@ router.post('/:username/cheering', authenticationEnsurer, (req, res, next) => {
 });
 
 // POST:パパママ
-router.post('/:username/parent', authenticationEnsurer, (req, res, next) => {
+router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Parent.findOne({
     where: {userId : req.user.id, parentId: targetParse(req.body.target), deleted: 0}
   }).then(parent => {
@@ -317,7 +320,7 @@ router.post('/:username/parent', authenticationEnsurer, (req, res, next) => {
 });
 
 // POST:tachie
-router.post('/:username/img/tachie', authenticationEnsurer, upload.single('img'), (req, res, next) => {
+router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   Tachie.findOne({
     where: {userId : req.user.id, tachieId: targetParse(req.body.target), deleted: 0}
   }).then(tachie => {
@@ -366,7 +369,7 @@ router.post('/:username/img/tachie', authenticationEnsurer, upload.single('img')
 });
 
 // POST:character design
-router.post('/:username/img/design', authenticationEnsurer, upload.single('img'), (req, res, next) => {
+router.post('/:username/img/design', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
@@ -397,7 +400,7 @@ router.post('/:username/img/design', authenticationEnsurer, upload.single('img')
 });
 
 // POST:logo
-router.post('/:username/img/logo', authenticationEnsurer, upload.single('img'), (req, res, next) => {
+router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
