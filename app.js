@@ -79,7 +79,7 @@ passport.use(
     {
       consumerKey: process.env.TwitterConsumerKey,
       consumerSecret: process.env.TwitterConsumerSecret,
-      callbackURL: 'http://localhost:8000/auth/twitter/callback'
+      callbackURL: process.env.callbackURL
     },
     // 認証後の処理
     function(token, tokenSecret, profile, done) {
