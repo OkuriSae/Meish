@@ -30,7 +30,7 @@ const Personality = loader.database.define('personalities', {
   },
   tachie: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: true
   },
   design_path: {
     type: Sequelize.STRING,

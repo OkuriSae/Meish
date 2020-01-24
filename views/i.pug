@@ -34,8 +34,7 @@ block content
             // メイン情報
             h1.name 
               b #{personality.nameJa}
-              if personality.nameEn
-                small.mx-2.nameEn  - #{personality.nameEn} -
+                small.mx-2.nameEn #{personality.nameEn}
                   small
                     i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
             small.line ･････････････････････････････････････････････････････････････････････････････････
@@ -130,10 +129,8 @@ block content
             .container
               .row
                 // 初期表示
-                if tachies.length == 0
-                  - tachies = [{path: '/img/imageadd_t.png', name: 'Image Title', comment: 'Image Text Image Text Image Text Image Text Image Text Image Text Image Text'}]
-                
-                each tachie in tachies
+                - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/imageadd_t.png', name: 'Image Title', comment: 'Image Text Image Text Image Text Image Text Image Text Image Text Image Text'}]
+                each tachie in tachiesView
                   div.col-sm.mx-auto
                     div(style="max-width:400px;background-color:rgba(255,255,255,0.50);").card
                       // 画像

@@ -22,92 +22,6 @@ const path = require('path');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 
-const dummyData={
-  personality: {
-    icon: "/i/OkuriSae/img/icon.png",
-    nameJa: "小栗さえ",
-    nameEn: "Okuri Sae",
-    mark: "🍀",
-    introduction: "そろそろボーカルも性別の壁を越えよう!!🎛 ボイチェンボーカリストやってます!!🎤🎤 \nおうたの他に🎙️、Mix🎚️、DTM🎼、イラスト🖌️、ロゴデザイン🎨、ぷろぐらみんぐ💻もできるよ！\nゲームも好きなのでコラボ待ってます: Apex, LoL, 雀魂",
-    birthday: '2019/1/1',
-    job: "VSinger",
-    alliance: "無所属",
-    logo_path: "/i/OkuriSae/img/logo.png",
-    design_path: "/i/OkuriSae/img/design.png",
-    design_comment: "まだない",
-  },
-  tags:[
-    "OkuriSae",
-    "小栗さえ"
-  ],
-  hashTags:[
-    {
-      name: "小栗さえ",
-      comment: "なんでも便利タグ"
-    },
-    {
-      name: "さえさ絵",
-      comment: "ファンアート"
-    },
-    {
-      name: "さえうた",
-      comment: "うたったやつ"
-    }
-  ],
-  activities:[
-    {
-      type: "Twitter",
-      name: "@OkuriSae",
-      link: "https://twitter.com/OkuriSae"
-    },
-    {
-      type: "Youtube",
-      name: "さえちゃん寝る",
-      link: "https://www.youtube.com/channel/UCj9IZnU2bKqGqABhQUU6F8g"
-    },
-    {
-      type: "marshmallow",
-      name: "ましゅまろ",
-      link: "https://marshmallow-qa.com/"
-    }
-  ],
-  cheerings: [
-    {
-      name: "ほしいものリスト",
-      link: "https://www.youtube.com/channel/UCj9IZnU2bKqGqABhQUU6F8g"
-    },
-    {
-      name: "Fanbox",
-      link: "https://www.youtube.com/channel/UCj9IZnU2bKqGqABhQUU6F8g"
-    }
-  ],
-  parents: [{
-    relationship: "まま",
-    name: "わたし",
-    link: "https://twitter.com/OkuriSae"
-  },
-  {
-    relationship: "ぱぱ",
-    name: "わたし",
-    link: "https://twitter.com/OkuriSae"
-  }
-  ],
-  tachies:[
-    {
-      tachieId: "1",
-      name: "3D",
-      comment: "んば！",
-      path: "/i/OkuriSae/img/tachie1.png"
-    },
-    {
-      tachieId: "2",
-      name: "2D",
-      comment: "ハロウィン衣装",
-      path: "/i/OkuriSae/img/tachie2.png"
-    }
-  ]
-};
-
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
 
 // GET:ユーザーページ
@@ -118,18 +32,18 @@ router.get('/:username', csrfProtection, (req, res, next) => {
         // create user record
         Promise.all([
           User.create({
-            userId: user.id,
-            username: user.username
+            userId: req.user.id,
+            username: req.user.username
           }),
           Personality.create({
-            userId: user.id,
-            icon: user._json.profile_image_url_https.replace('_normal', ''),
-            nameJa: user.displayName,
-            introduction: user._json.description
+            userId: req.user.id,
+            icon: req.user._json.profile_image_url_https.replace('_normal', ''),
+            nameJa: req.user.displayName,
+            introduction: req.user._json.description
           }),
           Tag.create({
-            userId: user.id,
-            tagname: user.username,
+            userId: req.user.id,
+            tagname: req.user.username,
           })
         ]).then(() => { redirectHome(req, res); });
         return;
@@ -165,7 +79,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
       renderParam.cheerings = await Cheering.findAll(where);
       renderParam.parents = await Parent.findAll(where);
       renderParam.tachies = await Tachie.findAll(where);
-      renderParam.personality = renderParam.personality ? renderParam.personality : dummyData.personality;
+      renderParam.personality = renderParam.personality;
       res.render('i', renderParam);
     })();
   });
