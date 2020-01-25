@@ -8,18 +8,20 @@ const helmet = require('helmet');
 const session = require('express-session');
 const passport = require('passport');
 // モデルの読み込み
-const User = require('./models/user');
-const Tag = require('./models/tag');
-const HashTag = require('./models/hashtag');
-const Activity = require('./models/activity');
-const Cheering = require('./models/cheering');
-const Parent = require('./models/parent');
-const Tachie = require('./models/tachie');
-const Personality = require('./models/personality');
+const User = require('./models/users');
+const Tag = require('./models/tags');
+const HashTag = require('./models/hashtags');
+const Activity = require('./models/activities');
+const Cheering = require('./models/cheerings');
+const Parent = require('./models/parents');
+const Tachie = require('./models/tachies');
+const Personality = require('./models/personalities');
 var cookieParser = require('cookie-parser');
 
 // DB初期化
 User.sync().then(() => {
+  User.hasOne(Personality, { foreignKey: 'userId' });
+  User.hasOne(Tag, { foreignKey: 'userId' });
   Personality.belongsTo(User, { foreignKey: 'userId' });
   Personality.sync();
   HashTag.belongsTo(User, { foreignKey: 'userId' });
@@ -42,7 +44,6 @@ const iRouter = require('./routes/i');
 const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
-const profileRouter = require('./routes/profile');
 
 const app = express();
 app.use(helmet());
@@ -102,8 +103,7 @@ app.get(
 
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
-app.use('/logout', logoutRouter);
-app.use('/u', profileRouter);
+app.use('/logout', logoutRouter); 
 app.use('/i/', iRouter);
 
 // catch 404 and forward to error handler

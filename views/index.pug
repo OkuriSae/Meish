@@ -4,12 +4,25 @@ block content
   
   section(style='background-image: url("img/3135117.jpg"); background-size: cover; background-attachment: fixed;')#about.page-section
     div.text-center.text-white
-      h1 Sette*
-        small (仮)
-      p キャラ設定共有サービス
+      h1 Meish*
+      p キャラクタープロフィール共有サービス
       h3.p-3 キャラクターに『いのち』を吹き込もう
     div.d-flex.flex-wrap.justify-content-around
-      each tachie in tachies
+      - users.push({personality: {tachie : "img/dummy/d0.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d1.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d2.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d3.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d4.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d5.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d6.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d7.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d8.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d9.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d10.png"}, username: "dummy"})
+      - users.push({personality: {tachie : "img/dummy/d11.png"}, username: "dummy"})
+      each user in users
         div.m-3
-          a(href=tachie.link)
-            img(src=tachie.path style="width:180px; height:320px; object-fit: contain; background-color: rgba(255,255,255,0.5); border-radius: 8px;")
+          - var link = `/i/${user.username}`
+          a(href=link)
+            - var style = `width: 198px; height:352px; background-image: url(${user.personality.tachie});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
+            div(style=style)

@@ -2,7 +2,7 @@
 const loader = require('./sequelize-loader');
 const Sequelize = loader.Sequelize;
 
-const Tag = loader.database.define('tag', {
+const Tag = loader.database.define('tags', {
   userId: {
     type: Sequelize.BIGINT(20),
     primaryKey: true,

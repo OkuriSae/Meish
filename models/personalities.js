@@ -50,12 +50,12 @@ const Personality = loader.database.define('personalities', {
     defaultValue: 0
   }
 }, {
-    freezeTableName: true,
-    indexes: [
-      {
-        fields: ['createdAt']
-      }
-    ]
-  });
+  freezeTableName: true,
+  indexes: [
+    {
+      fields: ['createdAt']
+    }
+  ]
+});
 
 module.exports = Personality;

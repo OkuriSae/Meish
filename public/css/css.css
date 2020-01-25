@@ -173,3 +173,25 @@ a:hover{
   background-color: #55acee;
   border-color: transparent;
 }
+
+.navbar {
+  height:40px;
+  width: 100%; 
+  padding: 2px 6%; 
+  position: fixed;
+  z-index: 1;
+}
+
+.headerLogo {
+  width:120px;
+  height:30px;
+  background-image: url('/img/logo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.search {
+  padding:0 3%;
+  flex-grow:1;
+}

@@ -1,14 +1,16 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
-const Personality = require('../models/personality');
-const Tag = require('../models/tag');
-const HashTag = require('../models/hashtag');
-const Activity = require('../models/activity');
-const Cheering = require('../models/cheering');
-const Parent = require('../models/parent');
-const Tachie = require('../models/tachie');
+
+const User = require('../models/users');
+const Personality = require('../models/personalities');
+const Tag = require('../models/tags');
+const HashTag = require('../models/hashtags');
+const Activity = require('../models/activities');
+const Cheering = require('../models/cheerings');
+const Parent = require('../models/parents');
+const Tachie = require('../models/tachies');
+
 const authenticationEnsurer = require('./authentication-ensurer');
 const Jimp = require('jimp');
 const Path = require('path');
@@ -30,22 +32,19 @@ router.get('/:username', csrfProtection, (req, res, next) => {
     if (!user) {
       if (isMe(req)) {
         // create user record
-        Promise.all([
-          User.create({
-            userId: req.user.id,
-            username: req.user.username
-          }),
-          Personality.create({
-            userId: req.user.id,
-            icon: req.user._json.profile_image_url_https.replace('_normal', ''),
-            nameJa: req.user.displayName,
-            introduction: req.user._json.description
-          }),
-          Tag.create({
-            userId: req.user.id,
-            tagname: req.user.username,
-          })
-        ]).then(() => { redirectHome(req, res); });
+        (async () => {
+          await User.create({
+              userId: req.user.id,
+              username: req.user.username
+          });
+          await Personality.create({
+              userId: req.user.id,
+              icon: req.user._json.profile_image_url_https.replace('_normal', ''),
+              nameJa: req.user.displayName,
+              introduction: req.user._json.description
+          });
+          redirectHome(req, res);
+        })();
         return;
 
       } else {
@@ -338,6 +337,24 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
         });
       }
     });
+  });
+});
+
+// DELETE:account
+router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
+  User.findOne({where: { userId: req.user.id }}).then(user => {
+    (async () => {
+      fs.unlink(`storage/i/${req.user.username}`, () => {});
+      await Tag.findAll({where: { userId: req.user.id }}).then((tags) => { if (tags.length) { tags.destroy(); }});
+      await Tachie.findAll({where: { userId: req.user.id }}).then((tachies) => { if (tachies.length) {tachies.destroy(); }});
+      await Activity.findAll({where: { userId: req.user.id }}).then((activities) => { if (activities.length) { activities.destroy(); }});
+      await Parent.findAll({where: { userId: req.user.id }}).then((parents) => { if (parents.length) { parents.destroy(); }});
+      await HashTag.findAll({where: { userId: req.user.id }}).then((hashtags) => { if (hashtags.length) { hashtags.destroy(); }});
+      await Cheering.findAll({where: { userId: req.user.id }}).then((cheerings) => { if (cheerings.length) { cheerings.destroy(); }});
+      await Personality.findOne({where: { userId: req.user.id }}).then((personality) => { if (personality) { personality.destroy(); }});
+      await User.findOne({where: { userId: req.user.id }}).then((user) => { if (user) { user.destroy(); }});
+      res.redirect(`/logout`);
+    })();
   });
 });
 
