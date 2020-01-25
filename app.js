@@ -61,7 +61,7 @@ app.use(express.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({ secret: 'e55be81b307c1c09', resave: false, saveUninitialized: false }));
+app.use(session({ secret: process.env.SessionSecret, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -95,7 +95,7 @@ app.get(
 );
 app.get(
   '/auth/twitter/callback',
-  passport.authenticate('twitter', { failureRedirect: '/login' }),
+  passport.authenticate('twitter', { failureRedirect: '/' }),
   function (req, res) {
     res.redirect(`/i/${req.user.username}?mode=edit`);
   }
