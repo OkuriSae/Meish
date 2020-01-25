@@ -209,7 +209,7 @@ block content
         textarea(placeholder="自己紹介" rows="6" name="introduction").form-control.my-2
           | #{personality.introduction}
         - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
-        textarea(placeholder="検索タグ" rows="2" name="tags").form-control.my-2
+        textarea(placeholder="検索タグ（スペース区切り）" rows="2" name="tags").form-control.my-2
           | #{tagtext}
 
     // ハッシュタグモーダル
