@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Meish* キャラクタープロフィール共有サービス
+    title Meish* バーチャルプロフィール共有サービス
 
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -68,8 +68,10 @@ html
 
     block footer
       include footer.pug
-    script(src="/javascripts/bundle.js")
     script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js")
-    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl",
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js", 
+    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm", 
     crossorigin="anonymous")
+    script(src="/javascripts/bundle.js")
+    script.
+      $('[data-toggle="tooltip"]').tooltip();

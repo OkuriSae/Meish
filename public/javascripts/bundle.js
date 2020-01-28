@@ -317,22 +317,24 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoDeleteBtn').on('click', func
   var form = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoForm');
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoDeleted').val(1);
   form.submit();
-}); // カラーパレット更新
+});
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
+  // カラーパレット更新
+  var image = new Image();
 
-var image = new Image();
+  image.onload = function () {
+    node_vibrant__WEBPACK_IMPORTED_MODULE_1__["from"](jquery__WEBPACK_IMPORTED_MODULE_0___default()(image).attr('src')).getPalette(function (err, palette) {
+      console.log(palette);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#about').css('border-color', palette.LightVibrant.getHex());
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('.line').css('color', palette.DarkMuted.getHex());
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nameEn').css('color', palette.LightMuted.getHex()); //$('.parallax-logo').css('background-color', palette.LightVibrant.getHex());
 
-image.onload = function () {
-  node_vibrant__WEBPACK_IMPORTED_MODULE_1__["from"](jquery__WEBPACK_IMPORTED_MODULE_0___default()(image).attr('src')).getPalette(function (err, palette) {
-    console.log(palette);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#about').css('border-color', palette.LightVibrant.getHex());
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.line').css('color', palette.DarkMuted.getHex());
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nameEn').css('color', palette.LightMuted.getHex()); //$('.parallax-logo').css('background-color', palette.LightVibrant.getHex());
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('hr').css('border-color', palette.Vibrant.getHex());
+    });
+  };
 
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('hr').css('border-color', palette.Vibrant.getHex());
-  });
-};
-
-image.src = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tachieSource').val();
+  image.src = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tachieSource').val();
+});
 
 /***/ }),
 /* 1 */

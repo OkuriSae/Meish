@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./bin/www",
+    "build": "node_modules/.bin/webpack",
     "test": "node_modules/mocha/bin/mocha --timeout 10000 --exit"
   },
   "keywords": [

@@ -33,7 +33,7 @@ const Personality = loader.database.define('personalities', {
     allowNull: true,
     get() {
       const relativePath = this.getDataValue('tachie');
-      return process.env.s3Path + relativePath;
+      return relativePath ? process.env.s3Path + relativePath : "";
     }
   },
   design_path: {
@@ -41,7 +41,7 @@ const Personality = loader.database.define('personalities', {
     allowNull: true,
     get() {
       const relativePath = this.getDataValue('design_path');
-      return process.env.s3Path + relativePath;
+      return relativePath ? process.env.s3Path + relativePath : "";
     }
   },
   design_comment: {
@@ -53,7 +53,7 @@ const Personality = loader.database.define('personalities', {
     allowNull: true,
     get() {
       const relativePath = this.getDataValue('logo_path');
-      return process.env.s3Path + relativePath;
+      return relativePath ? process.env.s3Path + relativePath : "";
     }
   },
   deleted: {

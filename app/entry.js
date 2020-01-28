@@ -222,17 +222,20 @@ $('#LogoDeleteBtn').on('click', () => {
   form.submit();
 });
 
-// カラーパレット更新
-const image = new Image();
-image.onload = () => {
-  Vibrant.from($(image).attr('src')).getPalette((err, palette) => {
-    console.log(palette);
-    $('#about').css('border-color', palette.LightVibrant.getHex());
-    $('.line').css('color', palette.DarkMuted.getHex());
-    $('.nameEn').css('color', palette.LightMuted.getHex());
-    //$('.parallax-logo').css('background-color', palette.LightVibrant.getHex());
-    $('hr').css('border-color', palette.Vibrant.getHex());
-  });
-};
-image.src = $('#tachieSource').val();
 
+$(() => {
+
+  // カラーパレット更新
+  const image = new Image();
+  image.onload = () => {
+    Vibrant.from($(image).attr('src')).getPalette((err, palette) => {
+      console.log(palette);
+      $('#about').css('border-color', palette.LightVibrant.getHex());
+      $('.line').css('color', palette.DarkMuted.getHex());
+      $('.nameEn').css('color', palette.LightMuted.getHex());
+      //$('.parallax-logo').css('background-color', palette.LightVibrant.getHex());
+      $('hr').css('border-color', palette.Vibrant.getHex());
+    });
+  };
+  image.src = $('#tachieSource').val();
+})

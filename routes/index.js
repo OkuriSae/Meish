@@ -65,4 +65,8 @@ router.get('/search', (req, res, next) => {
   })();
 });
 
+router.get('/about', (req, res, next) => {
+  res.render('about', { me: req.user });
+});
+
 module.exports = router;

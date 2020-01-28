@@ -195,3 +195,10 @@ a:hover{
   padding:0 3%;
   flex-grow:1;
 }
+
+.logo {
+  width:50%;
+  height:150px;
+  margin: auto;
+  background: center / contain no-repeat url(/img/meish_logo_lerge.png) 
+}
