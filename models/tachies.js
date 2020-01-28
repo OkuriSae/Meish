@@ -24,7 +24,11 @@ const Tachie = loader.database.define('tachies', {
   },
   path: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
+    get() {
+      const relativePath = this.getDataValue('path');
+      return process.env.s3Path + relativePath;
+    }
   },
   deleted: {
     type: Sequelize.INTEGER,

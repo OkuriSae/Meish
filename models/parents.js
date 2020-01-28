@@ -24,7 +24,7 @@ const Parent = loader.database.define('parents', {
   },
   link: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
   },
   deleted: {
     type: Sequelize.INTEGER,

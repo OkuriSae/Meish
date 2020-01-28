@@ -235,3 +235,4 @@ image.onload = () => {
   });
 };
 image.src = $('#tachieSource').val();
+

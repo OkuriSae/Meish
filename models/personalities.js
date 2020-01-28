@@ -30,11 +30,19 @@ const Personality = loader.database.define('personalities', {
   },
   tachie: {
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: true,
+    get() {
+      const relativePath = this.getDataValue('tachie');
+      return process.env.s3Path + relativePath;
+    }
   },
   design_path: {
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: true,
+    get() {
+      const relativePath = this.getDataValue('design_path');
+      return process.env.s3Path + relativePath;
+    }
   },
   design_comment: {
     type: Sequelize.STRING,
@@ -42,7 +50,11 @@ const Personality = loader.database.define('personalities', {
   },
   logo_path: {
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: true,
+    get() {
+      const relativePath = this.getDataValue('logo_path');
+      return process.env.s3Path + relativePath;
+    }
   },
   deleted: {
     type: Sequelize.INTEGER,

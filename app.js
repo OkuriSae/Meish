@@ -7,6 +7,7 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const session = require('express-session');
 const passport = require('passport');
+
 // モデルの読み込み
 const User = require('./models/users');
 const Tag = require('./models/tags');
@@ -42,10 +43,12 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 
 const iRouter = require('./routes/i');
 const indexRouter = require('./routes/index');
-const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 
 const app = express();
+
+process.env.s3Path = `https://${process.env.AWS_S3_BUCKET_NAME}.s3-ap-northeast-1.amazonaws.com/`;
+
 app.use(helmet());
 
 app.use(cookieParser());
@@ -102,7 +105,6 @@ app.get(
 );
 
 app.use('/', indexRouter);
-app.use('/login', loginRouter);
 app.use('/logout', logoutRouter); 
 app.use('/i/', iRouter);
 

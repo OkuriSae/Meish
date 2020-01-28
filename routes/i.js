@@ -23,8 +23,13 @@ const sanitize = require("sanitize-filename");
 const path = require('path');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
+var AWS = require('aws-sdk');
+var s3  = new AWS.S3();
 
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
+let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
+let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
+let isDeletePost = (req) => { return req.body.deleted == 1; };
 
 // GET:ユーザーページ
 router.get('/:username', csrfProtection, (req, res, next) => {
@@ -95,10 +100,6 @@ router.get('/:username/img/:name', function (req, res, next) {
   });
 });
 
-let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
-let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
-let isDeletePost = (req) => { return req.body.deleted == 1; };
-
 // POST:公開状態
 router.post('/:username/visibility', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findByPk(req.user.id).then(user => {
@@ -119,10 +120,14 @@ router.post('/:username/basicinfo', authenticationEnsurer, csrfProtection, uploa
         introduction: req.body.introduction
       }
       if (req.file) {
-        // image saving
-        data.tachie = `/i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.file.originalname))}`; 
-        await saveImage('tachie', req.file, data.tachie);
+        // file saving
+        await deleteImage(personality.tachie);
+        let destPath = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.file.originalname))}`; 
+        await saveImage('tachie', req.file, destPath);
+        data.tachie = destPath;
       }
+
+      // data saving
       await personality.update(data);
       await Tag.destroy({where: { userId: req.user.id }});
       for(let tag of req.body.tags.split(' ')) {
@@ -133,6 +138,7 @@ router.post('/:username/basicinfo', authenticationEnsurer, csrfProtection, uploa
       }
       redirectHome(req, res);
     })();
+    
   }).catch(() => {
     Personality.create({
       userId: req.user.id,
@@ -249,14 +255,15 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
 
           if (req.file) {
             // image saving
-            let filename = [
-              sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname))),
-              sanitize(Path.extname(req.file.originalname))
-            ].join('.');
-            data.path = `/i/${user.username}/img/${user.username}_${filename}`; 
+            await deleteImage(tachie.path);
+            let filename = 
+              sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname)))
+              + sanitize(Path.extname(req.file.originalname));
+            data.path = `i/${user.username}/img/${user.username}_${filename}`; 
             await saveImage('tachie', req.file, data.path);
           }
 
+          // data saving
           if (tachie) {
             await tachie.update(data);
           } else if (req.file) {
@@ -268,11 +275,11 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
       } else {
         // image destroy
         if (tachie) {
-          fs.unlink(`storage/${tachie.path}`, () => {
-            tachie.update({
-              deleted: req.body.deleted
-            }).then(() => { redirectHome(req, res); });
-          });
+          (async () => {
+            await deleteImage(tachie.path);
+            await tachie.update({ deleted: req.body.deleted });
+            redirectHome(req, res);
+          })();
         } else {
           res.render('errors/400', {message: 'image not exists'});
         }
@@ -287,12 +294,12 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
       if (!isDeletePost(req)) {
+        // image saving
         (async () => {
-          let data = {
-            design_comment: req.body.comment
-          };
+          let data = { design_comment: req.body.comment };
           if (req.file) {
-            data.design_path = `/i/${user.username}/img/${user.username}_design.${sanitize(Path.extname(req.file.originalname))}`; 
+            await deleteImage(personality.design_path);
+            data.design_path = `i/${user.username}/img/${user.username}_design${sanitize(Path.extname(req.file.originalname))}`; 
             await saveImage('design', req.file, data.design_path);
           } 
           await personality.update(data);
@@ -301,12 +308,14 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
 
       } else {
         // image destroy
-        fs.unlink(`storage/${personality.design_path}`, () => {
-          personality.update({
+        (async () => {
+          await deleteImage(personality.design_path);
+          await personality.update({
             design_path: '',
             design_comment: ''
-          }).then(() => { redirectHome(req, res); });
-        });
+          })
+          redirectHome(req, res);
+        })();
       }
     });
   });
@@ -318,23 +327,25 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
       if (!isDeletePost(req)) {
+        // image saving
         (async () => {
           if (req.file) {
-            let destName = `/i/${user.username}/img/${user.username}_logo.${sanitize(Path.extname(req.file.originalname))}`;
-            await saveImage('logo', req.file, destName);
-            await personality.update({ logo_path: destName });
+            await deleteImage(personality.logo_path);
+            let destPath = `i/${user.username}/img/${user.username}_logo${sanitize(Path.extname(req.file.originalname))}`;
+            await saveImage('logo', req.file, destPath);
+            await personality.update({ logo_path: destPath });
           }
           redirectHome(req, res);
         })();
 
       } else {
-
         // image destroy
-        fs.unlink(`storage/${personality.logo_path}`, () => {
-          personality.update({
-            logo_path: ''
-          }).then(() => { redirectHome(req, res); });
-        });
+        (async () => {
+          await deleteImage(personality.logo_path);
+          await personality.update({ logo_path: '' });
+          redirectHome(req, res);
+        })();
+
       }
     });
   });
@@ -344,59 +355,73 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
 router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     (async () => {
-      fs.unlink(`storage/i/${req.user.username}`, () => {});
-      await Tag.findAll({where: { userId: req.user.id }}).then((tags) => { if (tags.length) { tags.destroy(); }});
-      await Tachie.findAll({where: { userId: req.user.id }}).then((tachies) => { if (tachies.length) {tachies.destroy(); }});
-      await Activity.findAll({where: { userId: req.user.id }}).then((activities) => { if (activities.length) { activities.destroy(); }});
-      await Parent.findAll({where: { userId: req.user.id }}).then((parents) => { if (parents.length) { parents.destroy(); }});
-      await HashTag.findAll({where: { userId: req.user.id }}).then((hashtags) => { if (hashtags.length) { hashtags.destroy(); }});
-      await Cheering.findAll({where: { userId: req.user.id }}).then((cheerings) => { if (cheerings.length) { cheerings.destroy(); }});
-      await Personality.findOne({where: { userId: req.user.id }}).then((personality) => { if (personality) { personality.destroy(); }});
-      await User.findOne({where: { userId: req.user.id }}).then((user) => { if (user) { user.destroy(); }});
+      // image deleting
+      let personality = await Personality.findOne({where: { userId: req.user.id }});
+      deleteImage(personality.tachie);
+      deleteImage(personality.design_path);
+      deleteImage(personality.logo_path);
+      let tachies = await Tachie.findAll({where: { userId: req.user.id }});
+      tachies.forEach( tachie => {
+        deleteImage(tachie.path);
+      });
+      // data deleting
+      let isUser = { where: { userId: req.user.id }};
+      let destroyAll = (models) => { models.forEach( model => { model.destroy(); }); }
+      await Tag.findAll(isUser).then((tags) => { destroyAll(tags); });
+      await Tachie.findAll(isUser).then((tachies) => { destroyAll(tachies); });
+      await Activity.findAll(isUser).then((activities) => { destroyAll(activities); });
+      await Parent.findAll(isUser).then((parents) => { destroyAll(parents); });
+      await HashTag.findAll(isUser).then((hashtags) => { destroyAll(hashtags); });
+      await Cheering.findAll(isUser).then((cheerings) => { destroyAll(cheerings); });
+      await Personality.findOne(isUser).then((personality) => { personality.destroy(); });
+      await User.findOne(isUser).then((user) => { user.destroy(); });
       res.redirect(`/logout`);
     })();
   });
 });
 
-function saveImage(imagename, tmpFile, destName) {
+function saveImage(imagename, tmpFile, destPath) {
   let tmpUnlink = (path) => { fs.unlink(path, () => {}); }
-
-  let validator = new Promise((resolve, reject) => {
+  try {
+    // Validations
     let allowImageNames = ['logo', 'tachie', 'design'];
     let allowFileSize = 2 * (1024 ** 2); // 2MiB
     let allowMimeTypes = ['image/png', 'image/jpeg', 'image/gif'];
     let ext = Path.extname(tmpFile.originalname);
-    let errorMessage = '';
-    if (!allowImageNames.includes(imagename)) { errorMessage = 'imagename'; }
-    if (tmpFile.size > allowFileSize) { errorMessage = 'filesize'; } 
-    if (!allowMimeTypes.includes(tmpFile.mimetype)) { errorMessage = 'mimetype'; }
-    if (!ext) { errorMessage = 'extension'; }
-    if (errorMessage) {
-      tmpUnlink(tmpFile.path);
-      console.log(errorMessage);
-      reject(new Error(errorMessage));
-    } else {
-      resolve(tmpFile.path);
+    
+    if (!allowImageNames.includes(imagename)) { new Error('imagename'); }
+    if (tmpFile.size > allowFileSize) { new Error('filesize'); } 
+    if (!allowMimeTypes.includes(tmpFile.mimetype)) { new Error('mimetype'); }
+    if (!ext) { new Error('extension'); }
+
+    // s3put
+    const params = {
+      Body: fs.readFileSync(tmpFile.path),
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: destPath,
+      ContentType: tmpFile.mimetype,
+      ACL: 'public-read'
     }
-  });
+    console.log(`s3Put:`);
+    console.log(params);
+    return s3.putObject(params).promise();
 
-  return new Promise((resolve, reject) => {
-    validator.then((path) => {
-      // saving
-      Jimp.read(path).then(jimpImg => {
-        tmpUnlink(path);
-        jimpImg.write('storage' + destName);
-        resolve(destName);
+  } catch (e) {
+    tmpUnlink(tmpFile.path);
+    console.log('saveImage.validationErr:' + params);
+    throw e;
+  }
+}
 
-      }).catch((err) => {
-        tmpUnlink(path);
-        reject(err);
-      });
-
-    }).catch((err) => {
-      reject(err.message);
-    })
-  });
+async function deleteImage(key) {
+  if (!key) { return; }
+  var params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: key.replace(process.env.s3Path,'')
+  };
+  console.log(`s3Delete:`);
+  console.log(params);
+  return s3.deleteObject(params).promise();
 }
 
 module.exports = router;

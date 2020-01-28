@@ -209,7 +209,7 @@ block content
         textarea(placeholder="自己紹介" rows="6" name="introduction").form-control.my-2
           | #{personality.introduction}
         - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
-        textarea(placeholder="検索タグ（スペース区切り）" rows="2" name="tags").form-control.my-2
+        textarea(placeholder="検索タグ（半角スペース区切り）" rows="2" name="tags").form-control.my-2
           | #{tagtext}
 
     // ハッシュタグモーダル
@@ -307,10 +307,10 @@ block content
 
   // アカウント削除
   if mode == "edit"
-    section(class=bg)#about.page-section
+    section(class=bg)#about.page-section.bg-secondary
       .container
         .row.justify-content-center
           .text-center
             form(method='post' action='/i/'+me.username+'/destroy' id="DestroyForm" style="display: inline-flex;").edit.mx-2
               input(type="hidden" name="_csrf" value=csrfToken)
-              button(type="submit" onclick="return confirm('本当にアカウントを削除しますか？')").btn-sm.btn-outline-danger アカウントを削除
+              button(type="submit" onclick="return confirm('本当にアカウントを削除しますか？')").btn-sm.btn-danger アカウントを削除
