@@ -3,100 +3,105 @@ extends layout/layout
 block content
   section(style="border-top: solid 1px; padding-bottom:80px;")#about.page-section.bg-gray
     div.container.justify-content-center.rounded
-      - var backImage = personality.tachie ? "background-image:url("+personality.tachie+");" : "";
+      // 操作パネル
+      if isMe 
+        p
+          div
+            // 編集/プレビュー
+            if mode == "edit"
+              a#viewLink
+                button(data-toggle="tooltip" data-placement="top" title="閲覧モード").btn-sm.btn-outline-success.mx-2 
+                  i.fas.fa-eye
+            else
+              a#editLink
+                button(data-toggle="tooltip" data-placement="top" title="編集モード").btn-sm.btn-outline-info.mx-2 
+                  i.fas.fa-pen
+
+            // 公開/非公開
+            form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit.mx-2
+              input(type="hidden" name="visibility" value=visibility)
+              input(type="hidden" name="_csrf" value=csrfToken)
+              if visibility
+                button.btn-sm.btn-outline-info 公開中
+              else
+                button.btn-sm.btn-outline-danger 非公開
+                
+      // 背景画像
+      - var backImage = personality.back_path ? "background-image:url("+personality.back_path+"); background-size: cover; border-radius:8px;" : "";
       div(style=backImage).profileImage.row
-        if personality.tachie
-          input(type="hidden" value=personality.tachie)#tachieSource
-        div(style="width:550px;").personalities.py-2
-          div
-            // 操作パネル
-            if isMe 
-              p
-                div
-                  // 編集/プレビュー
-                  if mode == "edit"
-                    a#viewLink
-                      button(data-toggle="tooltip" data-placement="top" title="閲覧モード").btn-sm.btn-outline-success.mx-2 
-                         i.fas.fa-eye
-                  else
-                    a#editLink
-                      button(data-toggle="tooltip" data-placement="top" title="編集モード").btn-sm.btn-outline-info.mx-2 
-                        i.fas.fa-pen
+        // プロフィール画像
+        - var backImage = personality.tachie ? "background-image:url("+personality.tachie+"); border-radius:0px;" : "";
+        div(style=backImage+"width:100%; margin:0;").profileImage.row
+          if personality.tachie
+            input(type="hidden" value=personality.tachie)#tachieSource
+          div(style="width:550px; max-width:100%;").personalities.py-2
+            div
 
-                  // 公開/非公開
-                  form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit.mx-2
-                    input(type="hidden" name="visibility" value=visibility)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    if visibility
-                      button.btn-sm.btn-outline-info 公開中
-                    else
-                      button.btn-sm.btn-outline-danger 非公開
+              // メイン情報
+              h1(style="margin-top:.83rem;").name 
+                b #{personality.nameJa}
+                  small.mx-2.nameEn #{personality.nameEn}
+                    small
+                      i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
+              hr.profHR
+              h5.my-3.text-secondary
+                span #{personality.label}
+              p(style="white-space:pre-wrap;").m-2 #{personality.introduction}
+              hr.profHR
 
-            // メイン情報
-            h1.name 
-              b #{personality.nameJa}
-                small.mx-2.nameEn #{personality.nameEn}
-                  small
-                    i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
-            small.line ･････････････････････････････････････････････････････････････････････････････････
-            h5.my-3.text-secondary
-              span #{personality.label}
-            p(style="white-space:pre-wrap;") #{personality.introduction}
-            small.line ･････････････････････････････････････････････････････････････････････････････････
+            // カテゴリ情報
+            .container.my-3
+              .row
+                mixin categorizedInfo(title, name)
+                  div(style="min-width:250px;")
+                    div(style=" margin-bottom: 0.5rem;").d-flex.align-items-center
+                      h3.category #{title}
+                        small
+                          i(data-toggle="modal" data-target="#"+name+"Modal" style="cursor: pointer;").mx-2.fas.fa-pen.text-info.edit
+                    div
+                      block
 
-          // カテゴリ情報
-          .container.my-3
-            .row
-              mixin categorizedInfo(title, name)
-                div(style="min-width:250px;")
-                  div(style=" margin-bottom: 0.5rem;").d-flex.align-items-center
-                    h3.category #{title}
-                      small
-                        i(data-toggle="modal" data-target="#"+name+"Modal" style="cursor: pointer;").mx-2.fas.fa-pen.text-info.edit
-                  div
-                    block
+                // ハッシュタグ
+                if hashTags.length > 0 || mode == "edit"
+                  +categorizedInfo('ハッシュタグ', 'HashTag')
+                    each tag in hashTags
+                      p
+                        a(href="https://twitter.com/hashtag/"+tag.name target="_blank").mx-2 ##{tag.name}
+                        if tag.comment
+                          span.text-secondary  - #{tag.comment}
 
-              // ハッシュタグ
-              if hashTags.length > 0 || mode == "edit"
-                +categorizedInfo('ハッシュタグ', 'HashTag')
-                  each tag in hashTags
-                    p
-                      a(href="https://twitter.com/hashtag/"+tag.name target="_blank").mx-2 ##{tag.name}
-                      if tag.comment
-                        span.text-secondary  - #{tag.comment}
+                // 活動場所
+                if activities.length > 0 || mode == "edit"
+                  +categorizedInfo('活動場所', 'Activity')
+                    each activity in activities
+                      p
+                        a(href=activity.link target="_blank").mx-2
+                          - var serviceIcons = {}
+                          - serviceIcons["twitter.com"] = "twitter.png"
+                          - serviceIcons["www.youtube.com"] = "youtube.png"
+                          - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
+                          - serviceIcon = serviceIcons[activity.link.split('/')[2]]
+                          if serviceIcon
+                            img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                          span  #{activity.name}
 
-              // 活動場所
-              if activities.length > 0 || mode == "edit"
-                +categorizedInfo('活動場所', 'Activity')
-                  each activity in activities
-                    p
-                      a(href=activity.link target="_blank").mx-2
-                        - var serviceIcons = {}
-                        - serviceIcons["twitter.com"] = "twitter.png"
-                        - serviceIcons["www.youtube.com"] = "youtube.png"
-                        - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
-                        - serviceIcon = serviceIcons[activity.link.split('/')[2]]
-                        if serviceIcon
-                          img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
-                        span  #{activity.name}
-
-              // 応援方法
-              if cheerings.length > 0 || mode == "edit"
-                +categorizedInfo('応援する', 'Cheering')
-                  each cheer in cheerings
-                    p
-                      a(href=cheer.link target="_blank").mx-2 #{cheer.name}
-          
-          // 検索タグ
-          div
-            h5
-              p
-                each tag in tags
-                  - var tagLink = "/search?query=" + tag.tagname
-                  - var tagText = tag.tagname
-                  - var tagHue = tagText.charCodeAt(0) % 36 * 10;
-                  a(href=tagLink)
-                    span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+                // 応援方法
+                if cheerings.length > 0 || mode == "edit"
+                  +categorizedInfo('応援する', 'Cheering')
+                    each cheer in cheerings
+                      p
+                        a(href=cheer.link target="_blank").mx-2 #{cheer.name}
+            
+            // 検索タグ
+            div
+              h5
+                p
+                  each tag in tags
+                    - var tagLink = "/search?query=" + tag.tagname
+                    - var tagText = tag.tagname
+                    - var tagHue = tagText.charCodeAt(0) % 36 * 10;
+                    a(href=tagLink)
+                      span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
 
       // ママ/パパ（キャラ絵右下）
       .text-right
@@ -121,12 +126,12 @@ block content
   // 立ち絵表示
   if tachies.length > 0 || mode == "edit"
     // 背景
-    div(style="background-image: url('"+personality.logo_path+"');").parallax-logo
-      //div(style="background-image: url('"+personality.tachie+"');").parallax-chara
+    - var logo_path = personality.logo_path ? personality.logo_path : "/img/meish_logo_lerge.png";
+    div(style="background-image: url('"+logo_path+"'); margin:5%;").parallax-logo
       div.parallax-filter
         // コンテンツ
         div.parallax-content
-          +subSection('Tachie')
+          +subSection('立ち絵')
             .container
               .row
                 // 初期表示
@@ -148,7 +153,7 @@ block content
 
   // キャラデザ表示
   if personality.design_path || mode == "edit"
-    +subSection('Character Design', 'bg-white')
+    +subSection('キャラクターデザイン', 'bg-white')
       .container.mx-auto
         div.card
           - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
@@ -165,7 +170,7 @@ block content
   // ロゴ表示
   if mode == "edit"
     div.edit
-      +subSection('Logo')
+      +subSection('ロゴ')
         p ページ背景に表示されます
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
@@ -175,7 +180,7 @@ block content
   if mode == "edit"
     // モーダル雛形
     mixin modal(modalParams)
-      div(tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
+      div(style="max-width:100%;" tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
         div(role="document").modal-dialog
           .modal-content
             - var actionString = `/i/${me.username+modalParams.action}?_csrf=${csrfToken}`; 
@@ -196,12 +201,21 @@ block content
     // プロフィールモーダル
     +modal({name: 'BasicInfo', action: '/basicinfo', title: '基本プロフィール', enctype: "multipart/form-data"})
       .form-group.text-center
-        div(class=personality.tachie style="display:none;").profileImagePreview.upload.imagePreview
-        - var tachieSample = personality.tachie ? personality.tachie : "/img/noimage.png";
-        div(class=personality.tachie style="background-image: url('"+tachieSample+"');").profileImagePreview.imagePreview
+        // 既存の画像
+        - var backSample = personality.back_path ? personality.back_path : "/img/nobackimage.jpg";
+        div(style="background-image: url('"+backSample+"'); background-size: cover; border-radius:10px;width:75%;margin:auto;").backImagePreview.imagePreview
+          - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/noTachie.png'); background-position: bottom right;`;
+          div(style=tachieSample).profileImagePreview.imagePreview
+
+        // 背景画像ファイルInput
         label.input-group-btn.m-2
-          span.btn.btn-primary ファイルを選択
-            input(type="file" name="img" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+          span.btn.btn-primary 背景画像を選択
+            input(type="file" name="back" accept="image/jpeg, image/gif, image/png" style="display:none;")#BackImageFileInput.form-control.my-2
+        // プロフィール画像ファイルInput
+        label.input-group-btn.m-2
+          span.btn.btn-primary プロフィール画像を選択
+            input(type="file" name="tachie" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+        
         input(type="text" placeholder="名前" value=personality.nameJa name="nameJa").form-control.my-2
         input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn").form-control.my-2
         input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" value=personality.label name="label").form-control.my-2
@@ -288,7 +302,7 @@ block content
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").design.upload.imagePreview
-        - var designSample = personality.design_path ? personality.design_path : "/img/noimage.png";
+        - var designSample = personality.design_path ? personality.design_path : "/img/noimage.jpg";
         div(style="background-image: url('"+designSample+"');").design.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
@@ -300,7 +314,7 @@ block content
     +modal({name: 'Logo', action: '/img/logo', title: 'ロゴ', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").logo.upload.imagePreview
-        - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.png";
+        - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.jpg";
         div(style="background-image: url('"+logoSample+"');").logo.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択

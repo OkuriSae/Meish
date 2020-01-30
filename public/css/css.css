@@ -69,7 +69,7 @@ a:hover{
   height: 100%;
   background-attachment: fixed;
   background-position: center;
-  background-size: 100%;
+  background-size: 90%;
   background-repeat: no-repeat;
   overflow: hidden;
   position: relative;
@@ -134,7 +134,9 @@ a:hover{
 
 .personalities {
   background-color: rgb(255,255,255,0.7);
-  border-radius:30px;
+  margin:10px;
+  padding:10px;
+  border-radius: 30px;
 }
 
 .profileImage {
@@ -197,8 +199,13 @@ a:hover{
 }
 
 .logo {
-  width:50%;
+  width:80%;
   height:150px;
   margin: auto;
   background: center / contain no-repeat url(/img/meish_logo_lerge.png) 
+}
+
+.profHR {
+  width:100%;
+  border-top: 1px dashed;
 }

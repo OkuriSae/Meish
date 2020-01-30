@@ -129,10 +129,14 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#QueryInput').keypress(function (
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#ProfileImageFileInput').change(function (e) {
   var file = e.target.files[0];
   var blobUrl = window.URL.createObjectURL(file);
-  var uploadPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.profileImagePreview.upload.imagePreview');
+  var uploadPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.profileImagePreview.imagePreview');
   uploadPreview.css('background-image', "url('".concat(blobUrl, "')"));
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".profileImagePreview.imagePreview").hide();
-  uploadPreview.show();
+});
+jquery__WEBPACK_IMPORTED_MODULE_0___default()('#BackImageFileInput').change(function (e) {
+  var file = e.target.files[0];
+  var blobUrl = window.URL.createObjectURL(file);
+  var uploadPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.backImagePreview.imagePreview');
+  uploadPreview.css('background-image', "url('".concat(blobUrl, "')"));
 }); // 更新
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#BasicInfoSubmitBtn').on('click', function () {

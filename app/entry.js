@@ -30,10 +30,14 @@ $('#QueryInput').keypress((e) => {
 $('#ProfileImageFileInput').change((e) => {
   let file = e.target.files[0];
   let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.profileImagePreview.upload.imagePreview');
+  let uploadPreview = $('.profileImagePreview.imagePreview');
   uploadPreview.css('background-image', `url('${blobUrl}')`);
-  $(`.profileImagePreview.imagePreview`).hide();
-  uploadPreview.show();
+});
+$('#BackImageFileInput').change((e) => {
+  let file = e.target.files[0];
+  let blobUrl = window.URL.createObjectURL(file);
+  let uploadPreview = $('.backImagePreview.imagePreview');
+  uploadPreview.css('background-image', `url('${blobUrl}')`);
 });
 // 更新
 $('#BasicInfoSubmitBtn').on('click', () => {

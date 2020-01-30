@@ -36,6 +36,14 @@ const Personality = loader.database.define('personalities', {
       return relativePath ? process.env.s3Path + relativePath : "";
     }
   },
+  back_path: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    get() {
+      const relativePath = this.getDataValue('back_path');
+      return relativePath ? process.env.s3Path + relativePath : "";
+    }
+  },
   design_path: {
     type: Sequelize.STRING,
     allowNull: true,
