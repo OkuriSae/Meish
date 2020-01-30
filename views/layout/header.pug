@@ -14,7 +14,7 @@ header
         - var iconUrl = me._json.profile_image_url_https.replace("normal", "bigger");
         div.dropdown
           img(src=iconUrl style="border-radius:50%; width:30px;" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false").dropdown-toggle
-          div(aria-labelledby="dropdownMenuButton" style="min-width: 6rem; left:-50px;").dropdown-menu
+          div(aria-labelledby="dropdownMenuButton" style="min-width: 6rem; left:-75px;").dropdown-menu
             small
               h6.dropdown-header  #{me.username}
               .dropdown-divider
@@ -28,5 +28,5 @@ header
       else
         a(href="/auth/twitter")
           button.btn-sm.btn-twitter
-            i.fab.fa-twitter  ログイン
+            i(style="width:75px;").fab.fa-twitter  ログイン
   div(style="height:40px;")
