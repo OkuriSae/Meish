@@ -137,8 +137,8 @@ block content
                 // 初期表示
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: ''}]
                 each tachie in tachiesView
-                  div.col-sm.mx-auto
-                    div(style="max-width:400px;background-color:rgba(255,255,255,0.50);").card
+                  div.col-sm.mx-auto.m-2
+                    div(style="min-width:250px;max-width:400px;background-color:rgba(255,255,255,0.50);margin:auto;").card
                       // 画像
                       img(src=tachie.path style="width:100%;" data-toggle="modal" data-target="#TachieModal").card-img-top
                       div(style="background-color:rgba(255,255,255,1.00);").card-body

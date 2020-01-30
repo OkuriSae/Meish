@@ -185,12 +185,23 @@ a:hover{
 }
 
 .headerLogo {
-  width:120px;
+  width:30px;
   height:30px;
-  background-image: url('/img/meish_logo_mini.png');
+  background-image: url('/img/meish_icon_mini.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+}
+
+@media screen and (min-width:600px) { 
+  .headerLogo {
+    width:120px;
+    height:30px;
+    background-image: url('/img/meish_logo_mini.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
 }
 
 .search {
