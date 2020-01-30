@@ -7,6 +7,7 @@ body{
   padding: 0px;
   background: #F6F6F6;
   box-shadow: 1px 0px 4px rgb(184, 184, 184);
+  flex-wrap: nowrap;
 }
 
 .bg-gray{
@@ -179,7 +180,7 @@ a:hover{
 .navbar {
   height:40px;
   width: 100%; 
-  padding: 2px 6%; 
+  padding: 2px 5%; 
   position: fixed;
   z-index: 1;
 }
@@ -219,4 +220,13 @@ a:hover{
 .profHR {
   width:100%;
   border-top: 1px dashed;
+}
+
+@media screen and (max-width:500px) { 
+  section {
+    padding: 0px;
+  }
+  #about {
+    padding: 30px;
+  }
 }

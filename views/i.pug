@@ -40,17 +40,17 @@ block content
               // メイン情報
               h1(style="margin-top:.83rem;").name 
                 b #{personality.nameJa}
-                  small.mx-2.nameEn #{personality.nameEn}
+                  small.mx-3.nameEn #{personality.nameEn}
                     small
                       i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
               hr.profHR
-              h5.my-3.text-secondary
+              h5.m-2.text-secondary
                 span #{personality.label}
               p(style="white-space:pre-wrap;").m-2 #{personality.introduction}
               hr.profHR
 
             // カテゴリ情報
-            .container.my-3
+            .container.m-2
               .row
                 mixin categorizedInfo(title, name)
                   div(style="min-width:250px;")
