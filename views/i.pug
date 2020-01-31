@@ -37,12 +37,15 @@ block content
           div(style="width:550px; max-width:100%;").personalities.py-2
             div
 
-              // メイン情報
-              h1(style="margin-top:.83rem;").name 
-                b #{personality.nameJa}
-                  small.mx-3.nameEn #{personality.nameEn}
-                    small.shadow-gray
-                      i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
+              div.m-3.text-right
+                i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer; font-size: 1.6rem;").fas.fa-pen.text-info.edit
+              div(style="margin-top:.83rem;").mx-2.my-3
+                // よみ
+                div(style="font-size: 1.2rem;").text-secondary.shadow-gray.mx-1.nameEn #{personality.nameEn}
+                // 名前
+                div(style="font-size: 2.5rem; line-height:1.2;").name 
+                  b #{personality.nameJa}
+              // プロフィール本文
               hr.profHR
               h5.m-2.text-secondary.shadow-gray
                 span #{personality.label}
