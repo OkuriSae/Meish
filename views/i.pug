@@ -7,24 +7,27 @@ block content
       if isMe 
         p
           div
-            // 編集/プレビュー
-            if mode == "edit"
-              a#viewLink
-                button(data-toggle="tooltip" data-placement="top" title="閲覧モード").btn-sm.btn-outline-success.mx-2 
-                  i.fas.fa-eye
-            else
-              a#editLink
-                button(data-toggle="tooltip" data-placement="top" title="編集モード").btn-sm.btn-outline-info.mx-2 
-                  i.fas.fa-pen
-
             // 公開/非公開
-            form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit.mx-2
+            form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
               input(type="hidden" name="visibility" value=visibility)
               input(type="hidden" name="_csrf" value=csrfToken)
               if visibility
-                button.btn-sm.btn-outline-info 公開中
+                button.btn-sm.btn-outline-danger
+                  b ▶︎ 非公開にする
               else
-                button.btn-sm.btn-outline-danger 非公開
+                button.btn-sm.btn-outline-info 
+                  b ▶︎ 公開する
+            
+            // 編集/プレビュー
+            if mode == "edit"
+              a.mx-2#viewLink
+                button(data-toggle="tooltip" data-placement="top" title="閲覧モード").btn-sm.btn-outline-success
+                  i.fas.fa-eye  閲覧モードにする
+            else
+              a.mx-2#editLink
+                button(data-toggle="tooltip" data-placement="top" title="編集モード").btn-sm.btn-outline-info
+                  i.fas.fa-pen  編集モードにする
+
                 
       // 背景画像
       - var backImage = personality.back_path ? "background-image:url("+personality.back_path+"); background-size: cover; border-radius:8px;" : "";
