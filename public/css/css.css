@@ -134,7 +134,7 @@ a:hover{
 }
 
 .personalities {
-  background-color: rgb(255,255,255,0.7);
+  background-color: rgb(255,255,255,0.75);
   margin:10px;
   padding:10px;
   border-radius: 30px;
@@ -229,4 +229,12 @@ a:hover{
   #about {
     padding: 30px;
   }
+}
+
+.shadow-gray {
+  text-shadow: 1px 1px 1px rgb(0,0,0,0.05);
+}
+
+.no-shadow {
+  text-shadow: none;
 }

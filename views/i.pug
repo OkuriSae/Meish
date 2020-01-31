@@ -41,16 +41,16 @@ block content
               h1(style="margin-top:.83rem;").name 
                 b #{personality.nameJa}
                   small.mx-3.nameEn #{personality.nameEn}
-                    small
+                    small.shadow-gray
                       i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer;").fas.fa-pen.text-info.mx-3.edit
               hr.profHR
-              h5.m-2.text-secondary
+              h5.m-2.text-secondary.shadow-gray
                 span #{personality.label}
-              p(style="white-space:pre-wrap;").m-2 #{personality.introduction}
+              p(style="white-space:pre-wrap;").shadow-gray.m-2 #{personality.introduction}
               hr.profHR
 
             // カテゴリ情報
-            .container.m-2
+            .container.m-2.shadow-gray
               .row
                 mixin categorizedInfo(title, name)
                   div(style="min-width:250px;")
@@ -66,7 +66,8 @@ block content
                   +categorizedInfo('ハッシュタグ', 'HashTag')
                     each tag in hashTags
                       p
-                        a(href="https://twitter.com/hashtag/"+tag.name target="_blank").mx-2 ##{tag.name}
+                        b
+                          a(href="https://twitter.com/hashtag/"+tag.name target="_blank").no-shadow.mx-2 ##{tag.name}
                         if tag.comment
                           span.text-secondary  - #{tag.comment}
 
@@ -75,25 +76,27 @@ block content
                   +categorizedInfo('活動場所', 'Activity')
                     each activity in activities
                       p
-                        a(href=activity.link target="_blank").mx-2
-                          - var serviceIcons = {}
-                          - serviceIcons["twitter.com"] = "twitter.png"
-                          - serviceIcons["www.youtube.com"] = "youtube.png"
-                          - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
-                          - serviceIcon = serviceIcons[activity.link.split('/')[2]]
-                          if serviceIcon
+                        b
+                          a(href=activity.link target="_blank").no-shadow.mx-2
+                            - var serviceIcons = {}
+                            - serviceIcons["twitter.com"] = "twitter.png"
+                            - serviceIcons["www.youtube.com"] = "youtube.png"
+                            - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
+                            - serviceIcon = serviceIcons[activity.link.split('/')[2]]
+                            - serviceIcon = serviceIcon ? serviceIcon : "meish_icon_mini.png"
                             img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
-                          span  #{activity.name}
+                            span.mx-2 #{activity.name}
 
                 // 応援方法
                 if cheerings.length > 0 || mode == "edit"
                   +categorizedInfo('応援する', 'Cheering')
                     each cheer in cheerings
                       p
-                        a(href=cheer.link target="_blank").mx-2 #{cheer.name}
+                        b
+                          a(href=cheer.link target="_blank").no-shadow.mx-2 #{cheer.name}
             
             // 検索タグ
-            div
+            div(style="text-shadow: none;")
               h5
                 p
                   each tag in tags
