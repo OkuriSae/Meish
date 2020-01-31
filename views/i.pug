@@ -65,9 +65,9 @@ block content
                 if hashTags.length > 0 || mode == "edit"
                   +categorizedInfo('ハッシュタグ', 'HashTag')
                     each tag in hashTags
-                      p
+                      p.mx-2
                         b
-                          a(href="https://twitter.com/hashtag/"+tag.name target="_blank").no-shadow.mx-2 ##{tag.name}
+                          a(href="https://twitter.com/hashtag/"+tag.name target="_blank").no-shadow ##{tag.name}
                         if tag.comment
                           span.text-secondary  - #{tag.comment}
 
@@ -75,9 +75,9 @@ block content
                 if activities.length > 0 || mode == "edit"
                   +categorizedInfo('活動場所', 'Activity')
                     each activity in activities
-                      p
+                      p.mx-2
                         b
-                          a(href=activity.link target="_blank").no-shadow.mx-2
+                          a(href=activity.link target="_blank").no-shadow
                             - var serviceIcons = {}
                             - serviceIcons["twitter.com"] = "twitter.png"
                             - serviceIcons["www.youtube.com"] = "youtube.png"
@@ -91,9 +91,12 @@ block content
                 if cheerings.length > 0 || mode == "edit"
                   +categorizedInfo('応援する', 'Cheering')
                     each cheer in cheerings
-                      p
-                        b
-                          a(href=cheer.link target="_blank").no-shadow.mx-2 #{cheer.name}
+                      p.mx-2 
+                        if cheer.link
+                          b
+                            a(href=cheer.link target="_blank").no-shadow #{cheer.name}
+                        else
+                          span #{cheer.name}
             
             // 検索タグ
             div(style="text-shadow: none;")
