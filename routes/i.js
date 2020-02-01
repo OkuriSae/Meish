@@ -420,9 +420,9 @@ function saveImage(tmpFile, destPath) {
     let allowMimeTypes = ['image/png', 'image/jpeg', 'image/gif'];
     let ext = Path.extname(tmpFile.originalname);
     
-    if (tmpFile.size > allowFileSize) { new Error('filesize'); } 
-    if (!allowMimeTypes.includes(tmpFile.mimetype)) { new Error('mimetype'); }
-    if (!ext) { new Error('extension'); }
+    if (tmpFile.size > allowFileSize) { throw new Error('filesize'); } 
+    if (!allowMimeTypes.includes(tmpFile.mimetype)) { throw new Error('mimetype'); }
+    if (!ext) { throw new Error('extension'); }
 
     // s3put
     const params = {

@@ -105,14 +105,18 @@ var imageValidate = function imageValidate(fileInput, form) {
   var img = fileInput.prop('files')[0];
 
   if (!img) {
-    return;
+    return true;
   }
 
   if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(img.name) || !/(jpg|jpeg|png|gif)$/.test(img.type)) {
     alert('JPG、GIF、PNGファイルの画像を添付してください。');
+    return false;
   } else if (2 * Math.pow(1024, 2) < img.size) {
     alert('2MB以下の画像を添付してください。');
+    return false;
   }
+
+  return true;
 }; // 編集モード/閲覧モード
 
 
@@ -262,6 +266,11 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieSelection').change(functio
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').change(function (e) {
   var file = e.target.files[0];
+
+  if (!jquery__WEBPACK_IMPORTED_MODULE_0___default()('.tachieNameForm').val()) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.tachieNameForm').val(file.name.split('.')[0]);
+  }
+
   var blobUrl = window.URL.createObjectURL(file);
   var uploadPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.tachie.upload.imagePreview');
   uploadPreview.css('background-image', "url('".concat(blobUrl, "')"));
@@ -270,8 +279,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').change(functio
 }); // 更新
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieSubmitBtn').on('click', function () {
-  imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput'));
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieForm').submit();
+  if (imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput'))) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieForm').submit();
+  }
 }); // 削除
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieDeleteBtn').hide();
@@ -292,8 +302,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignFileInput').change(functio
 }); // 更新
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignSubmitBtn').on('click', function () {
-  imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignFileInput'));
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignForm').submit();
+  if (imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignFileInput'))) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignForm').submit();
+  }
 }); // 削除
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#DesignDeleteBtn').on('click', function () {
@@ -313,8 +324,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoFileInput').change(function 
 }); // 更新
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoSubmitBtn').on('click', function () {
-  imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoFileInput'));
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoForm').submit();
+  if (imageValidate(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoFileInput'))) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoForm').submit();
+  }
 }); // 削除
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#LogoDeleteBtn').on('click', function () {

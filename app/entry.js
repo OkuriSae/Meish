@@ -6,12 +6,15 @@ import * as Vibrant from 'node-vibrant';
 
 const imageValidate = (fileInput, form) => {
   let img = fileInput.prop('files')[0]; 
-  if (!img) { return; }
+  if (!img) { return true; }
   if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(img.name) || !/(jpg|jpeg|png|gif)$/.test(img.type)) {
     alert('JPG、GIF、PNGファイルの画像を添付してください。');
+    return false;
   } else if (2*(1024**2) < img.size) {
     alert('2MB以下の画像を添付してください。');
+    return false;
   }
+  return true;
 } 
 
 // 編集モード/閲覧モード
@@ -163,6 +166,9 @@ $('#TachieSelection').change(() => {
 // プレビュー表示
 $('#TachieFileInput').change((e) => {
   let file = e.target.files[0];
+  if (!$('.tachieNameForm').val()) {
+    $('.tachieNameForm').val(file.name.split('.')[0]);
+  }
   let blobUrl = window.URL.createObjectURL(file);
   let uploadPreview = $('.tachie.upload.imagePreview');
   uploadPreview.css('background-image', `url('${blobUrl}')`);
@@ -171,8 +177,9 @@ $('#TachieFileInput').change((e) => {
 });
 // 更新
 $('#TachieSubmitBtn').on('click', () => {
-  imageValidate($('#TachieFileInput'));
-  $('#TachieForm').submit();
+  if (imageValidate($('#TachieFileInput'))) {
+    $('#TachieForm').submit();
+  }
 });
 // 削除
 $('#TachieDeleteBtn').hide();
@@ -194,8 +201,9 @@ $('#DesignFileInput').change((e) => {
 });
 // 更新
 $('#DesignSubmitBtn').on('click', () => {
-  imageValidate($('#DesignFileInput'));
-  $('#DesignForm').submit();
+  if (imageValidate($('#DesignFileInput'))) {
+    $('#DesignForm').submit();
+  }
 });
 // 削除
 $('#DesignDeleteBtn').on('click', () => {
@@ -216,8 +224,9 @@ $('#LogoFileInput').change((e) => {
 });
 // 更新
 $('#LogoSubmitBtn').on('click', () => {
-  imageValidate($('#LogoFileInput'));
-  $('#LogoForm').submit();
+  if (imageValidate($('#LogoFileInput'))) {
+    $('#LogoForm').submit();
+  }
 });
 // 削除
 $('#LogoDeleteBtn').on('click', () => {

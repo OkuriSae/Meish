@@ -154,17 +154,18 @@ block content
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: ''}]
                 each tachie in tachiesView
                   div.col-sm.mx-auto.m-2
-                    div(style="min-width:250px;max-width:400px;background-color:rgba(255,255,255,0.50);margin:auto;").card
+                    div(style="min-width:250px;max-width:350px;background-color:rgba(255,255,255,0.50);margin:auto;").card
                       // 画像
                       img(src=tachie.path style="width:100%;" data-toggle="modal" data-target="#TachieModal").card-img-top
-                      div(style="background-color:rgba(255,255,255,1.00);").card-body
-                        // タイトル、コメント
-                        h5.card-title #{tachie.name}
-                        p.card-text #{tachie.comment}
-                        // ダウンロードボタン
-                          - var filename = tachie.path.split('/').pop();
-                          a(href=tachie.path download=filename).btn.btn-primary.text-white
-                            i.fas.fa-file-download  Download
+                      if tachie.name || tachie.comment
+                        div(style="background-color:rgba(255,255,255,1.00);").card-body
+                          // タイトル、コメント
+                          h5.card-title #{tachie.name}
+                          p.card-text #{tachie.comment}
+                          // ダウンロードボタン
+                            - var filename = tachie.path.split('/').pop();
+                            a(href=tachie.path download=filename).btn.btn-primary.text-white
+                              i.fas.fa-file-download  Download
 
   // キャラデザ表示
   if personality.design_path || (isMe && mode == "edit")
@@ -236,13 +237,13 @@ block content
           .align-middle.form-check
             input(type="checkbox" name="imageClear" onchange="$('#ProfileImage').toggle();")#ProfileImageClearCheck.form-check-input.my-2
             label(for="ProfileImageClearCheck").form-check-label 画像をクリア
-        input(type="text" placeholder="名前" value=personality.nameJa name="nameJa").form-control.my-2
-        input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn").form-control.my-2
-        input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" value=personality.label name="label").form-control.my-2
-        textarea(placeholder="自己紹介" rows="6" name="introduction").form-control.my-2
+        input(type="text" placeholder="名前" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
+        input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
+        input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" maxlength="50" value=personality.label name="label").form-control.my-2
+        textarea(placeholder="自己紹介" rows="6" name="introduction" maxlength="500").form-control.my-2
           | #{personality.introduction}
         - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
-        textarea(placeholder="検索タグ（スペース区切り）" rows="2" name="tags").form-control.my-2
+        textarea(placeholder="検索タグ（スペース区切り）" rows="2" name="tags" maxlength="100").form-control.my-2
           | #{tagtext}
 
     // ハッシュタグモーダル
@@ -254,8 +255,8 @@ block content
               option(value=hashTag.tagId) #{hashTag.name}
         each hashTag in hashTags
           input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
-        input(type="text" placeholder="タグ名（#不要）" name="name")#HashTagNameForm.form-control.my-2
-        input(type="text" placeholder="説明" name="comment")#HashTagCommentForm.form-control.my-2
+        input(type="text" placeholder="タグ名（#不要）" name="name" maxlength="20")#HashTagNameForm.form-control.my-2
+        input(type="text" placeholder="説明" name="comment" maxlength="20")#HashTagCommentForm.form-control.my-2
 
     // 活動場所モーダル
     +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
@@ -266,8 +267,8 @@ block content
             option(value=activity.activityId) #{activity.name}
         each activity in activities
           input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
-        input(type="text" placeholder="表示名" name="name")#ActivityNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link")#ActivityLinkForm.form-control.my-2
+        input(type="text" placeholder="表示名" name="name" maxlength="20")#ActivityNameForm.form-control.my-2
+        input(type="text" placeholder="URL" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
 
     // 応援方法モーダル
     +modal({name: 'Cheering', action: '/cheering', title: '応援方法', enctype: "application/x-www-form-urlencoded"})
@@ -278,8 +279,8 @@ block content
             option(value=cheering.cheeringId) #{cheering.name}
         each cheering in cheerings
           input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
-        input(type="text" placeholder="表示名" name="name")#CheeringNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link")#CheeringLinkForm.form-control.my-2
+        input(type="text" placeholder="表示名" name="name" maxlength="20")#CheeringNameForm.form-control.my-2
+        input(type="text" placeholder="URL" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
 
     // ママ/パパモーダル
     +modal({name: 'Parent', action: '/parent', title: 'ママ/パパ', enctype: "application/x-www-form-urlencoded"})
@@ -290,9 +291,9 @@ block content
             option(value=parent.parentId) #{parent.name}
         each parent in parents
           input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
-        input(type="text" placeholder="ツヅキガラ" name="relationship")#ParentRelationshipForm.form-control.my-2
-        input(type="text" placeholder="名前" name="name")#ParentNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link")#ParentLinkForm.form-control.my-2
+        input(type="text" placeholder="ツヅキガラ" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
+        input(type="text" placeholder="名前" name="name" maxlength="20")#ParentNameForm.form-control.my-2
+        input(type="text" placeholder="URL" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
 
     // 立ち絵モーダル
     +modal({name: 'Tachie', action: '/img/tachie', title: '立ち絵', enctype: "multipart/form-data"})
@@ -315,8 +316,8 @@ block content
         each tachie in tachies
           input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
           input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
-        input(type="text" placeholder="タイトル" name="name").tachieNameForm.form-control.my-2
-        input(type="text" placeholder="コメント" name="comment").tachieCommentForm.form-control.my-2
+        input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
+        input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
@@ -327,7 +328,7 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
-        textarea(placeholder="コメント" rows="4" name="comment").form-control.my-2
+        textarea(placeholder="コメント" rows="4" name="comment" maxlength="400").form-control.my-2
           | #{personality.design_comment}
 
     // ロゴモーダル
