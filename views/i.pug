@@ -72,7 +72,7 @@ block content
                       block
 
                 // ハッシュタグ
-                if hashTags.length > 0 || mode == "edit"
+                if hashTags.length > 0 || (isMe && mode == "edit")
                   +categorizedInfo('ハッシュタグ', 'HashTag')
                     each tag in hashTags
                       p.mx-2
@@ -82,7 +82,7 @@ block content
                           span.text-secondary  - #{tag.comment}
 
                 // 活動場所
-                if activities.length > 0 || mode == "edit"
+                if activities.length > 0 || (isMe && mode == "edit")
                   +categorizedInfo('活動場所', 'Activity')
                     each activity in activities
                       p.mx-2
@@ -98,7 +98,7 @@ block content
                             span.mx-2 #{activity.name}
 
                 // 応援方法
-                if cheerings.length > 0 || mode == "edit"
+                if cheerings.length > 0 || (isMe && mode == "edit")
                   +categorizedInfo('応援する', 'Cheering')
                     each cheer in cheerings
                       p.mx-2 
@@ -140,7 +140,7 @@ block content
             block
 
   // 立ち絵表示
-  if tachies.length > 0 || mode == "edit"
+  if tachies.length > 0 || (isMe && mode == "edit")
     // 背景
     - var logo_path = personality.logo_path ? personality.logo_path : "/img/meish_logo_lerge.png";
     div(style="background-image: url('"+logo_path+"'); margin:5%;").parallax-logo
@@ -167,7 +167,7 @@ block content
                             i.fas.fa-file-download  Download
 
   // キャラデザ表示
-  if personality.design_path || mode == "edit"
+  if personality.design_path || (isMe && mode == "edit")
     +subSection('キャラクターデザイン', 'bg-white')
       .container.mx-auto
         div.card
@@ -183,7 +183,7 @@ block content
                 i.fas.fa-file-download  Download
 
   // ロゴ表示
-  if mode == "edit"
+  if isMe && mode == "edit"
     div.edit
       +subSection('ロゴ')
         p ページ背景に表示されます
@@ -192,7 +192,7 @@ block content
           .text-center
             img(src=logoPath style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
 
-  if mode == "edit"
+  if isMe && mode == "edit"
     // モーダル雛形
     mixin modal(modalParams)
       div(style="max-width:100%;" tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
@@ -336,7 +336,7 @@ block content
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2
 
   // アカウント削除
-  if mode == "edit"
+  if isMe && mode == "edit"
     section(class=bg)#about.page-section.bg-secondary
       .container
         .row.justify-content-center

@@ -59,12 +59,20 @@ router.get('/:username', csrfProtection, (req, res, next) => {
       }
     }
 
-    if(!user.visibility && !isMe(req)){
-      // is private
+    
+    if (!user.visibility && !isMe(req)) {
+      // 非公開のユーザーにアクセスした
       res.render('errors/404');
       return;
     }
-    if(req.user) console.log(req.user._json.profile_image_url_https);
+
+    if (req.query.mode == "edit" && !isMe(req)) {
+      // 自分以外の?mode=editにアクセスした
+      res.redirect(`/i/${req.params.username}`);
+      return;
+    }
+
+    if (req.user) console.log(req.user._json.profile_image_url_https);
     // show user page
     let renderParam = {
       me: req.user,
