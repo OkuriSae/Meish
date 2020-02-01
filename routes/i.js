@@ -135,17 +135,26 @@ router.post(
         label: req.body.label,
         introduction: req.body.introduction
       }
-      if (req.files.tachie) {
-        // file saving
-        await deleteImage(personality.tachie);
-        data.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.files.tachie[0].originalname))}`; 
-        await saveImage(req.files.tachie[0], data.tachie);
-      }
 
-      if (req.files.back) {
-        await deleteImage(personality.back);
-        data.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(req.files.back[0].originalname))}`; 
-        await saveImage(req.files.back[0], data.back_path);
+      if (req.body.imageClear) {
+        await deleteImage(personality.tachie);
+        await deleteImage(personality.back_path);
+        data.tachie = null;
+        data.back_path = null;
+
+      } else {
+        if (req.files.tachie) {
+          // file saving
+          await deleteImage(personality.tachie);
+          data.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.files.tachie[0].originalname))}`; 
+          await saveImage(req.files.tachie[0], data.tachie);
+        }
+  
+        if (req.files.back) {
+          await deleteImage(personality.back_path);
+          data.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(req.files.back[0].originalname))}`; 
+          await saveImage(req.files.back[0], data.back_path);
+        }
       }
 
       // data saving
