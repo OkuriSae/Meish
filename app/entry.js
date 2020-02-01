@@ -251,7 +251,6 @@ $('#LogoDeleteBtn').on('click', () => {
 
 
 $(() => {
-
   // カラーパレット更新
   const image = new Image();
   image.onload = () => {
@@ -265,4 +264,4 @@ $(() => {
     });
   };
   image.src = $('#tachieSource').val();
-})
+});

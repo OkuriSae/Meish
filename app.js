@@ -110,7 +110,7 @@ app.use('/i/', iRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  res.render('errors/404');
+  res.render('errors/404', { me: req.user });
 });
 
 // error handler
@@ -121,7 +121,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { me: req.user });
 });
 
 module.exports = app;

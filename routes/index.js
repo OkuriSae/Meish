@@ -73,4 +73,8 @@ router.get('/howto', (req, res, next) => {
   res.render('howto', { me: req.user });
 });
 
+router.get('/agreement', (req, res, next) => {
+  res.render('agreement', { me: req.user });
+});
+
 module.exports = router;

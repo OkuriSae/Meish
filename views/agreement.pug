@@ -1,0 +1,15 @@
+extends layout/layout
+
+block content
+  
+  div(style="width:100%; max-width:800px; margin:auto;")#about.text-center
+    section.page-section
+      .logo
+
+    section#terms.page-section
+      include terms.pug
+      if me
+        br
+        br
+        a(href='/i/'+me.username+'?mode=edit').m-3
+          button.btn.btn-primary 同意してMeishを使う

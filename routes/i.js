@@ -48,13 +48,13 @@ router.get('/:username', csrfProtection, (req, res, next) => {
               nameJa: req.user.displayName,
               introduction: req.user._json.description
           });
-          redirectHome(req, res);
+          res.redirect('/agreement');
         })();
         return;
 
       } else {
         // not found
-        res.render('errors/404');
+        res.render('errors/404', { me: req.user });
         return;
       }
     }
@@ -62,7 +62,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
     
     if (!user.visibility && !isMe(req)) {
       // 非公開のユーザーにアクセスした
-      res.render('errors/404');
+      res.render('errors/404', { me: req.user });
       return;
     }
 
@@ -103,7 +103,7 @@ router.get('/:username/img/:name', function (req, res, next) {
     if(user.visibility || isMe(req)){
       res.sendFile(path.resolve('./storage/i/' + req.url));
     } else {
-      res.render('errors/404');
+      res.render('errors/404', { me: req.user });
     }
   });
 });
@@ -315,7 +315,7 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
             redirectHome(req, res);
           })();
         } else {
-          res.render('errors/400', {message: 'image not exists'});
+          res.render('errors/400', { me: req.user, message: 'image not exists'});
         }
       }
     });
