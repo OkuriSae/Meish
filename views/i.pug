@@ -162,7 +162,6 @@ block content
                         h5.card-title #{tachie.name}
                         p.card-text #{tachie.comment}
                         // ダウンロードボタン
-                        if !isMe
                           - var filename = tachie.path.split('/').pop();
                           a(href=tachie.path download=filename).btn.btn-primary.text-white
                             i.fas.fa-file-download  Download
@@ -178,7 +177,7 @@ block content
             img(src=design_path style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
           .card-body
             p(style="white-space:pre-wrap;").card-text #{description}
-            if !isMe
+            // ダウンロードボタン
               - var filename = design_path.split('/').pop();
               a(href=personality.design_path download=filename).btn.btn-primary.text-white
                 i.fas.fa-file-download  Download
