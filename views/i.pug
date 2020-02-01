@@ -236,7 +236,7 @@ block content
                 input(type="file" name="back" accept="image/jpeg, image/gif, image/png" style="display:none;")#BackImageFileInput.form-control.my-2
             // プロフィール画像ファイルInput
             label.input-group-btn.m-2
-              span.btn.btn-primary プロフ用立ち絵を選択
+              span.btn.btn-primary 立ち絵を選択
                 input(type="file" name="tachie" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
 
           // アス比スライダー
@@ -252,8 +252,8 @@ block content
             input(type="checkbox" name="imageClear" onchange="$('#ProfileImage').toggle();")#ProfileImageClearCheck.form-check-input.my-2
             label(for="ProfileImageClearCheck").form-check-label 画像をクリア
             
-        input(type="text" placeholder="名前" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
         input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
+        input(type="text" placeholder="名前" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
         input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" maxlength="50" value=personality.label name="label").form-control.my-2
         textarea(placeholder="自己紹介" rows="6" name="introduction" maxlength="500").form-control.my-2
           | #{personality.introduction}
