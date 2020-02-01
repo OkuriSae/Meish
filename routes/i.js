@@ -151,7 +151,7 @@ router.post(
       // data saving
       await personality.update(data);
       await Tag.destroy({where: { userId: req.user.id }});
-      for(let tag of req.body.tags.split(' ')) {
+      for(let tag of req.body.tags.replace(/　/gi, ' ').split(' ')) {
         await Tag.upsert({
           userId: req.user.id,
           tagname: tag
