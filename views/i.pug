@@ -21,13 +21,17 @@ block content
             // 編集/プレビュー
             if mode == "edit"
               a.mx-2#viewLink
-                button(data-toggle="tooltip" data-placement="top" title="閲覧モード").btn-sm.btn-outline-success
+                button.btn-sm.btn-outline-success
                   i.fas.fa-eye  閲覧モードにする
             else
               a.mx-2#editLink
-                button(data-toggle="tooltip" data-placement="top" title="編集モード").btn-sm.btn-outline-info
+                button.btn-sm.btn-outline-info
                   i.fas.fa-pen  編集モードにする
-
+            
+            // 使い方
+            a(href="/howto" target="_blank")#viewLink
+              button.btn-sm.btn-outline-secondary
+                i.fas.fa-question-circle  使いかた
                 
       // 背景画像
       - var backImage = personality.back_path ? "background-image:url("+personality.back_path+"); background-size: cover; border-radius:8px;" : "";
