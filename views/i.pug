@@ -44,8 +44,10 @@ block content
           div(style="width:550px; max-width:100%;").personalities.py-2
             div
 
+              // 編集ボタン
               div.m-3.text-right
                 i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer; font-size: 1.6rem;").fas.fa-pen.text-info.edit
+              
               div(style="margin-top:.83rem;").mx-2.my-3
                 // よみ
                 div(style="font-size: 1.2rem;").text-secondary.shadow-gray.mx-1.nameEn #{personality.nameEn}
@@ -118,6 +120,8 @@ block content
                     - var tagHue = tagText.charCodeAt(0) % 36 * 10;
                     a(href=tagLink)
                       span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+                  // 編集ボタン
+                  i(data-toggle="modal" data-target="#BasicInfoModal" style="position:relative; top:3px; cursor: pointer; font-size: 1.4rem;").m-1.fas.fa-pen.text-info.edit
 
       // ママ/パパ（キャラ絵右下）
       .text-right
