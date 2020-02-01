@@ -343,7 +343,7 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
-        textarea(placeholder="コメント" rows="4" name="comment" maxlength="400").form-control.my-2
+        textarea(placeholder="コメント" rows="4" name="comment" maxlength="200").form-control.my-2
           | #{personality.design_comment}
 
     // ロゴモーダル

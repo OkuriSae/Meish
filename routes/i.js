@@ -29,7 +29,7 @@ var s3  = new AWS.S3();
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
 let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
 let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
-let isDeletePost = (req) => { return req.body.deleted == 1; };
+let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
 
 // GET:ユーザーページ
 router.get('/:username', csrfProtection, (req, res, next) => {
@@ -129,38 +129,39 @@ router.post(
   (req, res, next) => {
   Personality.findOne({where: { userId: req.user.id }}).then(personality => {
     (async () => {
-      let data = {
-        nameJa: req.body.nameJa,
-        nameEn: req.body.nameEn,
-        label: req.body.label,
-        introduction: req.body.introduction
+
+      let updateData = {
+        nameJa: req.body.nameJa.slice(0, 50),
+        nameEn: req.body.nameEn.slice(0, 50),
+        label: req.body.label.slice(0, 50),
+        introduction: req.body.introduction.slice(0, 500)
       }
 
       if (req.body.imageClear) {
         await deleteImage(personality.tachie);
         await deleteImage(personality.back_path);
-        data.tachie = null;
-        data.back_path = null;
+        updateData.tachie = null;
+        updateData.back_path = null;
 
       } else {
         if (req.files.tachie) {
           // file saving
           await deleteImage(personality.tachie);
-          data.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.files.tachie[0].originalname))}`; 
-          await saveImage(req.files.tachie[0], data.tachie);
+          updateData.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.files.tachie[0].originalname))}`; 
+          await saveImage(req.files.tachie[0], updateData.tachie);
         }
   
         if (req.files.back) {
           await deleteImage(personality.back_path);
-          data.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(req.files.back[0].originalname))}`; 
-          await saveImage(req.files.back[0], data.back_path);
+          updateData.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(req.files.back[0].originalname))}`; 
+          await saveImage(req.files.back[0], updateData.back_path);
         }
       }
 
       // data saving
-      await personality.update(data);
+      await personality.update(updateData);
       await Tag.destroy({where: { userId: req.user.id }});
-      for(let tag of req.body.tags.replace(/　/gi, ' ').split(' ')) {
+      for(let tag of req.body.tags.slice(0, 100).replace(/　/gi, ' ').split(' ')) {
         await Tag.upsert({
           userId: req.user.id,
           tagname: tag
@@ -184,19 +185,20 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
   HashTag.findOne({
     where: {userId : req.user.id, tagId: targetParse(req.body.target), deleted: 0}
   }).then(hashtag => {
-    let data = isDeletePost(req) ? {
+
+    let updateData = isDeletePost(req) ? {
       userId: req.user.id,
-      deleted: req.body.deleted
+      deleted: req.body.deleted % 2
     } : {
       userId: req.user.id,
-      name: req.body.name,
-      comment: req.body.comment,
-      deleted: req.body.deleted
+      name: req.body.name.slice(0, 20),
+      comment: req.body.comment.slice(0, 20),
+      deleted: req.body.deleted % 2
     };
     if (hashtag) {
-      hashtag.update(data).then(() => { redirectHome(req, res); });
+      hashtag.update(updateData).then(() => { redirectHome(req, res); });
     } else {
-      HashTag.create(data).then(() => { redirectHome(req, res); });
+      HashTag.create(updateData).then(() => { redirectHome(req, res); });
     }
   }); 
 });
@@ -206,19 +208,19 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
   Activity.findOne({
     where: {userId : req.user.id, activityId: targetParse(req.body.target), deleted: 0}
   }).then(activity => {
-    let data = isDeletePost(req) ? {
+    let updateData = isDeletePost(req) ? {
       userId: req.user.id,
-      deleted: req.body.deleted
+      deleted: req.body.deleted % 2
     } : {
       userId: req.user.id,
-      name: req.body.name,
-      link: req.body.link,
-      deleted: req.body.deleted
+      name: req.body.name.slice(0, 20),
+      link: req.body.link.slice(0, 200),
+      deleted: req.body.deleted % 2
     };
     if (activity) {
-      activity.update(data).then(() => { redirectHome(req, res); });
+      activity.update(updateData).then(() => { redirectHome(req, res); });
     } else {
-      Activity.create(data).then(() => { redirectHome(req, res); });
+      Activity.create(updateData).then(() => { redirectHome(req, res); });
     }
   });
 });
@@ -228,19 +230,19 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
   Cheering.findOne({
     where: {userId : req.user.id, cheeringId: targetParse(req.body.target), deleted: 0}
   }).then(cheering => {
-    let data = isDeletePost(req) ? {
+    let updateData = isDeletePost(req) ? {
       userId: req.user.id,
-      deleted: req.body.deleted
+      deleted: req.body.deleted % 2
     } : {
       userId: req.user.id,
-      name: req.body.name,
-      link: req.body.link,
-      deleted: req.body.deleted
+      name: req.body.name.slice(0, 20),
+      link: req.body.link.slice(0, 200),
+      deleted: req.body.deleted % 2
     };
     if (cheering) {
-      cheering.update(data).then(() => { redirectHome(req, res); });
+      cheering.update(updateData).then(() => { redirectHome(req, res); });
     } else {
-      Cheering.create(data).then(() => { redirectHome(req, res); });
+      Cheering.create(updateData).then(() => { redirectHome(req, res); });
     }
   });
 });
@@ -250,20 +252,20 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
   Parent.findOne({
     where: {userId : req.user.id, parentId: targetParse(req.body.target), deleted: 0}
   }).then(parent => {
-    let data = isDeletePost(req) ? {
+    let updateData = isDeletePost(req) ? {
       userId: req.user.id,
-      deleted: req.body.deleted
+      deleted: req.body.deleted % 2
     } : {
       userId: req.user.id,
-      relationship: req.body.relationship,
-      name: req.body.name,
-      link: req.body.link,
-      deleted: req.body.deleted
+      relationship: req.body.relationship.slice(0, 20),
+      name: req.body.name.slice(0, 20),
+      link: req.body.link.slice(0, 200),
+      deleted: req.body.deleted % 2
     };
     if (parent) {
-      parent.update(data).then(() => { redirectHome(req, res); });
+      parent.update(updateData).then(() => { redirectHome(req, res); });
     } else {
-      Parent.create(data).then(() => { redirectHome(req, res); });
+      Parent.create(updateData).then(() => { redirectHome(req, res); });
     }
   });
 });
@@ -277,10 +279,10 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
 
       if (!isDeletePost(req)) {
         (async () => {
-          let data = {
+          let updateData = {
             userId: req.user.id,
-            name: req.body.name,
-            comment: req.body.comment
+            name: req.body.name.slice(0, 20),
+            comment: req.body.comment.slice(0, 60)
           };
 
           if (req.file) {
@@ -291,15 +293,15 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
             let filename = 
               sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname)))
               + sanitize(Path.extname(req.file.originalname));
-            data.path = `i/${user.username}/img/${user.username}_${filename}`; 
-            await saveImage(req.file, data.path);
+            updateData.path = `i/${user.username}/img/${user.username}_${filename}`; 
+            await saveImage(req.file, updateData.path);
           }
 
           // data saving
           if (tachie) {
-            await tachie.update(data);
+            await tachie.update(updateData);
           } else if (req.file) {
-            await Tachie.create(data);
+            await Tachie.create(updateData);
           }
           redirectHome(req, res);
         })();
@@ -309,7 +311,7 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
         if (tachie) {
           (async () => {
             await deleteImage(tachie.path);
-            await tachie.update({ deleted: req.body.deleted });
+            await tachie.update({ deleted: req.body.deleted % 2 });
             redirectHome(req, res);
           })();
         } else {
@@ -328,13 +330,13 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
       if (!isDeletePost(req)) {
         // image saving
         (async () => {
-          let data = { design_comment: req.body.comment };
+          let updateData = { design_comment: req.body.comment.slice(0, 200) };
           if (req.file) {
             await deleteImage(personality.design_path);
-            data.design_path = `i/${user.username}/img/${user.username}_design${sanitize(Path.extname(req.file.originalname))}`; 
-            await saveImage(req.file, data.design_path);
+            updateData.design_path = `i/${user.username}/img/${user.username}_design${sanitize(Path.extname(req.file.originalname))}`; 
+            await saveImage(req.file, updateData.design_path);
           } 
-          await personality.update(data);
+          await personality.update(updateData);
           redirectHome(req, res);
         })();
 
@@ -440,9 +442,7 @@ function saveImage(tmpFile, destPath) {
     if (tmpFile.path) {
       fs.unlink(tmpFile.path, () => {});
     }
-    if (params) {
-      console.log('saveImage.validationErr:' + params);
-    }
+    console.log('saveImage.validationErr:' + e);
     throw e;
   }
 }

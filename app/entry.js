@@ -9,9 +9,11 @@ const imageValidate = (fileInput, form) => {
   if (!img) { return true; }
   if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(img.name) || !/(jpg|jpeg|png|gif)$/.test(img.type)) {
     alert('JPG、GIF、PNGファイルの画像を添付してください。');
+    $(fileInput).val(""); 
     return false;
   } else if (2*(1024**2) < img.size) {
     alert('2MB以下の画像を添付してください。');
+    $(fileInput).val(""); 
     return false;
   }
   return true;
@@ -31,20 +33,26 @@ $('#QueryInput').keypress((e) => {
 //// プロフィール
 // プレビュー表示
 $('#ProfileImageFileInput').change((e) => {
-  let file = e.target.files[0];
-  let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.profileImagePreview.imagePreview');
-  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  if (imageValidate($('#ProfileImageFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.profileImagePreview.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+  } 
 });
 $('#BackImageFileInput').change((e) => {
-  let file = e.target.files[0];
-  let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.backImagePreview.imagePreview');
-  uploadPreview.css('background-image', `url('${blobUrl}')`);
+  if (imageValidate($('#BackImageFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.backImagePreview.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+  }
 });
 // 更新
 $('#BasicInfoSubmitBtn').on('click', () => {
-  $('#BasicInfoForm').submit();
+  if (imageValidate($('#BackImageFileInput')) && imageValidate($('#ProfileImageFileInput'))) {
+    $('#BasicInfoForm').submit();
+  }
 });
 // 削除
 $('#BasicInfoDeleteBtn').hide();
@@ -165,15 +173,17 @@ $('#TachieSelection').change(() => {
 });
 // プレビュー表示
 $('#TachieFileInput').change((e) => {
-  let file = e.target.files[0];
-  if (!$('.tachieNameForm').val()) {
-    $('.tachieNameForm').val(file.name.split('.')[0]);
+  if (imageValidate($('#TachieFileInput'))) {
+    let file = e.target.files[0];
+    if (!$('.tachieNameForm').val()) {
+      $('.tachieNameForm').val(file.name.split('.')[0]);
+    }
+    let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.tachie.upload.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+    $(`.tachie.imagePreview`).hide();
+    uploadPreview.show();
   }
-  let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.tachie.upload.imagePreview');
-  uploadPreview.css('background-image', `url('${blobUrl}')`);
-  $(`.tachie.imagePreview`).hide();
-  uploadPreview.show();
 });
 // 更新
 $('#TachieSubmitBtn').on('click', () => {
@@ -192,12 +202,14 @@ $('#TachieDeleteBtn').on('click', () => {
 //// キャラクターデザイン
 // プレビューを表示
 $('#DesignFileInput').change((e) => {
-  let file = e.target.files[0];
-  let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.design.upload.imagePreview');
-  uploadPreview.css('background-image', `url('${blobUrl}')`);
-  $(`.design.imagePreview`).hide();
-  uploadPreview.show();
+  if (imageValidate($('#DesignFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.design.upload.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+    $(`.design.imagePreview`).hide();
+    uploadPreview.show();
+  }
 });
 // 更新
 $('#DesignSubmitBtn').on('click', () => {
@@ -215,12 +227,14 @@ $('#DesignDeleteBtn').on('click', () => {
 //// ロゴ
 // プレビューを表示
 $('#LogoFileInput').change((e) => {
-  let file = e.target.files[0];
-  let blobUrl = window.URL.createObjectURL(file);
-  let uploadPreview = $('.logo.upload.imagePreview');
-  uploadPreview.css('background-image', `url('${blobUrl}')`);
-  $(`.logo.imagePreview`).hide();
-  uploadPreview.show();
+  if (imageValidate($('#LogoFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.logo.upload.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+    $(`.logo.imagePreview`).hide();
+    uploadPreview.show();
+  }
 });
 // 更新
 $('#LogoSubmitBtn').on('click', () => {
