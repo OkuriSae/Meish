@@ -11,13 +11,12 @@ block meta
 
 block content
   
-  section(style='background-image: url("img/meish_back.jpg"); background-size: cover; background-position:center; background-attachment: fixed;')#about.page-section
+  section#TopSection.page-section
     div.text-center
       div(style="height:100px;").logo.mb-3
       h6.m-4 バーチャルプロフィール保管サービス
       .tags
-        h6.text-secondary
-          b TOP 15 Tags
+        h6.text-secondary TOP 15 Tags
         div.m-2
           - var topTag = tags.slice(0,15)
           each tag in topTag
@@ -29,8 +28,7 @@ block content
           button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span ...
       div(style="display:none;").tags
-        h6.text-secondary
-          b TOP 300 Tags
+        h6.text-secondary TOP 300 Tags
         div.m-2
           each tag in tags.slice(0,300)
             - var tagLink = "/search?query=" + tag.tagname

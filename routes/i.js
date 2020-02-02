@@ -147,14 +147,25 @@ router.post(
         if (req.files.tachie) {
           // file saving
           await deleteImage(personality.tachie);
-          updateData.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(req.files.tachie[0].originalname))}`; 
-          await saveImage(req.files.tachie[0], updateData.tachie);
+          let file = req.files.tachie[0];
+          updateData.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(file.originalname))}`; 
+          imageValidation(file);
+          await saveImage(file.path, file.mimetype, updateData.tachie);
+          // thumbnail
+          if (!updateData.thumbnail_path) {
+            let thumbnailTmpPath = file.path+"_thumbnail";
+            updateData.thumbnail_path = `i/${req.user.username}/img/${req.user.username}_thumbnail${sanitize(Path.extname(file.originalname))}`; 
+            await createThumbnail(file.path, thumbnailTmpPath);
+            await saveImage(thumbnailTmpPath, file.mimetype, updateData.thumbnail_path);
+          }
         }
   
         if (req.files.back) {
           await deleteImage(personality.back_path);
-          updateData.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(req.files.back[0].originalname))}`; 
-          await saveImage(req.files.back[0], updateData.back_path);
+          let file = req.files.back[0];
+          updateData.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(file.originalname))}`; 
+          imageValidation(file);
+          await saveImage(file.path, file.mimetype, updateData.back_path);
         }
       }
 
@@ -295,8 +306,10 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
             let filename = 
               sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname)))
               + sanitize(Path.extname(req.file.originalname));
+              
             updateData.path = `i/${user.username}/img/${user.username}_${filename}`; 
-            await saveImage(req.file, updateData.path);
+            imageValidation(req.file);
+            await saveImage(req.file.path, req.file.mimetype, updateData.path);
           }
 
           // data saving
@@ -336,7 +349,8 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
           if (req.file) {
             await deleteImage(personality.design_path);
             updateData.design_path = `i/${user.username}/img/${user.username}_design${sanitize(Path.extname(req.file.originalname))}`; 
-            await saveImage(req.file, updateData.design_path);
+            imageValidation(req.file);
+            await saveImage(req.file.path, req.file.mimetype, updateData.design_path);
           } 
           await personality.update(updateData);
           redirectHome(req, res);
@@ -368,7 +382,8 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
           if (req.file) {
             await deleteImage(personality.logo_path);
             let destPath = `i/${user.username}/img/${user.username}_logo${sanitize(Path.extname(req.file.originalname))}`;
-            await saveImage(req.file, destPath);
+            imageValidation(req.file);
+            await saveImage(req.file.path, req.file.mimetype, destPath);
             await personality.update({ logo_path: destPath });
           }
           redirectHome(req, res);
@@ -417,9 +432,7 @@ router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, r
   });
 });
 
-function saveImage(tmpFile, destPath) {
-  try {
-    // Validations
+function imageValidation(tmpFile) {
     let allowFileSize = 2 * (1024 ** 2); // 2MiB
     let allowMimeTypes = ['image/png', 'image/jpeg', 'image/gif'];
     let ext = Path.extname(tmpFile.originalname);
@@ -427,26 +440,35 @@ function saveImage(tmpFile, destPath) {
     if (tmpFile.size > allowFileSize) { throw new Error('filesize'); } 
     if (!allowMimeTypes.includes(tmpFile.mimetype)) { throw new Error('mimetype'); }
     if (!ext) { throw new Error('extension'); }
+}
 
-    // s3put
-    const params = {
-      Body: fs.readFileSync(tmpFile.path),
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: destPath,
-      ContentType: tmpFile.mimetype,
-      ACL: 'public-read'
-    }
-    console.log(`s3Put:`);
-    console.log(params);
-    return s3.putObject(params).promise();
-
-  } catch (e) {
-    if (tmpFile.path) {
-      fs.unlink(tmpFile.path, () => {});
-    }
-    console.log('saveImage.validationErr:' + e);
-    throw e;
+async function saveImage(filePath, mimetype , destPath) {
+  const params = {
+    Body: fs.readFileSync(filePath),
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: destPath,
+    ContentType: mimetype,
+    ACL: 'public-read'
   }
+  console.log(`s3Put:`);
+  console.log(params);
+  return s3.putObject(params).promise();
+}
+
+async function createThumbnail(filePath, destPath) {
+  let img = await Jimp.read(filePath);
+  let h = img.bitmap.height;
+  let w = img.bitmap.width;
+  let frame_h = 350;
+  let frame_w = 200;
+  if (h > frame_h || w > frame_w) {
+    if ((w/h) > (frame_w/frame_h)) {
+      await img.resize(frame_w, Jimp.AUTO);// 横長
+    } else {
+      await img.resize(Jimp.AUTO, frame_h);　// 縦長
+    }
+  }
+  return img.writeAsync(destPath);
 }
 
 async function deleteImage(key) {
