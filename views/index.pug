@@ -11,12 +11,24 @@ block meta
 
 block content
   
-  section(style='background-image: url("img/5372.jpg"); background-size: cover; background-position:center; background-attachment: fixed;')#about.page-section
+  section(style='background-image: url("img/meish_back.jpg"); background-size: cover; background-position:center; background-attachment: fixed;')#about.page-section
     div.text-center
-      div(style="height:100px;").logo.mb-4
-      .flaverText
-        h5 バーチャルプロフィール保管サービス
-        h3.p-3 キャラクターに、『いのち』を吹き込もう
+      div(style="height:100px;").logo.mb-3
+      h6.m-4 バーチャルプロフィール保管サービス
+      h6.text-secondary
+        b TOP 15 Tags
+      div.m-2
+        - var topTag = tags.slice(0,15)
+        each tag in topTag
+          - var tagLink = "/search?query=" + tag.tagname
+          - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
+          - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
+          a(href=tagLink)
+            span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+        a(href=tagLink)
+          span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 
+            span ...
+
     div.d-flex.flex-wrap.justify-content-around
       each user in users
         div.m-3

@@ -24,13 +24,13 @@ router.get('/', (req, res, next) => {
         'tagname',
         [Sequelize.fn('count', Sequelize.col('tagname')), 'count']
       ],
-      group: ["tagname"]
+      group: ["tagname"],
+      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ]
     });
-    console.log(tagSummary);
     res.render('index', {
       me: req.user,
       users: users,
-      tag: tagSummary
+      tags: tagSummary
     });
   })();
 });
@@ -50,7 +50,7 @@ router.get('/search', (req, res, next) => {
         model: Tag,
         required: false
       }],
-      order: Sequelize.random(),
+      order: [ [ Sequelize.fn('RANDOM') ] ],
       limit: '30'
     });
     let tagSummary = await Tag.findAll({
@@ -58,13 +58,13 @@ router.get('/search', (req, res, next) => {
         'tagname',
         [Sequelize.fn('count', Sequelize.col('tagname')), 'count']
       ],
-      group: ["tagname"]
+      group: ["tagname"],
+      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ]
     });
-    console.log(tagSummary);
     res.render('index', {
       me: req.user,
       users: users,
-      tag: tagSummary
+      tags: tagSummary
     });
   })();
 });

@@ -162,10 +162,12 @@ router.post(
       await personality.update(updateData);
       await Tag.destroy({where: { userId: req.user.id }});
       for(let tag of req.body.tags.slice(0, 100).replace(/　/gi, ' ').split(' ')) {
-        await Tag.upsert({
-          userId: req.user.id,
-          tagname: tag
-        });
+        if (tag) {
+          await Tag.upsert({
+            userId: req.user.id,
+            tagname: tag
+          });
+        }
       }
       redirectHome(req, res);
     })();
