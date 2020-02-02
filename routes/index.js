@@ -11,7 +11,12 @@ const authenticationEnsurer = require('./authentication-ensurer');
 router.get('/', (req, res, next) => {
   (async () => {
     let users = await User.findAll({
-      where: { visibility: 1 },
+      where: { 
+        visibility: 1 , 
+        '$personality.thumbnail_path$': {
+          [Sequelize.Op.ne]: null
+        }
+      },
       include: [{
         model: Personality,
         required: false
@@ -42,7 +47,12 @@ router.get('/search', (req, res, next) => {
     let users = await User.findAll({
       where: {
         visibility: 1,
-        "$tag.tagname$": query
+        '$personality.thumbnail_path$': {
+          [Sequelize.Op.ne]: null
+        },
+        "$tag.tagname$": {
+          [Sequelize.Op.iLike]: query
+        }
       },
       include: [{
         model: Personality,

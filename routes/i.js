@@ -307,9 +307,19 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
               sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname)))
               + sanitize(Path.extname(req.file.originalname));
               
-            updateData.path = `i/${user.username}/img/${user.username}_${filename}`; 
+            updateData.path = `i/${user.username}/img/${user.username}_tachie_${Date.now()}${sanitize(Path.extname(req.file.originalname))}`; 
             imageValidation(req.file);
             await saveImage(req.file.path, req.file.mimetype, updateData.path);
+
+            // thumbnail
+            if (req.body.useThumbnail) {
+              let thumbnailTmpPath = req.file.path+"_thumbnail";
+              await createThumbnail(req.file.path, thumbnailTmpPath);
+              let thumbnailS3Path = `i/${req.user.username}/img/${req.user.username}_thumbnail${sanitize(Path.extname(req.file.originalname))}`; 
+              await saveImage(thumbnailTmpPath, req.file.mimetype, thumbnailS3Path);
+              let personality = await Personality.findOne({where: { userId: req.user.id }});
+              await personality.update({ thumbnail_path: thumbnailS3Path });
+            }
           }
 
           // data saving

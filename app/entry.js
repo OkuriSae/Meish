@@ -169,7 +169,8 @@ $('#TachieSelection').change(() => {
   $(`.${idx}.tachie.imagePreview`).show();
   $(`.tachieNameForm`).val($(`.${idx}.tachieNameHidden`).val());
   $(`.tachieCommentForm`).val($(`.${idx}.tachieCommentHidden`).val());
-  $('#TachieFileInput').val(""); // ファイル入力クリア
+  $('#TachieFileInput').val("");
+  $('#ThumbnailCheckForm').hide();
 });
 // プレビュー表示
 $('#TachieFileInput').change((e) => {
@@ -183,6 +184,7 @@ $('#TachieFileInput').change((e) => {
     uploadPreview.css('background-image', `url('${blobUrl}')`);
     $(`.tachie.imagePreview`).hide();
     uploadPreview.show();
+    $('#ThumbnailCheckForm').show();
   }
 });
 // 更新

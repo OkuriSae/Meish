@@ -340,6 +340,10 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#TachieFileInput.form-control.my-2
+        // 検索サムネにする
+        div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check
+          input(type="checkbox" name="useThumbnail")#ThumbnailCheck.form-check-input.my-2
+          label(for="ThumbnailCheck").form-check-label 検索サムネにする
         // 対象
         select(name="target")#TachieSelection.form-control.my-2
           option(value="new" selected) 新規追加
@@ -352,6 +356,7 @@ block content
           input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
         input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
+
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})

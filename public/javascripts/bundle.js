@@ -269,7 +269,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieSelection').change(functio
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".".concat(idx, ".tachie.imagePreview")).show();
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".tachieNameForm").val(jquery__WEBPACK_IMPORTED_MODULE_0___default()(".".concat(idx, ".tachieNameHidden")).val());
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".tachieCommentForm").val(jquery__WEBPACK_IMPORTED_MODULE_0___default()(".".concat(idx, ".tachieCommentHidden")).val());
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').val(""); // ファイル入力クリア
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').val("");
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#ThumbnailCheckForm').hide();
 }); // プレビュー表示
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').change(function (e) {
@@ -285,6 +286,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('#TachieFileInput').change(functio
     uploadPreview.css('background-image', "url('".concat(blobUrl, "')"));
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".tachie.imagePreview").hide();
     uploadPreview.show();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#ThumbnailCheckForm').show();
   }
 }); // 更新
 

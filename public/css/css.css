@@ -19,6 +19,16 @@ body{
   -webkit-background-size:cover;
 }
 
+#footSpace {
+  display: flex;
+  flex-direction: column;
+  min-height: 86vh;
+}
+
+footer {
+  margin-top: auto;
+}
+
 .navbar{
   padding: 0px;
   background: #F6F6F6;
