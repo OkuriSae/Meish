@@ -22,10 +22,10 @@ block content
               input(type="hidden" name="_csrf" value=csrfToken)
               if visibility
                 button.btn-sm.btn-outline-danger
-                  b ▶︎ 非公開にする
+                  i.fas.fa-stop  非公開にする
               else
                 button.btn-sm.btn-outline-info 
-                  b ▶︎ 公開する
+                  i.fas.fa-play  公開する
             
             // 編集/プレビュー
             if mode == "edit"

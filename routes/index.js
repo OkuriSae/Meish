@@ -15,7 +15,9 @@ router.get('/', (req, res, next) => {
       include: [{
         model: Personality,
         required: false
-      }]
+      }],
+      order: [ [ Sequelize.fn('RANDOM') ] ],
+      limit: '30'
     });
     let tagSummary = await Tag.findAll({
       attributes: [
@@ -24,7 +26,7 @@ router.get('/', (req, res, next) => {
       ],
       group: ["tagname"]
     });
-    console.log(users);
+    console.log(tagSummary);
     res.render('index', {
       me: req.user,
       users: users,
@@ -47,7 +49,9 @@ router.get('/search', (req, res, next) => {
       },{
         model: Tag,
         required: false
-      }]
+      }],
+      order: Sequelize.random(),
+      limit: '30'
     });
     let tagSummary = await Tag.findAll({
       attributes: [
@@ -56,7 +60,7 @@ router.get('/search', (req, res, next) => {
       ],
       group: ["tagname"]
     });
-    console.log(users);
+    console.log(tagSummary);
     res.render('index', {
       me: req.user,
       users: users,

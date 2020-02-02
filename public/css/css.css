@@ -231,6 +231,12 @@ a:hover{
   }
 }
 
+@media screen and (max-width:524px) { 
+  .flaverText {
+    display: none;
+  }
+}
+
 .shadow-gray {
   text-shadow: 1px 1px 1px rgb(0,0,0,0.05);
 }
