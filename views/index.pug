@@ -15,19 +15,32 @@ block content
     div.text-center
       div(style="height:100px;").logo.mb-3
       h6.m-4 バーチャルプロフィール保管サービス
-      h6.text-secondary
-        b TOP 15 Tags
-      div.m-2
-        - var topTag = tags.slice(0,15)
-        each tag in topTag
-          - var tagLink = "/search?query=" + tag.tagname
-          - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
-          - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
-          a(href=tagLink)
-            span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
-        a(href=tagLink)
-          span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 
+      .tags
+        h6.text-secondary
+          b TOP 15 Tags
+        div.m-2
+          - var topTag = tags.slice(0,15)
+          each tag in topTag
+            - var tagLink = "/search?query=" + tag.tagname
+            - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
+            - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
+            a(href=tagLink)
+              span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+          button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span ...
+      div(style="display:none;").tags
+        h6.text-secondary
+          b TOP 300 Tags
+        div.m-2
+          each tag in tags.slice(0,300)
+            - var tagLink = "/search?query=" + tag.tagname
+            - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
+            - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
+            a(href=tagLink)
+              span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+          button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
+            span Close
+
 
     div.d-flex.flex-wrap.justify-content-around
       each user in users

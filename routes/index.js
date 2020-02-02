@@ -25,7 +25,8 @@ router.get('/', (req, res, next) => {
         [Sequelize.fn('count', Sequelize.col('tagname')), 'count']
       ],
       group: ["tagname"],
-      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ]
+      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ],
+      limit: '300'
     });
     res.render('index', {
       me: req.user,
@@ -59,7 +60,8 @@ router.get('/search', (req, res, next) => {
         [Sequelize.fn('count', Sequelize.col('tagname')), 'count']
       ],
       group: ["tagname"],
-      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ]
+      order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ],
+      limit: '300'
     });
     res.render('index', {
       me: req.user,
