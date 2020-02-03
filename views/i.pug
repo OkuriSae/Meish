@@ -214,6 +214,8 @@ block content
   // キャラデザ
   if personality.design_path || (isMe && mode == "edit")
     +subSection('キャラクターデザイン', 'bg-white')
+      if isMe && mode == "edit"
+        p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
       .container.mx-auto
         div.card
           - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
@@ -228,13 +230,11 @@ block content
                 a(href=personality.design_path download=filename).btn.btn-primary.text-white
                   i.fas.fa-file-download  Download
 
-  // ロゴ
+  // ページ背景
   if isMe && mode == "edit"
     div.edit
       +subSection('ページ背景')
-        p 立ち絵領域の背景に表示されます。
-          br
-          span イメージ画像やロゴを設定してください。
+        p.text-secondary イメージ画像やキャラクターロゴを設定してください
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
           .text-center
@@ -244,7 +244,7 @@ block content
   if isMe && mode == "edit"
     div.edit
       +subSection('OGPイメージ')
-        p TwitterなどにURLを貼り付けた時の画像展開で表示されます。
+        p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
         .container.mx-auto
           - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
           .text-center
@@ -254,7 +254,7 @@ block content
   if isMe && mode == "edit"
     div.edit
       +subSection('検索サムネイル')
-        p 検索ページで表示されます
+        p.text-secondary 検索ページで表示されます
         .container.mx-auto
           .text-center
             div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}?${Date.now()}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
@@ -300,6 +300,11 @@ block content
             label.input-group-btn.m-2
               span.btn.btn-primary 立ち絵を選択
                 input(type="file" name="tachie" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+        
+          .text-secondary.mb-2
+            small 背景: 2MB以下, 1920x1080px, 横長jpg推奨
+              br
+              span 立ち絵: 2MB以下, 高さ1080px 縦長透過png推奨
 
           // アス比スライダー
           div.d-flex.justify-content-center
@@ -313,7 +318,7 @@ block content
           .align-middle.form-check
             input(type="checkbox" name="imageClear" onchange="$('#ProfileImage').toggle();")#ProfileImageClearCheck.form-check-input.my-2
             label(for="ProfileImageClearCheck").form-check-label 画像をクリア
-            
+
         input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
         input(type="text" placeholder="名前" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
         input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" maxlength="50" value=personality.label name="label").form-control.my-2
@@ -399,7 +404,8 @@ block content
           input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
         input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
-
+        .text-secondary
+          small 2MB以下, jpg/png/gif, 620x1080px以下-縦長推奨
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
@@ -412,9 +418,11 @@ block content
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
         textarea(placeholder="コメント" rows="4" name="comment" maxlength="200").form-control.my-2
           | #{personality.design_comment}
+        .text-secondary
+          small 2MB以下, 1920x1080px以下-jpg推奨
 
-    // ロゴモーダル
-    +modal({name: 'Logo', action: '/img/logo', title: 'ロゴ', enctype: "multipart/form-data"})
+    // ページ背景モーダル
+    +modal({name: 'Logo', action: '/img/logo', title: '背景', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").logo.upload.imagePreview
         - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.jpg";
@@ -422,6 +430,8 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2
+        .text-secondary
+          small 2MB以下, 1920x1080px-jpg推奨
 
     // OGPモーダル
     +modal({name: 'Ogp', action: '/img/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
@@ -432,6 +442,8 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2
+        .text-secondary
+          small 2MB以下, jpg推奨, 1200px以下に縮小されます
 
   // アカウント削除
   if isMe && mode == "edit"
