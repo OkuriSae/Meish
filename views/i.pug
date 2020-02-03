@@ -5,7 +5,7 @@ block meta
   meta(property="og:type" content="article")
   meta(property="og:site_name" content="Meish*")
   meta(property="og:title" content=`${personality.nameJa} | ${personality.label}`)
-  meta(property="og:description" content=personality.introduction)
+  meta(property="og:description" content=personality.introduction.slice(0,200))
   meta(property="og:url" content="http://www.meish.me/i/"+owner.username)
   if personality.ogp_path
     meta(property="og:image" content=personality.ogp_path)
@@ -17,9 +17,28 @@ block content
     div.container.justify-content-center.rounded
       // 操作パネル
       if isMe 
+        if !personality.ogp_path || !personality.thumbnail_path || !visibility
+          div(style="width:100%; background-color: #F6F6F6; border-radius:10px; padding: 10px;").my-3
+            ul(style="margin: 0;")
+              if !personality.ogp_path
+                li 
+                  span
+                    a(href="https://www.google.com/search?q=OGP" target="_blank").text-danger  OGPイメージ
+                  span.text-dark （URL展開用の画像）がありません！ 
+                  span(data-toggle="modal" data-target="#OgpModal" style="cursor: pointer;").text-info ≫設定する
+              if !personality.thumbnail_path
+                li 
+                  span.text-danger 検索用サムネイル
+                  span.text-dark  がありません！（TOP画面や検索結果に表示されません）
+                  span(data-toggle="modal" data-target="#TachieModal" style="cursor: pointer;").text-info ≫設定する
+              if !visibility
+                li プロフィールは
+                  span.text-danger  非公開状態 
+                  span です！ 
+
         p
           div.d-flex.flex-wrap
-            div.m-1
+            div.ml-2
               // 公開/非公開
               form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
                 input(type="hidden" name="visibility" value=visibility)
@@ -31,7 +50,7 @@ block content
                   button.btn-sm.btn-outline-info 
                     i.fas.fa-play  公開する
             
-            div.m-1
+            div.ml-2
               // 編集/プレビュー
               if mode == "edit"
                 a#viewLink
@@ -42,13 +61,13 @@ block content
                   button.btn-sm.btn-outline-info
                     i.fas.fa-pen  編集モードにする
 
-            div.m-1
+            div.ml-2
               // 使い方
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-secondary
                   i.fas.fa-question-circle  使いかた
                 
-            div.m-1
+            div.ml-2
               // 使い方
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-primary
@@ -56,7 +75,7 @@ block content
 
       // 背景画像
       - var backImage = personality.back_path ? `background-image:url(${personality.back_path}?${Date.now()}); background-size: cover; background-position:center;border-radius:8px;` : "";
-      div(style=backImage).profileImage.row
+      div(style=backImage).profileImage.row.m-0
         // プロフィール画像
         - var backImage = personality.tachie ? `background-image:url(${personality.tachie}?${Date.now()}); border-radius:0px;` : "";
         div(style=backImage+"width:100%; margin:0;").profileImage.row
@@ -212,8 +231,10 @@ block content
   // ロゴ
   if isMe && mode == "edit"
     div.edit
-      +subSection('ロゴ')
-        p ページ背景に表示されます
+      +subSection('ページ背景')
+        p 立ち絵領域の背景に表示されます。
+          br
+          span イメージ画像やロゴを設定してください。
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
           .text-center
@@ -222,7 +243,7 @@ block content
   // OGP画像
   if isMe && mode == "edit"
     div.edit
-      +subSection('OGP画像')
+      +subSection('OGPイメージ')
         p TwitterなどにURLを貼り付けた時の画像展開で表示されます。
         .container.mx-auto
           - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
@@ -232,11 +253,11 @@ block content
   // サムネイル
   if isMe && mode == "edit"
     div.edit
-      +subSection('サムネイル')
+      +subSection('検索サムネイル')
         p 検索ページで表示されます
         .container.mx-auto
           .text-center
-            div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}?${Date.now()}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5);`).img-fluid
+            div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}?${Date.now()}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
 
   if isMe && mode == "edit"
     // モーダル雛形
