@@ -76,6 +76,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
     // show user page
     let renderParam = {
       me: req.user,
+      owner: user,
       visibility: user.visibility,
       isMe: isMe(req),
       mode: req.query.mode ? req.query.mode : "view",
@@ -100,7 +101,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
 // GET:ユーザー画像
 router.get('/:username/img/:name', function (req, res, next) {
   User.findOne({where: {username: req.params.username}}).then(user => {
-    if(user.visibility || isMe(req)){
+    if((user && user.visibility) || isMe(req)){
       res.sendFile(path.resolve('./storage/i/' + req.url));
     } else {
       res.render('errors/404', { me: req.user });
@@ -412,6 +413,39 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
   });
 });
 
+// POST:ogp
+router.post('/:username/img/ogp', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+  User.findOne({where: { userId: req.user.id }}).then(user => {
+    Personality.findOne({where: { userId: req.user.id }}).then(personality => {
+
+      if (!isDeletePost(req)) {
+        // image saving
+        (async () => {
+          if (req.file) {
+            await deleteImage(personality.ogp_path);
+            imageValidation(req.file);
+            await createOgpImage(req.file.path, req.file.path+".jpg");
+            let destPath = `i/${user.username}/img/${user.username}_ogp.jpg`;
+            await saveImage(req.file.path+".jpg", req.file.mimetype, destPath);
+            await personality.update({ ogp_path: destPath });
+          }
+          redirectHome(req, res);
+        })();
+
+      } else {
+        // image destroy
+        (async () => {
+          await deleteImage(personality.logo_path);
+          await personality.update({ logo_path: '' });
+          redirectHome(req, res);
+        })();
+
+      }
+    });
+  });
+});
+
+
 // DELETE:account
 router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
@@ -479,6 +513,48 @@ async function createThumbnail(filePath, destPath) {
     }
   }
   return img.writeAsync(destPath);
+}
+
+async function createOgpImage(filePath, destPath) {
+  let origin = await Jimp.read(filePath);
+
+  // アップロード画像リサイズ
+  let origin_w = origin.bitmap.width;
+  let origin_h = origin.bitmap.height;
+  let frame_w = 1200;
+  let frame_h = 1200;
+  if ( origin_w > frame_w || origin_h > frame_h ) {
+    if ( (origin_w/origin_h) > (frame_w/frame_h) ) {
+      await origin.resize(frame_w, Jimp.AUTO);// 横長
+    } else {
+      await origin.resize(Jimp.AUTO, frame_h);　// 縦長
+    }
+  }
+
+  // ウォーターマークリサイズ
+  let water_frame_w = origin.bitmap.width/2;
+  let water_frame_h = origin.bitmap.height/2;
+  let water = await Jimp.read("public/img/meish_logo_water.png");
+  let water_w = water.bitmap.width;
+  let water_h = water.bitmap.height;
+  if ( water_w > water_frame_w || water_h > water_frame_h ) {
+    if ( (water_w/water_h) > (water_frame_w/water_frame_h) ) {
+      await water.resize(water_frame_w, Jimp.AUTO);// 横長
+    } else {
+      await water.resize(Jimp.AUTO, water_frame_h);　// 縦長
+    }
+  }
+
+  // ウォーターマーク合成
+  await origin.composite(
+    water, 
+    origin.bitmap.width - water.bitmap.width, 
+    origin.bitmap.height - water.bitmap.height, 
+    { mode: Jimp.BLEND_SOURCE_OVER }
+  );
+
+  // jpeg 画質60 で書き出し
+  return origin.background(0xFFFFFFFF).quality(60).writeAsync(destPath);
 }
 
 async function deleteImage(key) {

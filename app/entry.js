@@ -1,5 +1,6 @@
 'use strict';
 import $ from 'jquery';
+import Jimp from 'Jimp';
 const global = Function('return this;')();
 global.jQuery = $;
 import * as Vibrant from 'node-vibrant';
@@ -18,6 +19,49 @@ const imageValidate = (fileInput, form) => {
   }
   return true;
 } 
+
+
+const createOgpImage = async (filePath, cb) => {
+  let origin = await Jimp.read(filePath);
+
+  // アップロード画像リサイズ
+  let origin_w = origin.bitmap.width;
+  let origin_h = origin.bitmap.height;
+  let frame_w = 1200;
+  let frame_h = 1200;
+  if ( origin_w > frame_w || origin_h > frame_h ) {
+    if ( (origin_w/origin_h) > (frame_w/frame_h) ) {
+      await origin.resize(frame_w, Jimp.AUTO);// 横長
+    } else {
+      await origin.resize(Jimp.AUTO, frame_h);　// 縦長
+    }
+  }
+
+  // ウォーターマークリサイズ
+  let water_frame_w = origin.bitmap.width/2;
+  let water_frame_h = origin.bitmap.height/2;
+  let water = await Jimp.read("/img/meish_logo_water.png");
+  let water_w = water.bitmap.width;
+  let water_h = water.bitmap.height;
+  if ( water_w > water_frame_w || water_h > water_frame_h ) {
+    if ( (water_w/water_h) > (water_frame_w/water_frame_h) ) {
+      await water.resize(water_frame_w, Jimp.AUTO);// 横長
+    } else {
+      await water.resize(Jimp.AUTO, water_frame_h);　// 縦長
+    }
+  }
+
+  // ウォーターマーク合成
+  await origin.composite(
+    water, 
+    origin.bitmap.width - water.bitmap.width, 
+    origin.bitmap.height - water.bitmap.height, 
+    { mode: Jimp.BLEND_SOURCE_OVER }
+  );
+
+  // jpeg 画質60 で書き出し
+  return origin.background(0xFFFFFFFF).quality(60).getBase64(Jimp.MIME_JPEG, cb);
+}
 
 // 編集モード/閲覧モード
 $('#editLink').prop('href', location.href.split('?')[0] + "?mode=edit");
@@ -251,6 +295,32 @@ $('#LogoDeleteBtn').on('click', () => {
   form.submit();
 });
 
+//// OGP
+// プレビューを表示
+$('#OgpFileInput').change((e) => {
+  if (imageValidate($('#OgpFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
+    createOgpImage(blobUrl, (err, src) => {
+      let uploadPreview = $('.ogp.upload.imagePreview');
+      uploadPreview.css('background-image', `url('${src}')`);
+      $(`.ogp.imagePreview`).hide();
+      uploadPreview.show();
+    });
+  }
+});
+// 更新
+$('#OgpSubmitBtn').on('click', () => {
+  if (imageValidate($('#OgpFileInput'))) {
+    $('#OgpForm').submit();
+  }
+});
+// 削除
+$('#OgpDeleteBtn').on('click', () => {
+  let form = $('#OgpForm');
+  $('#OgpDeleted').val(1);
+  form.submit();
+});
 
 $(() => {
   // カラーパレット更新

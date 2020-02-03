@@ -28,6 +28,14 @@ const Personality = loader.database.define('personalities', {
     type: Sequelize.TEXT,
     allowNull: true
   },
+  ogp_path: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    get() {
+      const relativePath = this.getDataValue('ogp_path');
+      return relativePath ? process.env.s3Path + relativePath : "";
+    }
+  },
   thumbnail_path: {
     type: Sequelize.STRING,
     allowNull: true,

@@ -13,10 +13,9 @@ block content
   
   section#TopSection.page-section
     div.text-center
-      div(style="height:100px;").logo.mb-3
-      h6.m-4 バーチャルプロフィール保管サービス
-      .tags
-        h6.text-secondary TOP 15 Tags
+      div(style="height:100px;").logo.mb-4
+      h6.m-3 バーチャルプロフィール登録サービス
+      .tags.mt-5
         div.m-2
           - var topTag = tags.slice(0,15)
           each tag in topTag
@@ -28,7 +27,6 @@ block content
           button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span ...
       div(style="display:none;").tags
-        h6.text-secondary TOP 300 Tags
         div.m-2
           each tag in tags.slice(0,300)
             - var tagLink = "/search?query=" + tag.tagname

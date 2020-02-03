@@ -2,12 +2,15 @@ extends layout/layout
 
 block meta
 
-  meta(property="og:type" content="website")
+  meta(property="og:type" content="article")
   meta(property="og:site_name" content="Meish*")
-  meta(property="og:title" content="Meish*")
-  meta(property="og:description" content="バーチャルプロフィール登録サービス")
-  meta(property="og:url" content="http://www.meish.me/")
-  meta(property="og:image" content="http://www.meish.me/img/meish_logo_lerge.png")
+  meta(property="og:title" content=`${personality.nameJa} | ${personality.label}`)
+  meta(property="og:description" content=personality.introduction)
+  meta(property="og:url" content="http://www.meish.me/i/"+owner.username)
+  if personality.ogp_path
+    meta(property="og:image" content=personality.ogp_path)
+  else
+    meta(property="og:image" content='/img/meish_logo_water.png')
 
 block content
   section(style="border-top: solid 1px; padding-bottom:80px;").page-section.bg-gray
@@ -15,33 +18,42 @@ block content
       // 操作パネル
       if isMe 
         p
-          div
-            // 公開/非公開
-            form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
-              input(type="hidden" name="visibility" value=visibility)
-              input(type="hidden" name="_csrf" value=csrfToken)
-              if visibility
-                button.btn-sm.btn-outline-danger
-                  i.fas.fa-stop  非公開にする
+          div.d-flex.flex-wrap
+            div.m-1
+              // 公開/非公開
+              form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
+                input(type="hidden" name="visibility" value=visibility)
+                input(type="hidden" name="_csrf" value=csrfToken)
+                if visibility
+                  button.btn-sm.btn-outline-danger
+                    i.fas.fa-stop  非公開にする
+                else
+                  button.btn-sm.btn-outline-info 
+                    i.fas.fa-play  公開する
+            
+            div.m-1
+              // 編集/プレビュー
+              if mode == "edit"
+                a#viewLink
+                  button.btn-sm.btn-outline-success
+                    i.fas.fa-eye  閲覧モードにする
               else
-                button.btn-sm.btn-outline-info 
-                  i.fas.fa-play  公開する
-            
-            // 編集/プレビュー
-            if mode == "edit"
-              a.mx-2#viewLink
-                button.btn-sm.btn-outline-success
-                  i.fas.fa-eye  閲覧モードにする
-            else
-              a.mx-2#editLink
-                button.btn-sm.btn-outline-info
-                  i.fas.fa-pen  編集モードにする
-            
-            // 使い方
-            a(href="/howto" target="_blank")
-              button.btn-sm.btn-outline-secondary
-                i.fas.fa-question-circle  使いかた
+                a#editLink
+                  button.btn-sm.btn-outline-info
+                    i.fas.fa-pen  編集モードにする
+
+            div.m-1
+              // 使い方
+              a(href="/howto" target="_blank")
+                button.btn-sm.btn-outline-secondary
+                  i.fas.fa-question-circle  使いかた
                 
+            div.m-1
+              // 使い方
+              a(href="/howto" target="_blank")
+                button.btn-sm.btn-outline-primary
+                  i.fab.fa-twitter  Tweetする
+
       // 背景画像
       - var backImage = personality.back_path ? `background-image:url(${personality.back_path}?${Date.now()}); background-size: cover; background-position:center;border-radius:8px;` : "";
       div(style=backImage).profileImage.row
@@ -125,8 +137,8 @@ block content
                 p
                   each tag in tags
                     - var tagLink = "/search?query=" + tag.tagname
+                    - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
                     - var tagText = tag.tagname
-                    - var tagHue = tagText.charCodeAt(0) % 36 * 10;
                     a(href=tagLink)
                       span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
                   // 編集ボタン
@@ -152,7 +164,7 @@ block content
             hr.divider.my-4
             block
 
-  // 立ち絵表示
+  // 立ち絵
   if tachies.length > 0 || (isMe && mode == "edit")
     // 背景
     - var logo_path = personality.logo_path ? personality.logo_path : "/img/meish_logo_lerge.png";
@@ -180,7 +192,7 @@ block content
                             a(href=tachie.path download=filename).btn.btn-primary.text-white
                               i.fas.fa-file-download  Download
 
-  // キャラデザ表示
+  // キャラデザ
   if personality.design_path || (isMe && mode == "edit")
     +subSection('キャラクターデザイン', 'bg-white')
       .container.mx-auto
@@ -197,7 +209,7 @@ block content
                 a(href=personality.design_path download=filename).btn.btn-primary.text-white
                   i.fas.fa-file-download  Download
 
-  // ロゴ表示
+  // ロゴ
   if isMe && mode == "edit"
     div.edit
       +subSection('ロゴ')
@@ -207,7 +219,17 @@ block content
           .text-center
             img(src=`${logoPath}?${Date.now()}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
 
-  // サムネイル表示
+  // OGP画像
+  if isMe && mode == "edit"
+    div.edit
+      +subSection('OGP画像')
+        p TwitterなどにURLを貼り付けた時の画像展開で表示されます。
+        .container.mx-auto
+          - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
+          .text-center
+            img(src=`${ogpPath}?${Date.now()}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+
+  // サムネイル
   if isMe && mode == "edit"
     div.edit
       +subSection('サムネイル')
@@ -379,6 +401,16 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2
+
+    // OGPモーダル
+    +modal({name: 'Ogp', action: '/img/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none;").ogp.upload.imagePreview
+        - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/noimage.jpg";
+        div(style=`background-image: url('${ogpSample}?${Date.now()}');`).ogp.imagePreview
+        label.input-group-btn.m-2
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2
 
   // アカウント削除
   if isMe && mode == "edit"
