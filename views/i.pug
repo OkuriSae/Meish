@@ -8,9 +8,11 @@ block meta
   meta(property="og:description" content=personality.introduction.slice(0,200))
   meta(property="og:url" content="http://www.meish.me/i/"+owner.username)
   if personality.ogp_path
-    meta(property="og:image" content=personality.ogp_path)
+    meta(property="og:image" content=`${personality.ogp_path}?${Date.now()}`)
   else
-    meta(property="og:image" content='/img/meish_logo_water.png')
+    meta(property="og:image" content='https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.png')
+  meta(name="twitter:card" content="summary_large_image")
+  meta(name="twitter:site" content="@"+owner.username)
 
 block content
   section(style="border-top: solid 1px; padding-bottom:80px;").page-section.bg-gray
@@ -66,12 +68,12 @@ block content
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-secondary
                   i.fas.fa-question-circle  使いかた
-                
-            div.ml-2
-              // 使い方
-              a(href="/howto" target="_blank")
-                button.btn-sm.btn-outline-primary
-                  i.fab.fa-twitter  Tweetする
+            //    
+              div.ml-2
+                // Tweetボタン
+                a(href="/howto" target="_blank")
+                  button.btn-sm.btn-outline-primary
+                    i.fab.fa-twitter  Tweetする
 
       // 背景画像
       - var backImage = personality.back_path ? `background-image:url(${personality.back_path}?${Date.now()}); background-size: cover; background-position:center;border-radius:8px;` : "";
@@ -230,10 +232,10 @@ block content
                 a(href=personality.design_path download=filename).btn.btn-primary.text-white
                   i.fas.fa-file-download  Download
 
-  // ページ背景
+  // キャラクターロゴ
   if isMe && mode == "edit"
     div.edit
-      +subSection('ページ背景')
+      +subSection('キャラクターロゴ')
         p.text-secondary イメージ画像やキャラクターロゴを設定してください
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
@@ -255,6 +257,8 @@ block content
     div.edit
       +subSection('検索サムネイル')
         p.text-secondary 検索ページで表示されます
+          br
+          small （立ち絵登録時に設定）
         .container.mx-auto
           .text-center
             div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}?${Date.now()}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
@@ -421,8 +425,8 @@ block content
         .text-secondary
           small 2MB以下, 1920x1080px以下-jpg推奨
 
-    // ページ背景モーダル
-    +modal({name: 'Logo', action: '/img/logo', title: '背景', enctype: "multipart/form-data"})
+    // キャラクターロゴモーダル
+    +modal({name: 'Logo', action: '/img/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").logo.upload.imagePreview
         - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.jpg";
@@ -443,7 +447,7 @@ block content
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2
         .text-secondary
-          small 2MB以下, jpg推奨, 1200px以下に縮小されます
+          small 2MB以下, jpg推奨, 1200x630に拡大/縮小されます
 
   // アカウント削除
   if isMe && mode == "edit"

@@ -25,21 +25,13 @@ const createOgpImage = async (filePath, cb) => {
   let origin = await Jimp.read(filePath);
 
   // アップロード画像リサイズ
-  let origin_w = origin.bitmap.width;
-  let origin_h = origin.bitmap.height;
   let frame_w = 1200;
-  let frame_h = 1200;
-  if ( origin_w > frame_w || origin_h > frame_h ) {
-    if ( (origin_w/origin_h) > (frame_w/frame_h) ) {
-      await origin.resize(frame_w, Jimp.AUTO);// 横長
-    } else {
-      await origin.resize(Jimp.AUTO, frame_h);　// 縦長
-    }
-  }
+  let frame_h = 630;
+  await origin.cover(frame_w, frame_h);
 
   // ウォーターマークリサイズ
-  let water_frame_w = origin.bitmap.width/2;
-  let water_frame_h = origin.bitmap.height/2;
+  let water_frame_w = frame_w/2;
+  let water_frame_h = frame_h/2;
   let water = await Jimp.read("/img/meish_logo_water.png");
   let water_w = water.bitmap.width;
   let water_h = water.bitmap.height;

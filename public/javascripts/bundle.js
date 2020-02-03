@@ -134,7 +134,7 @@ function () {
   var _ref = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee(filePath, cb) {
-    var origin, origin_w, origin_h, frame_w, frame_h, water_frame_w, water_frame_h, water, water_w, water_h;
+    var origin, frame_w, frame_h, water_frame_w, water_frame_h, water, water_w, water_h;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -145,75 +145,54 @@ function () {
           case 2:
             origin = _context.sent;
             // アップロード画像リサイズ
-            origin_w = origin.bitmap.width;
-            origin_h = origin.bitmap.height;
             frame_w = 1200;
-            frame_h = 1200;
+            frame_h = 630;
+            _context.next = 7;
+            return origin.cover(frame_w, frame_h);
 
-            if (!(origin_w > frame_w || origin_h > frame_h)) {
-              _context.next = 15;
-              break;
-            }
-
-            if (!(origin_w / origin_h > frame_w / frame_h)) {
-              _context.next = 13;
-              break;
-            }
-
-            _context.next = 11;
-            return origin.resize(frame_w, Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.AUTO);
-
-          case 11:
-            _context.next = 15;
-            break;
-
-          case 13:
-            _context.next = 15;
-            return origin.resize(Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.AUTO, frame_h);
-
-          case 15:
+          case 7:
             // ウォーターマークリサイズ
-            water_frame_w = origin.bitmap.width / 2;
-            water_frame_h = origin.bitmap.height / 2;
-            _context.next = 19;
+            water_frame_w = frame_w / 2;
+            water_frame_h = frame_h / 2;
+            _context.next = 11;
             return Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.read("/img/meish_logo_water.png");
 
-          case 19:
+          case 11:
             water = _context.sent;
             water_w = water.bitmap.width;
             water_h = water.bitmap.height;
 
             if (!(water_w > water_frame_w || water_h > water_frame_h)) {
-              _context.next = 30;
+              _context.next = 22;
               break;
             }
 
             if (!(water_w / water_h > water_frame_w / water_frame_h)) {
-              _context.next = 28;
+              _context.next = 20;
               break;
             }
 
-            _context.next = 26;
+            _context.next = 18;
             return water.resize(water_frame_w, Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.AUTO);
 
-          case 26:
-            _context.next = 30;
+          case 18:
+            _context.next = 22;
             break;
 
-          case 28:
-            _context.next = 30;
+          case 20:
+            _context.next = 22;
             return water.resize(Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.AUTO, water_frame_h);
 
-          case 30:
-            _context.next = 32;
+          case 22:
+            _context.next = 24;
             return origin.composite(water, origin.bitmap.width - water.bitmap.width, origin.bitmap.height - water.bitmap.height, {
               mode: Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.BLEND_SOURCE_OVER
             });
 
-          case 32:
+          case 24:
             return _context.abrupt("return", origin.background(0xFFFFFFFF).quality(60).getBase64(Jimp__WEBPACK_IMPORTED_MODULE_1___default.a.MIME_JPEG, cb));
 
-          case 33:
+          case 25:
           case "end":
             return _context.stop();
         }

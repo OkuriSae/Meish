@@ -3,11 +3,12 @@ extends layout/layout
 block meta
 
   meta(property="og:type" content="website")
-  meta(property="og:site_name" content="Meish*")
   meta(property="og:title" content="Meish*")
-  meta(property="og:description" content="バーチャルプロフィール登録サービス")
+  meta(property="og:site_name" content="バーチャルプロフィール登録サービス")
   meta(property="og:url" content="http://www.meish.me/")
-  meta(property="og:image" content="http://www.meish.me/img/meish_logo_lerge.png")
+  meta(property="og:image" content="https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.jpg")
+  meta(property="og:locale" content="ja_JP")
+  meta(name="twitter:card" content="summary_large_image")
 
 block content
   
@@ -45,3 +46,6 @@ block content
           a(href=link)
             - var style=`width:200px; height:350px; background-image: url(${user.personality.thumbnail_path});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
             div(style=style)
+    div.text-center
+      h6
+        small.text-secondary Total #{userCount} characters.

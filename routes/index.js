@@ -33,10 +33,12 @@ router.get('/', (req, res, next) => {
       order: [ [Sequelize.fn('count', Sequelize.col('tagname')), 'DESC' ] ],
       limit: '300'
     });
+    let userCount = await User.count();
     res.render('index', {
       me: req.user,
       users: users,
-      tags: tagSummary
+      tags: tagSummary,
+      userCount: userCount
     });
   })();
 });
