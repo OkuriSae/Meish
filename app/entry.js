@@ -1,6 +1,6 @@
 'use strict';
 import $ from 'jquery';
-import Jimp from 'Jimp';
+import Jimp from 'jimp';
 const global = Function('return this;')();
 global.jQuery = $;
 import * as Vibrant from 'node-vibrant';
