@@ -26,17 +26,17 @@ block content
                 li 
                   span
                     a(href="https://www.google.com/search?q=OGP" target="_blank").text-danger  OGPイメージ
-                  span.text-dark （URL展開用の画像）がありません！ 
+                  span.text-dark （URL展開用の画像）がありません 
                   span(data-toggle="modal" data-target="#OgpModal" style="cursor: pointer;").text-info ≫設定する
               if !personality.thumbnail_path
                 li 
                   span.text-danger 検索用サムネイル
-                  span.text-dark  がありません！（TOP画面や検索結果に表示されません）
+                  span.text-dark  がありません（TOP画面や検索結果に表示されません）
                   span(data-toggle="modal" data-target="#TachieModal" style="cursor: pointer;").text-info ≫設定する
               if !visibility
                 li プロフィールは
                   span.text-danger  非公開状態 
-                  span です！ 
+                  span です 
 
         p
           div.d-flex.flex-wrap
@@ -200,7 +200,7 @@ block content
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: ''}]
                 each tachie in tachiesView
                   div.col-sm.mx-auto.m-2
-                    div(style="min-width:250px;max-width:350px;background-color:rgba(255,255,255,0.50);margin:auto;").card
+                    div(style="min-width:250px;max-width:350px;background-color:rgba(255,255,255,0.50);margin:auto;").tachie.card
                       // 画像
                       img(src=`${tachie.path}?${Date.now()}` style="width:100%;" data-toggle="modal" data-target="#TachieModal").card-img-top
                       if tachie.name || tachie.comment
@@ -398,10 +398,13 @@ block content
           label(for="ThumbnailCheck").form-check-label 検索サムネにする
         // 対象
         select(name="target")#TachieSelection.form-control.my-2
-          option(value="new" selected) 新規追加
+          if tachies.length < 5
+            option(value="new" selected) 新規追加
+          else 
+            option(value="max" selected) - (立ち絵は5枚までです)
           if tachies.length > 0
             each tachie in tachies
-              option(value=tachie.tachieId) #{tachie.name}
+              option(value=tachie.tachieId).tachie #{tachie.name}
         // タイトル、説明
         each tachie in tachies
           input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
@@ -409,7 +412,7 @@ block content
         input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
         .text-secondary
-          small 2MB以下, jpg/png/gif, 620x1080px以下-縦長推奨
+          small 2MB以下, jpg/png/gif, 620x1080px以下-縦長推奨, 5枚まで
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})

@@ -286,6 +286,10 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
 
 // POST:tachie
 router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+  if (req.body.target == 'max') {
+    redirectHome(req, res);
+    return;
+  }
   Tachie.findOne({
     where: {userId : req.user.id, tachieId: targetParse(req.body.target), deleted: 0}
   }).then(tachie => {

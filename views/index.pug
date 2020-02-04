@@ -46,6 +46,8 @@ block content
           a(href=link)
             - var style=`width:200px; height:350px; background-image: url(${user.personality.thumbnail_path});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
             div(style=style)
-    div.text-center
-      h6
-        small.text-secondary Total #{userCount} characters.
+
+    if userCount
+      div.text-center
+        h6
+          small.text-secondary Total #{userCount} characters.
