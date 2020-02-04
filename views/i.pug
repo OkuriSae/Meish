@@ -235,18 +235,14 @@ block content
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: ''}]
                 each tachie in tachiesView
                   div.col-sm.mx-auto.m-2
-                    div(style="min-width:250px;max-width:350px;background-color:rgba(255,255,255,0.50);margin:auto;").tachie.card
+                    div(style="min-width:250px; max-width:300px; margin:auto;background-color:rgba(255,255,255,0.50);").tachie.card
                       // 画像
-                      img(src=`${tachie.path}?${Date.now()}` style="width:100%;" data-toggle="modal" data-target="#TachieModal").card-img-top
+                      img(src=`${tachie.path}?${Date.now()}` style="width:100%; height:600px; object-fit: contain;" data-toggle="modal" data-target="#TachieModal").card-img-top
                       if tachie.name || tachie.comment
                         div(style="background-color:rgba(255,255,255,1.00);").card-body
                           // タイトル、コメント
                           h5.card-title #{tachie.name}
                           p.card-text #{tachie.comment}
-                          // ダウンロードボタン
-                            - var filename = tachie.path.split('/').pop();
-                            a(href=tachie.path download=filename).btn.btn-primary.text-white
-                              i.fas.fa-file-download  Download
 
   // キャラデザ
   if personality.design_path || (isMe && mode == "edit")
@@ -262,10 +258,6 @@ block content
           if description
             .card-body
               p(style="white-space:pre-wrap;").card-text #{description}
-              // ダウンロードボタン
-                - var filename = design_path.split('/').pop();
-                a(href=personality.design_path download=filename).btn.btn-primary.text-white
-                  i.fas.fa-file-download  Download
 
   // キャラクターロゴ
   if isMe && mode == "edit"
