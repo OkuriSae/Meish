@@ -12,6 +12,7 @@ router.get('/', (req, res, next) => {
   (async () => {
     let users = await User.findAll({
       attributes: [
+        'username',
         'personality.thumbnail_path',
       ],
       where: { 
@@ -26,6 +27,7 @@ router.get('/', (req, res, next) => {
       }],
       order: [ [ Sequelize.fn('RANDOM') ] ],
       group: [
+        'username',
         'personality.thumbnail_path',
         'personality.userId'
       ],
@@ -55,6 +57,7 @@ router.get('/search', (req, res, next) => {
   (async () => {
     let users = await User.findAll({
       attributes: [
+        'username',
         'personality.thumbnail_path',
       ],
       where: {
@@ -75,8 +78,11 @@ router.get('/search', (req, res, next) => {
       }],
       order: [ [ Sequelize.fn('RANDOM') ] ],
       group: [
+        'username',
         'personality.thumbnail_path',
-        'personality.userId'
+        'personality.userId',
+        'tag.userId',
+        'tag.tagname'
       ],
       limit: '30'
     });
