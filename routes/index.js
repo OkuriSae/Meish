@@ -11,6 +11,9 @@ const authenticationEnsurer = require('./authentication-ensurer');
 router.get('/', (req, res, next) => {
   (async () => {
     let users = await User.findAll({
+      attributes: [
+        'personality.thumbnail_path',
+      ],
       where: { 
         visibility: 1 , 
         '$personality.thumbnail_path$': {
@@ -22,6 +25,10 @@ router.get('/', (req, res, next) => {
         required: false
       }],
       order: [ [ Sequelize.fn('RANDOM') ] ],
+      group: [
+        'personality.thumbnail_path',
+        'personality.userId'
+      ],
       limit: '30'
     });
     let tagSummary = await Tag.findAll({
@@ -47,6 +54,9 @@ router.get('/search', (req, res, next) => {
   let query = req.query.query;
   (async () => {
     let users = await User.findAll({
+      attributes: [
+        'personality.thumbnail_path',
+      ],
       where: {
         visibility: 1,
         '$personality.thumbnail_path$': {
@@ -64,6 +74,10 @@ router.get('/search', (req, res, next) => {
         required: false
       }],
       order: [ [ Sequelize.fn('RANDOM') ] ],
+      group: [
+        'personality.thumbnail_path',
+        'personality.userId'
+      ],
       limit: '30'
     });
     let tagSummary = await Tag.findAll({
