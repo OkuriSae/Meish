@@ -107,6 +107,7 @@ block content
             .container.m-2.shadow-gray
               .row
                 mixin categorizedInfo(title, name)
+
                   div(style="min-width:250px;")
                     div(style=" margin-bottom: 0.5rem;").d-flex.align-items-center
                       h3.category #{title}
@@ -115,6 +116,35 @@ block content
                     div
                       block
 
+                - var serviceIcons = {}
+                - serviceIcons["twitter.com"] = "twitter_icon.png"
+                - serviceIcons["mobile.twitter.com"] = "twitter_icon.png"
+                - serviceIcons["www.youtube.com"] = "youtube_icon.png"
+                - serviceIcons["marshmallow-qa.com"] = "marshmallow_icon.png"
+                - serviceIcons["coconala.com"] = "coconala_icon.jpg"
+                - serviceIcons["17.live"] = "17.live_icon.png"
+                - serviceIcons["com.nicovideo.jp"] = "niconico_icon.png"
+                - serviceIcons["www.nicovideo.jp"] = "niconico_icon.png"
+                - serviceIcons["discord.gg"] = "discord_icon.png"
+                - serviceIcons["nana-music.com"] = "nana_icon.png"
+                - serviceIcons["note.com"] = "note_icon.png"
+                - serviceIcons["skeb.jp"] = "skeb_icon.png"
+                - serviceIcons["space.bilibili.com"] = "bilibili_icon.png"
+                - serviceIcons["twitcasting.tv"] = "twitcasting_icon.png"
+                - serviceIcons["web.iriam.app"] = "iriam_icon.jpg"
+                - serviceIcons["www.instagram.com"] = "instagram_icon.png"
+                - serviceIcons["www.mirrativ.com"] = "mirrativ_icon.png"
+                - serviceIcons["www.openrec.tv"] = "openrec_icon.png"
+                - serviceIcons["www.pixiv.net"] = "pixiv_icon.png"
+                - serviceIcons["www.pixiv.net/fanbox"] = "pixiv_icon.png"
+                - serviceIcons["www.showroom-live.com"] = "showroom_icon.png"
+                - serviceIcons["www.twitch.tv"] = "twitch_icon.png"
+                - serviceIcons["www.vrchat.com"] = "vrchat_icon.png"
+                - serviceIcons["github.com"] = "github_icon.png"
+                - serviceIcons["www.mildom.com"] = "mildom_icon.png"
+                - serviceIcons["steamcommunity.com"] = "steam_icon.png"
+                - serviceIcons["soundcloud.com"] = "soundcloud_icon.png"
+                  
                 // ハッシュタグ
                 if hashTags.length > 0 || (isMe && mode == "edit")
                   +categorizedInfo('ハッシュタグ', 'HashTag')
@@ -130,16 +160,15 @@ block content
                   +categorizedInfo('活動場所', 'Activity')
                     each activity in activities
                       p.mx-2
-                        b
-                          a(href=activity.link target="_blank").no-shadow
-                            - var serviceIcons = {}
-                            - serviceIcons["twitter.com"] = "twitter.png"
-                            - serviceIcons["www.youtube.com"] = "youtube.png"
-                            - serviceIcons["marshmallow-qa.com"] = "marshmallow.png"
-                            - serviceIcon = serviceIcons[activity.link.split('/')[2]]
-                            - serviceIcon = serviceIcon ? serviceIcon : "meish_icon_mini.png"
-                            img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
-                            span.mx-2 #{activity.name}
+                        if activity.link
+                          b
+                            a(href=activity.link target="_blank").no-shadow
+                              - serviceIcon = serviceIcons[activity.link.split('/')[2]]
+                              - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
+                              img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                              span.mx-2 #{activity.name}
+                        else
+                          span #{activity.name}
 
                 // 応援方法
                 if cheerings.length > 0 || (isMe && mode == "edit")
@@ -148,7 +177,11 @@ block content
                       p.mx-2 
                         if cheer.link
                           b
-                            a(href=cheer.link target="_blank").no-shadow #{cheer.name}
+                            a(href=cheer.link target="_blank").no-shadow
+                              - serviceIcon = serviceIcons[cheer.link.split('/')[2]]
+                              - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
+                              img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                              span.mx-2 #{cheer.name}
                         else
                           span #{cheer.name}
             
