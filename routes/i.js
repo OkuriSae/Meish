@@ -72,7 +72,6 @@ router.get('/:username', csrfProtection, (req, res, next) => {
       return;
     }
 
-    if (req.user) console.log(req.user._json.profile_image_url_https);
     // show user page
     let renderParam = {
       me: req.user,
