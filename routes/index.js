@@ -14,6 +14,7 @@ router.get('/', (req, res, next) => {
       attributes: [
         'username',
         'personality.thumbnail_path',
+        'personality.createdAt'
       ],
       where: { 
         visibility: 1 , 
@@ -29,7 +30,8 @@ router.get('/', (req, res, next) => {
       group: [
         'username',
         'personality.thumbnail_path',
-        'personality.userId'
+        'personality.userId',
+        'personality.createdAt'
       ],
       limit: '30'
     });
@@ -59,6 +61,7 @@ router.get('/search', (req, res, next) => {
       attributes: [
         'username',
         'personality.thumbnail_path',
+        'personality.createdAt'
       ],
       where: {
         visibility: 1,
@@ -81,6 +84,7 @@ router.get('/search', (req, res, next) => {
         'username',
         'personality.thumbnail_path',
         'personality.userId',
+        'personality.createdAt',
         'tag.userId',
         'tag.tagname'
       ],
