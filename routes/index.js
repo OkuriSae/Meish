@@ -115,4 +115,19 @@ router.get('/agreement', (req, res, next) => {
   res.render('agreement', { me: req.user });
 });
 
+router.get('/specialthanks', (req, res, next) => {
+  let testers = [
+    { name: "TesterName1", link: 'https://www.meish.me/i/Tester1' },
+    { name: "TesterName2", link: 'https://www.meish.me/i/Tester2' },
+    { name: "TesterName3", link: 'https://www.meish.me/i/Tester3' },
+    { name: "TesterName4", link: 'https://www.meish.me/i/Tester4' },
+    { name: "TesterName5", link: 'https://www.meish.me/i/Tester5' },
+    { name: "TesterName6", link: 'https://www.meish.me/i/Tester6' },
+    { name: "TesterName7", link: 'https://www.meish.me/i/Tester7' },
+    { name: "TesterName8", link: 'https://www.meish.me/i/Tester8' },
+    { name: "TesterName9", link: 'https://www.meish.me/i/Tester9' },
+  ]
+  res.render('specialthanks', { me: req.user, betatesters: testers });
+});
+
 module.exports = router;

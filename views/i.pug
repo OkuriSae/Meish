@@ -19,7 +19,7 @@ block content
     div.container.justify-content-center.rounded
       // 操作パネル
       if isMe 
-        if !personality.ogp_path || !personality.thumbnail_path || !visibility
+        if mode == "edit" && (!personality.ogp_path || !personality.thumbnail_path || !visibility)
           div(style="width:100%; background-color: #F6F6F6; border-radius:10px; padding: 10px;").my-3
             ul(style="margin: 0;")
               if !personality.ogp_path
@@ -68,12 +68,17 @@ block content
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-secondary
                   i.fas.fa-question-circle  使いかた
-            //    
-              div.ml-2
-                // Tweetボタン
-                a(href="/howto" target="_blank")
-                  button.btn-sm.btn-outline-primary
-                    i.fab.fa-twitter  Tweetする
+            // Tweetボタン
+            div(style="position: relative; top:1px;").ml-2
+              a(href="https://twitter.com/share" class="twitter-share-button"
+                data-url="http://www.meish.me/i/"+owner.username
+                data-text=personality.nameJa
+                data-lang="ja"
+                data-hashtags="Meish"
+                data-size="large"
+              ) ツイート
+              script(async src="https://platform.twitter.com/widgets.js" charset="utf-8")
+
 
       // 背景画像
       - var backImage = personality.back_path ? `background-image:url(${personality.back_path}?${Date.now()}); background-size: cover; background-position:center;border-radius:8px;` : "";
@@ -411,6 +416,15 @@ block content
     // 立ち絵モーダル
     +modal({name: 'Tachie', action: '/img/tachie', title: '立ち絵', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
+        // 対象
+        select(name="target")#TachieSelection.form-control.my-2
+          if tachies.length < 5
+            option(value="new" selected) 新規追加
+          else 
+            option(value="max" selected) - (立ち絵は5枚までです)
+          if tachies.length > 0
+            each tachie in tachies
+              option(value=tachie.tachieId).tachie #{tachie.name}
         // プレビュー
         div(style="display:none;").tachie.imagePreview.upload
         each tachie in tachies
@@ -423,15 +437,6 @@ block content
         div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check
           input(type="checkbox" name="useThumbnail")#ThumbnailCheck.form-check-input.my-2
           label(for="ThumbnailCheck").form-check-label 検索サムネにする
-        // 対象
-        select(name="target")#TachieSelection.form-control.my-2
-          if tachies.length < 5
-            option(value="new" selected) 新規追加
-          else 
-            option(value="max" selected) - (立ち絵は5枚までです)
-          if tachies.length > 0
-            each tachie in tachies
-              option(value=tachie.tachieId).tachie #{tachie.name}
         // タイトル、説明
         each tachie in tachies
           input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden

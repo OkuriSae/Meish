@@ -1,0 +1,18 @@
+extends layout/layout
+
+block content
+  
+  div(style="width:100%; max-width:800px; margin:auto;")#about.text-center
+    section.page-section
+      .logo
+      h1.m-4 Special Thanks!
+
+    section#terms.page-section
+      h1.text-info βTesters
+      h6 Meish*のβテストに参加してくれた方々
+      hr.text-primary
+      .d-flex.flex-wrap.justify-content-center
+        each tester in betatesters
+            p(style="width:200px;")
+              a(href=tester.link) #{tester.name}
+            
