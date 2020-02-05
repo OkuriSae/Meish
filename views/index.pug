@@ -43,7 +43,7 @@ block content
         div.m-3
           - var link = `/i/${user.username}`
           a(href=link)
-            - var style=`width:200px; height:350px; background-image: url(${user.personality.thumbnail_path}?${user.personality.createdAt.getTime()});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
+            - var style=`width:200px; height:350px; background-image: url(${user.personality.thumbnail_path}?${user.personality.updatedAt.getTime()});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
             div(style=style)
 
     if userCount
