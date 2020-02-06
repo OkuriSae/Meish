@@ -291,6 +291,9 @@ p {
 }
 
 @media screen and (max-width:640px) { 
+  .profile.container {
+    padding: 0px;
+  }
   section {
     padding: 0px;
   }
