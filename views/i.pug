@@ -241,7 +241,7 @@ block content
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
                 each tachie in tachiesView
                   div.col-sm.mx-auto.m-2
-                    div(style="min-width:250px; max-width:300px; margin:auto;background-color:rgba(255,255,255,0.50);").tachie.card
+                    div(style="min-width:350px; max-width:450px; margin:auto;background-color:rgba(255,255,255,0.50);").tachie.card
                       // 画像
                       img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="width:100%; height:600px; object-fit: contain;" data-toggle="modal" data-target="#TachieModal").card-img-top
                       if tachie.name || tachie.comment
@@ -339,9 +339,9 @@ block content
                 input(type="file" name="tachie" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
         
           .text-secondary.mb-2
-            small 背景: 2MB以下, 1920x1080px, 横長jpg推奨
+            small 背景: 2MB以下, 1920x1080px以上, 横長jpg推奨
               br
-              span 立ち絵: 2MB以下, 高さ1080px 縦長透過png推奨
+              span 立ち絵: 2MB以下, 高さ1080px以上, 縦長透過png推奨
 
           // アス比スライダー
           div.d-flex.justify-content-center
@@ -445,7 +445,7 @@ block content
         input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
         .text-secondary
-          small 2MB以下, jpg/png/gif, 300x600px推奨, 5枚まで
+          small 2MB以下, jpg/png/gif, 300x600px以上推奨, 5枚まで
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
