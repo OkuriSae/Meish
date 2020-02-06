@@ -15,6 +15,24 @@ block meta
   meta(name="twitter:site" content="@"+owner.username)
 
 block content
+  - var back = personality.logo_path ? personality.logo_path : '/img/meish_logo_lerge.png'
+  style(type="text/css").
+    body::before{
+      content: '';
+      display:block;
+      position:fixed;
+      top:0;
+      left:0;
+      z-index:-1;
+      width:100%;
+      height: 100vh;
+      background:url(#{back});
+      background-position:  center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      -webkit-background-size: contain;
+      filter: opacity(50%);
+    }
   section(style="border-top: solid 1px; padding-bottom:80px;").page-section.bg-gray
     div.profile.container.justify-content-center.rounded
       // 操作パネル
@@ -230,24 +248,22 @@ block content
   if tachies.length > 0 || (isMe && mode == "edit")
     // 背景
     - var logo_path = personality.logo_path ? personality.logo_path : "/img/meish_logo_lerge.png";
-    div(style=`background-image: url('${logo_path}?${personality.updatedAt.getTime()}'); margin:5%;`).parallax-logo
-      div.parallax-filter
-        // コンテンツ
-        div.parallax-content
-          +subSection('立ち絵')
-            div.d-flex.flex-wrap
-                // 初期表示
-                - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
-                each tachie in tachiesView
-                  div.col-sm.mx-auto.m-2
-                    div.tachie.card
-                      // 画像
-                      img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
-                      if tachie.name || tachie.comment
-                        div(style="background-color:rgba(255,255,255,1.00);").card-body
-                          // タイトル、コメント
-                          h5.card-title #{tachie.name}
-                          p.card-text #{tachie.comment}
+    // コンテンツ
+    .parallax-content
+      +subSection('立ち絵')
+        .d-flex.flex-wrap
+            // 初期表示
+            - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
+            each tachie in tachiesView
+              .col-sm.mx-auto.m-2
+                .tachie.card
+                  // 画像
+                  img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
+                  if tachie.name || tachie.comment
+                    div(style="background-color:rgba(255,255,255,1.00);").card-body
+                      // タイトル、コメント
+                      h5.card-title #{tachie.name}
+                      p.card-text #{tachie.comment}
 
   // キャラデザ
   if personality.design_path || (isMe && mode == "edit")
@@ -255,7 +271,7 @@ block content
       if isMe && mode == "edit"
         p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
       .container.mx-auto
-        div.card
+        .card
           - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
           - var description = personality.design_path ? personality.design_comment : "Design description space.";
           div.rounded.img-fluid.card-img-top
