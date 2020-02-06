@@ -355,13 +355,13 @@ block content
             input(type="checkbox" name="imageClear" onchange="$('#ProfileImage').toggle();")#ProfileImageClearCheck.form-check-input.my-2
             label(for="ProfileImageClearCheck").form-check-label 画像をクリア
 
-        input(type="text" placeholder="よみ" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
-        input(type="text" placeholder="名前" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
-        input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など" maxlength="50" value=personality.label name="label").form-control.my-2
-        textarea(placeholder="自己紹介" rows="6" name="introduction" maxlength="500").form-control.my-2
+        input(type="text" placeholder="よみ [50文字まで]" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
+        input(type="text" placeholder="名前 [50文字まで]" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
+        input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など [50文字まで]" maxlength="50" value=personality.label name="label").form-control.my-2
+        textarea(placeholder="自己紹介 [500文字まで]" rows="6" name="introduction" maxlength="500").form-control.my-2
           | #{personality.introduction}
         - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
-        textarea(placeholder="検索タグ（スペース区切り）" rows="2" name="tags" maxlength="100").form-control.my-2
+        textarea(placeholder="検索タグ（スペース区切り）[合計100文字まで]" rows="2" name="tags" maxlength="100").form-control.my-2
           | #{tagtext}
 
     // ハッシュタグモーダル
@@ -373,8 +373,8 @@ block content
               option(value=hashTag.tagId) #{hashTag.name}
         each hashTag in hashTags
           input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
-        input(type="text" placeholder="タグ名（#不要）" name="name" maxlength="20")#HashTagNameForm.form-control.my-2
-        input(type="text" placeholder="説明" name="comment" maxlength="20")#HashTagCommentForm.form-control.my-2
+        input(type="text" placeholder="タグ名（#は自動でつきます）[20文字まで]" name="name" maxlength="20")#HashTagNameForm.form-control.my-2
+        input(type="text" placeholder="タグの説明 [20文字まで]" name="comment" maxlength="20")#HashTagCommentForm.form-control.my-2
 
     // 活動場所モーダル
     +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
@@ -385,8 +385,8 @@ block content
             option(value=activity.activityId) #{activity.name}
         each activity in activities
           input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
-        input(type="text" placeholder="表示名" name="name" maxlength="20")#ActivityNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#ActivityNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
 
     // 応援方法モーダル
     +modal({name: 'Cheering', action: '/cheering', title: '応援方法', enctype: "application/x-www-form-urlencoded"})
@@ -397,8 +397,8 @@ block content
             option(value=cheering.cheeringId) #{cheering.name}
         each cheering in cheerings
           input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
-        input(type="text" placeholder="表示名" name="name" maxlength="20")#CheeringNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#CheeringNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
 
     // ママ/パパモーダル
     +modal({name: 'Parent', action: '/parent', title: 'ママ/パパ', enctype: "application/x-www-form-urlencoded"})
@@ -409,9 +409,9 @@ block content
             option(value=parent.parentId) #{parent.name}
         each parent in parents
           input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
-        input(type="text" placeholder="ツヅキガラ" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
-        input(type="text" placeholder="名前" name="name" maxlength="20")#ParentNameForm.form-control.my-2
-        input(type="text" placeholder="URL" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
+        input(type="text" placeholder="ツヅキガラ [20文字まで]" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
+        input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="20")#ParentNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
 
     // 立ち絵モーダル
     +modal({name: 'Tachie', action: '/img/tachie', title: '立ち絵', enctype: "multipart/form-data"})
@@ -441,8 +441,8 @@ block content
         each tachie in tachies
           input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
           input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
-        input(type="text" placeholder="タイトル" name="name" maxlength="20").tachieNameForm.form-control.my-2
-        input(type="text" placeholder="コメント" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
+        input(type="text" placeholder="タイトル [20文字まで]" name="name" maxlength="20").tachieNameForm.form-control.my-2
+        input(type="text" placeholder="コメント [60文字まで]" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
         .text-secondary
           small 2MB以下, jpg/png/gif, 300x600px以上推奨, 5枚まで
 
@@ -455,7 +455,7 @@ block content
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
-        textarea(placeholder="コメント" rows="4" name="comment" maxlength="200").form-control.my-2
+        textarea(placeholder="コメント [200文字まで]" rows="4" name="comment" maxlength="200").form-control.my-2
           | #{personality.design_comment}
         .text-secondary
           small 2MB以下, 1920x1080px以下-jpg推奨
