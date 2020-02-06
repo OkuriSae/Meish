@@ -219,7 +219,7 @@ block content
   // サブセクション雛形
   mixin subSection(title,bg)
     section(class=bg)#about.page-section
-      .container
+      div(style="max-width:100%;").container
         .row.justify-content-center
           .text-center
             h1 #{title}
@@ -235,15 +235,14 @@ block content
         // コンテンツ
         div.parallax-content
           +subSection('立ち絵')
-            .container
-              .row
+            div.d-flex.flex-wrap
                 // 初期表示
                 - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
                 each tachie in tachiesView
                   div.col-sm.mx-auto.m-2
-                    div(style="min-width:350px; max-width:450px; margin:auto;background-color:rgba(255,255,255,0.50);").tachie.card
+                    div.tachie.card
                       // 画像
-                      img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="width:100%; height:600px; object-fit: contain;" data-toggle="modal" data-target="#TachieModal").card-img-top
+                      img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
                       if tachie.name || tachie.comment
                         div(style="background-color:rgba(255,255,255,1.00);").card-body
                           // タイトル、コメント
