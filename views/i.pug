@@ -283,7 +283,7 @@ block content
   // キャラクターロゴ
   if isMe && mode == "edit"
     div.edit
-      +subSection('キャラクターロゴ')
+      +subSection('キャラクターロゴ', 'bg-white')
         p.text-secondary イメージ画像やキャラクターロゴを設定してください
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
@@ -293,7 +293,7 @@ block content
   // OGP画像
   if isMe && mode == "edit"
     div.edit
-      +subSection('OGPイメージ')
+      +subSection('OGPイメージ', 'bg-white')
         p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
         .container.mx-auto
           - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
@@ -303,7 +303,7 @@ block content
   // サムネイル
   if isMe && mode == "edit"
     div.edit
-      +subSection('検索サムネイル')
+      +subSection('検索サムネイル', 'bg-white')
         p.text-secondary 検索ページで表示されます
           br
           small （立ち絵登録時に設定）
