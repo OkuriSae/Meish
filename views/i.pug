@@ -58,7 +58,7 @@ block content
 
         p
           div.d-flex.flex-wrap
-            div.ml-2.mb-2
+            div.ml-2.mt-2
               // 公開/非公開
               form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
                 input(type="hidden" name="visibility" value=visibility)
@@ -70,7 +70,7 @@ block content
                   button.btn-sm.btn-outline-info 
                     i.fas.fa-play  公開する
             
-            div.ml-2.mb-2
+            div.ml-2.mt-2
               // 編集/プレビュー
               if mode == "edit"
                 a#viewLink
@@ -81,14 +81,14 @@ block content
                   button.btn-sm.btn-outline-info
                     i.fas.fa-pen  編集モードにする
 
-            div.ml-2.mb-2
+            div.ml-2.mt-2
               // 使い方
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-secondary
                   i.fas.fa-question-circle  使いかた
 
             // Tweetボタン
-            div(style="position: relative; top:1px;").ml-2.mb-2
+            div(style="position: relative; top:1px;").ml-2.mt-2
               a(href="https://twitter.com/share" class="twitter-share-button"
                 data-url="http://www.meish.me/i/"+owner.username
                 data-text=personality.nameJa

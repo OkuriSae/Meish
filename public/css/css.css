@@ -278,15 +278,15 @@ p {
 }
 
 .tachie.card {
-  min-width: 300px; 
-  max-width: 450px; 
+  min-width: 200px; 
+  max-width: 350px; 
   margin: auto; 
   background-color: rgba(255,255,255,0.50);
 }
 
 .tachie.card-img-top {
   width: inherit;
-  height: 600px;
+  height: 500px;
   object-fit: contain;
 }
 
