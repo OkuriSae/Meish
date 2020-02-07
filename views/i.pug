@@ -8,7 +8,7 @@ block meta
   meta(property="og:description" content=personality.introduction.slice(0,200))
   meta(property="og:url" content="http://www.meish.me/i/"+owner.username)
   if personality.ogp_path
-    meta(property="og:image" content=`${personality.ogp_path}?${personality.updatedAt.getTime()}`)
+    meta(property="og:image" content=`${personality.ogp_path}`)
   else
     meta(property="og:image" content='https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.png')
   meta(name="twitter:card" content="summary_large_image")
@@ -100,10 +100,10 @@ block content
 
 
       // 背景画像
-      - var backImage = personality.back_path ? `background-image:url(${personality.back_path}?${personality.updatedAt.getTime()}); background-size: cover; background-position:center;border-radius:8px;` : "";
+      - var backImage = personality.back_path ? `background-image:url(${personality.back_path}); background-size: cover; background-position:center;border-radius:8px;` : "";
       div(style=backImage).profileImage.row.m-0
         // プロフィール画像
-        - var backImage = personality.tachie ? `background-image:url(${personality.tachie}?${personality.updatedAt.getTime()}); border-radius:0px;` : "";
+        - var backImage = personality.tachie ? `background-image:url(${personality.tachie}); border-radius:0px;` : "";
         div(style=backImage+"width:100%; margin:0;").profileImage.row
           if personality.tachie
             input(type="hidden" value=personality.tachie)#tachieSource
@@ -258,7 +258,7 @@ block content
               .col-sm.mx-auto.m-2
                 .tachie.card
                   // 画像
-                  img(src=`${tachie.path}?${tachie.updatedAt.getTime()}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
+                  img(src=`${tachie.path}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
                   if tachie.name || tachie.comment
                     div(style="background-color:rgba(255,255,255,1.00);").card-body
                       // タイトル、コメント
@@ -275,7 +275,7 @@ block content
           - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
           - var description = personality.design_path ? personality.design_comment : "Design description space.";
           div.rounded.img-fluid.card-img-top
-            img(src=`${design_path}?${personality.updatedAt.getTime()}` style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
+            img(src=`${design_path}` style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
           if description
             .card-body
               p(style="white-space:pre-wrap;").card-text #{description}
@@ -284,11 +284,13 @@ block content
   if isMe && mode == "edit"
     div.edit
       +subSection('キャラクターロゴ', 'bg-white')
-        p.text-secondary イメージ画像やキャラクターロゴを設定してください
+        p.text-secondary ページ背景に表示されます
+          br
+          | イメージ画像やキャラクターロゴを設定してください
         .container.mx-auto
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
           .text-center
-            img(src=`${logoPath}?${personality.updatedAt.getTime()}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
+            img(src=`${logoPath}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
 
   // OGP画像
   if isMe && mode == "edit"
@@ -298,7 +300,7 @@ block content
         .container.mx-auto
           - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
           .text-center
-            img(src=`${ogpPath}?${personality.updatedAt.getTime()}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+            img(src=`${ogpPath}` style="width:600px;max-width:100%;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
 
   // サムネイル
   if isMe && mode == "edit"
@@ -306,10 +308,10 @@ block content
       +subSection('検索サムネイル', 'bg-white')
         p.text-secondary 検索ページで表示されます
           br
-          small （立ち絵登録時に設定）
+          small （立ち絵登録時に設定できます）
         .container.mx-auto
           .text-center
-            div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}?${personality.updatedAt.getTime()}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
+            div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
 
   if isMe && mode == "edit"
     // モーダル雛形
@@ -339,8 +341,8 @@ block content
       
           // 既存の画像
           - var backSample = personality.back_path ? personality.back_path : "/img/nobackimage.jpg";
-          div(style=`background-image: url('${backSample}?${personality.updatedAt.getTime()}'); background-size: cover; border-radius:10px;width:75%;margin:auto;`).backImagePreview.imagePreview
-            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}?${personality.updatedAt.getTime()}'); background-position: bottom right;` : `background-image: url('/img/noTachie.png'); background-position: bottom right;`;
+          div(style=`background-image: url('${backSample}'); background-size: cover; border-radius:10px;width:75%;margin:auto;`).backImagePreview.imagePreview
+            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/noTachie.png'); background-position: bottom right;`;
             div(style=tachieSample).profileImagePreview.imagePreview
          
           div
@@ -444,7 +446,7 @@ block content
         // プレビュー
         div(style="display:none;").tachie.imagePreview.upload
         each tachie in tachies
-          div(class=tachie.tachieId style=`background-image: url('${tachie.path}?${tachie.updatedAt.getTime()}'); display:none;`).tachie.imagePreview
+          div(class=tachie.tachieId style=`background-image: url('${tachie.path}'); display:none;`).tachie.imagePreview
         // ファイル選択
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
@@ -467,7 +469,7 @@ block content
       .form-group.text-center.m-0
         div(style="display:none;").design.upload.imagePreview
         - var designSample = personality.design_path ? personality.design_path : "/img/noimage.jpg";
-        div(style=`background-image: url('${designSample}?${personality.updatedAt.getTime()}');`).design.imagePreview
+        div(style=`background-image: url('${designSample}');`).design.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
@@ -481,7 +483,7 @@ block content
       .form-group.text-center.m-0
         div(style="display:none;").logo.upload.imagePreview
         - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.jpg";
-        div(style=`background-image: url('${logoSample}?${personality.updatedAt.getTime()}');`).logo.imagePreview
+        div(style=`background-image: url('${logoSample}');`).logo.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2
@@ -493,7 +495,7 @@ block content
       .form-group.text-center.m-0
         div(style="display:none;").ogp.upload.imagePreview
         - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/noimage.jpg";
-        div(style=`background-image: url('${ogpSample}?${personality.updatedAt.getTime()}');`).ogp.imagePreview
+        div(style=`background-image: url('${ogpSample}');`).ogp.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2

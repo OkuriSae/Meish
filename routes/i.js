@@ -30,6 +30,18 @@ let isMe = (req) => { return req.user ? req.params.username === req.user.usernam
 let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
 let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
 let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
+let getExt = (mimeType) => {
+  switch (mimeType) {
+    case "image/jpeg":
+      return ".jpg";
+    case "image/png":
+      return ".png";
+    case "image/gif":
+      return ".gif";
+    default:
+      return ".jpg";
+  }
+}
 
 // GET:ユーザーページ
 router.get('/:username', csrfProtection, (req, res, next) => {
@@ -148,24 +160,21 @@ router.post(
           // file saving
           await deleteImage(personality.tachie);
           let file = req.files.tachie[0];
-          updateData.tachie = `i/${req.user.username}/img/${req.user.username}_main${sanitize(Path.extname(file.originalname))}`; 
           imageValidation(file);
-          await saveImage(file.path, file.mimetype, updateData.tachie);
+          updateData.tachie = await saveImage(req.user.username, 'tachie', file.path, 1920, 1080, file.mimetype);
+          
           // thumbnail
-          if (!updateData.thumbnail_path) {
-            let thumbnailTmpPath = file.path+"_thumbnail";
-            updateData.thumbnail_path = `i/${req.user.username}/img/${req.user.username}_thumbnail${sanitize(Path.extname(file.originalname))}`; 
-            await createThumbnail(file.path, thumbnailTmpPath);
-            await saveImage(thumbnailTmpPath, file.mimetype, updateData.thumbnail_path);
+          if (!personality.thumbnail_path) {
+            updateData.thumbnail_path = await createThumbnail(req.user.username, file);
           }
         }
   
         if (req.files.back) {
+          // background
           await deleteImage(personality.back_path);
           let file = req.files.back[0];
-          updateData.back_path = `i/${req.user.username}/img/${req.user.username}_back${sanitize(Path.extname(file.originalname))}`; 
           imageValidation(file);
-          await saveImage(file.path, file.mimetype, updateData.back_path);
+          updateData.back_path = await saveImage(req.user.username, 'back', file.path, 1920, 1920, "image/jpeg");
         }
       }
 
@@ -307,22 +316,14 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
             if (tachie) {
               await deleteImage(tachie.path);
             }
-            let filename = 
-              sanitize(Path.basename(req.file.originalname, Path.extname(req.file.originalname)))
-              + sanitize(Path.extname(req.file.originalname));
-              
-            updateData.path = `i/${user.username}/img/${user.username}_tachie_${Date.now()}${sanitize(Path.extname(req.file.originalname))}`; 
             imageValidation(req.file);
-            await saveImage(req.file.path, req.file.mimetype, updateData.path);
+            updateData.path = await saveImage(user.username, `tachie_${Date.now()}`, req.file.path, 600, 1200, req.file.mimetype);
 
             // thumbnail
             if (req.body.useThumbnail) {
-              let thumbnailTmpPath = req.file.path+"_thumbnail";
-              await createThumbnail(req.file.path, thumbnailTmpPath);
-              let thumbnailS3Path = `i/${req.user.username}/img/${req.user.username}_thumbnail${sanitize(Path.extname(req.file.originalname))}`; 
-              await saveImage(thumbnailTmpPath, req.file.mimetype, thumbnailS3Path);
+              let thumbnailS3Path = await createThumbnail(user.username, req.file);
               let personality = await Personality.findOne({where: { userId: req.user.id }});
-              await personality.update({ thumbnail_path: thumbnailS3Path });
+              await personality.update({ thumbnail_path: thumbnailS3Path});
             }
           }
 
@@ -362,9 +363,8 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
           let updateData = { design_comment: req.body.comment.slice(0, 200) };
           if (req.file) {
             await deleteImage(personality.design_path);
-            updateData.design_path = `i/${user.username}/img/${user.username}_design${sanitize(Path.extname(req.file.originalname))}`; 
             imageValidation(req.file);
-            await saveImage(req.file.path, req.file.mimetype, updateData.design_path);
+            updateData.design_path = await saveImage(user.username, 'design', req.file.path, 1920, 1080, "image/jpeg");
           } 
           await personality.update(updateData);
           redirectHome(req, res);
@@ -395,9 +395,8 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
         (async () => {
           if (req.file) {
             await deleteImage(personality.logo_path);
-            let destPath = `i/${user.username}/img/${user.username}_logo${sanitize(Path.extname(req.file.originalname))}`;
             imageValidation(req.file);
-            await saveImage(req.file.path, req.file.mimetype, destPath);
+            let destPath = await saveImage(user.username, 'logo', req.file.path, 1920, 1080, "image/jpg");
             await personality.update({ logo_path: destPath });
           }
           redirectHome(req, res);
@@ -427,9 +426,7 @@ router.post('/:username/img/ogp', authenticationEnsurer, csrfProtection, upload.
           if (req.file) {
             await deleteImage(personality.ogp_path);
             imageValidation(req.file);
-            await createOgpImage(req.file.path, req.file.path+".jpg");
-            let destPath = `i/${user.username}/img/${user.username}_ogp.jpg`;
-            await saveImage(req.file.path+".jpg", req.file.mimetype, destPath);
+            let destPath = await createOgpImage(user.username, req.file);
             await personality.update({ ogp_path: destPath });
           }
           redirectHome(req, res);
@@ -459,6 +456,8 @@ router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, r
       deleteImage(personality.back_path);
       deleteImage(personality.design_path);
       deleteImage(personality.logo_path);
+      deleteImage(personality.ogp_path);
+      deleteImage(personality.thumbnail_path);
       let tachies = await Tachie.findAll({where: { userId: req.user.id }});
       tachies.forEach( tachie => {
         deleteImage(tachie.path);
@@ -489,25 +488,11 @@ function imageValidation(tmpFile) {
     if (!ext) { throw new Error('extension'); }
 }
 
-async function saveImage(filePath, mimetype , destPath) {
-  const params = {
-    Body: fs.readFileSync(filePath),
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: destPath,
-    ContentType: mimetype,
-    ACL: 'public-read'
-  }
-  console.log(`s3Put:`);
-  console.log(params);
-  return s3.putObject(params).promise();
-}
-
-async function createThumbnail(filePath, destPath) {
-  let img = await Jimp.read(filePath);
-  let h = img.bitmap.height;
+async function saveImage(username, suffix, tmpPath, frame_w, frame_h, mimeType) {
+  let destPath = `i/${username}/img/${username}_${suffix}${getExt(mimeType)}`;
+  let img = await Jimp.read(tmpPath);
   let w = img.bitmap.width;
-  let frame_h = 350;
-  let frame_w = 200;
+  let h = img.bitmap.height;
   if (h > frame_h || w > frame_w) {
     if ((w/h) > (frame_w/frame_h)) {
       await img.resize(frame_w, Jimp.AUTO);// 横長
@@ -515,26 +500,42 @@ async function createThumbnail(filePath, destPath) {
       await img.resize(Jimp.AUTO, frame_h);　// 縦長
     }
   }
-  return img.writeAsync(destPath);
+
+  if (mimeType == "image/jpeg") {
+    await img.background(0xFFFFFFFF).quality(85);
+  }
+
+  let normalizedImagePath = getExt(mimeType);
+  await img.writeAsync(normalizedImagePath);
+
+  await s3Put(normalizedImagePath, mimeType , destPath);
+  return `${destPath}?${new Date().getTime()}`;
 }
 
-async function createOgpImage(filePath, destPath) {
-  let origin = await Jimp.read(filePath);
+async function createThumbnail(username, file) {
+  return await saveImage(username, 'thumbnail', file.path, 200, 350, file.mimetype);
+}
 
-  // アップロード画像リサイズ
+async function createOgpImage(username, file) {
+  let mimeType = "image/jpeg";
   let frame_w = 1200;
   let frame_h = 630;
-  await origin.cover(frame_w, frame_h); 
+  let waterPath = "pblic/img/meish_logo_water.png";
+  let destPath = `i/${username}/img/${username}_ogp${getExt(mimeType)}`;
+  let origin = await Jimp.read(file.path);
+
+  // アップロード画像リサイズ
+  await origin.cover(frame_w, frame_h);
 
   // ウォーターマークリサイズ
   let water_frame_w = frame_w/2;
   let water_frame_h = frame_h/2;
-  let water = await Jimp.read("public/img/meish_logo_water.png");
+  let water = await Jimp.read(waterPath);
   let water_w = water.bitmap.width;
   let water_h = water.bitmap.height;
   if ( water_w > water_frame_w || water_h > water_frame_h ) {
     if ( (water_w/water_h) > (water_frame_w/water_frame_h) ) {
-      await water.resize(water_frame_w, Jimp.AUTO);// 横長
+      await water.resize(water_frame_w, Jimp.AUTO); // 横長
     } else {
       await water.resize(Jimp.AUTO, water_frame_h);　// 縦長
     }
@@ -549,7 +550,22 @@ async function createOgpImage(filePath, destPath) {
   );
 
   // jpeg 画質60 で書き出し
-  return origin.background(0xFFFFFFFF).quality(60).writeAsync(destPath);
+  await origin.background(0xFFFFFFFF).quality(60).writeAsync(destPath);
+  await s3Put(filePath, mimeType , destPath);
+  return destPath;
+}
+
+async function s3Put(filePath, mimeType , destPath) {
+  const params = {
+    Body: fs.readFileSync(filePath),
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: destPath,
+    ContentType: mimeType,
+    ACL: 'public-read'
+  }
+  console.log(`s3Put:`);
+  console.log(params);
+  return s3.putObject(params).promise();
 }
 
 async function deleteImage(key) {

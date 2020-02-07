@@ -13,8 +13,7 @@ router.get('/', (req, res, next) => {
     let users = await User.findAll({
       attributes: [
         'username',
-        'personality.thumbnail_path',
-        'personality.updatedAt'
+        'personality.thumbnail_path'
       ],
       where: { 
         visibility: 1 , 
@@ -30,8 +29,7 @@ router.get('/', (req, res, next) => {
       group: [
         'username',
         'personality.thumbnail_path',
-        'personality.userId',
-        'personality.updatedAt'
+        'personality.userId'
       ],
       limit: '30'
     });
@@ -61,7 +59,6 @@ router.get('/search', (req, res, next) => {
       attributes: [
         'username',
         'personality.thumbnail_path',
-        'personality.updatedAt'
       ],
       where: {
         visibility: 1,
@@ -84,7 +81,6 @@ router.get('/search', (req, res, next) => {
         'username',
         'personality.thumbnail_path',
         'personality.userId',
-        'personality.updatedAt',
         'tag.userId',
         'tag.tagname'
       ],
