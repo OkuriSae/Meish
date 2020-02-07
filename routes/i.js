@@ -317,7 +317,7 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
               await deleteImage(tachie.path);
             }
             imageValidation(req.file);
-            updateData.path = await saveImage(user.username, `tachie_${Date.now()}`, req.file.path, 600, 1200, req.file.mimetype);
+            updateData.path = await saveImage(user.username, `tachie_${Date.now()}`, req.file.path, 700, 1000, req.file.mimetype);
 
             // thumbnail
             if (req.body.useThumbnail) {
@@ -513,7 +513,7 @@ async function saveImage(username, suffix, tmpPath, frame_w, frame_h, mimeType) 
 }
 
 async function createThumbnail(username, file) {
-  return await saveImage(username, 'thumbnail', file.path, 200, 350, file.mimetype);
+  return await saveImage(username, 'thumbnail', file.path, 400, 700, file.mimetype);
 }
 
 async function createOgpImage(username, file) {
