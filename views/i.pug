@@ -273,7 +273,7 @@ block content
       .container.mx-auto
         .card
           - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
-          - var description = personality.design_path ? personality.design_comment : "Design description space.";
+          - var description = personality.design_path ? personality.design_comment : "キャラデザの詳細とか書けます";
           div.rounded.img-fluid.card-img-top
             img(src=`${design_path}` style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
           if description
@@ -304,7 +304,7 @@ block content
           .text-center
             .card
               div.rounded.img-fluid.card-img-top
-                img(src=`${ogpPath}` style="width:600px;max-width:100%;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+                img(src=`${ogpPath}` style="max-width:600px;width:100%" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
 
   // サムネイル
   if isMe && mode == "edit"
