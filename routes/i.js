@@ -520,7 +520,7 @@ async function createOgpImage(username, file) {
   let mimeType = "image/jpeg";
   let frame_w = 1200;
   let frame_h = 630;
-  let waterPath = "pblic/img/meish_logo_water.png";
+  let waterPath = "public/img/meish_logo_water.png";
   let destPath = `i/${username}/img/${username}_ogp${getExt(mimeType)}`;
   let origin = await Jimp.read(file.path);
 
@@ -550,9 +550,9 @@ async function createOgpImage(username, file) {
   );
 
   // jpeg 画質60 で書き出し
-  await origin.background(0xFFFFFFFF).quality(60).writeAsync(destPath);
-  await s3Put(filePath, mimeType , destPath);
-  return destPath;
+  await origin.background(0xFFFFFFFF).quality(60).writeAsync(file.path+".jpg");
+  await s3Put(file.path+".jpg", mimeType , destPath);
+  return `${destPath}?${new Date().getTime()}`;
 }
 
 async function s3Put(filePath, mimeType , destPath) {
