@@ -386,8 +386,8 @@ block content
         textarea(placeholder="検索タグ（スペース区切り）[合計100文字まで]" rows="2" name="tags" maxlength="100").form-control.my-2
           | #{tagtext}
         .align-middle.form-check
-          input(type="checkbox" name="isSensitive" checked=(personality.isSensitive == 'on'))#ProfileImageClearCheck.form-check-input.my-2
-          label(for="ProfileImageClearCheck").form-check-label 
+          input(type="checkbox" name="isSensitive" checked=(personality.isSensitive == 'on'))#sensitiveCheck.form-check-input.my-2
+          label(for="sensitiveCheck").form-check-label 
             small このキャラクターにはセンシティブな表現が含まれる
 
     // ハッシュタグモーダル
