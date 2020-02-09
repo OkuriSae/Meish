@@ -26,6 +26,7 @@ const csrfProtection = csrf({ cookie: true });
 var AWS = require('aws-sdk');
 var s3  = new AWS.S3();
 
+let linkSanitize = (link) => { return link.split(':')[0].match(/http/gi) ? link : ""; };
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
 let redirectTop = (req, res) => { res.redirect(`/`); };
 let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
@@ -252,7 +253,7 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
     } : {
       userId: req.user.id,
       name: req.body.name.slice(0, 20),
-      link: req.body.link.slice(0, 200),
+      link: linkSanitize(req.body.link).slice(0, 200),
       deleted: req.body.deleted % 2
     };
     if (activity) {
@@ -274,7 +275,7 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
     } : {
       userId: req.user.id,
       name: req.body.name.slice(0, 20),
-      link: req.body.link.slice(0, 200),
+      link: linkSanitize(req.body.link).slice(0, 200),
       deleted: req.body.deleted % 2
     };
     if (cheering) {
@@ -297,7 +298,7 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
       userId: req.user.id,
       relationship: req.body.relationship.slice(0, 20),
       name: req.body.name.slice(0, 20),
-      link: req.body.link.slice(0, 200),
+      link: linkSanitize(req.body.link).slice(0, 200),
       deleted: req.body.deleted % 2
     };
     if (parent) {
