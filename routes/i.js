@@ -50,11 +50,18 @@ router.get('/:username', csrfProtection, (req, res, next) => {
   User.findOne({where: {username: req.params.username}}).then(user => {
     if (!user) {
       if (isMe(req)) {
-        // new user
-        res.render('agreement', {
-          me: req.user,
-          csrfToken: req.csrfToken()
-        });
+        (async () => {
+          let user = await User.findOne({where: {userId: req.user.id}})
+          if (user) {
+            // exist old user
+            await deleteUser(req.user);
+          }
+          // new user
+          res.render('agreement', {
+            me: req.user,
+            csrfToken: req.csrfToken()
+          });
+        })();
         return;
 
       } else {
@@ -63,7 +70,6 @@ router.get('/:username', csrfProtection, (req, res, next) => {
         return;
       }
     }
-
     
     if (!user.visibility && !isMe(req)) {
       // 非公開のユーザーにアクセスした
@@ -466,34 +472,37 @@ router.post('/:username/img/ogp', authenticationEnsurer, csrfProtection, upload.
 // DELETE:account
 router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
-    (async () => {
-      // image deleting
-      let personality = await Personality.findOne({where: { userId: req.user.id }});
-      deleteImage(personality.tachie);
-      deleteImage(personality.back_path);
-      deleteImage(personality.design_path);
-      deleteImage(personality.logo_path);
-      deleteImage(personality.ogp_path);
-      deleteImage(personality.thumbnail_path);
-      let tachies = await Tachie.findAll({where: { userId: req.user.id }});
-      tachies.forEach( tachie => {
-        deleteImage(tachie.path);
-      });
-      // data deleting
-      let isUser = { where: { userId: req.user.id }};
-      let destroyAll = (models) => { models.forEach( model => { model.destroy(); }); }
-      await Tag.findAll(isUser).then((tags) => { destroyAll(tags); });
-      await Tachie.findAll(isUser).then((tachies) => { destroyAll(tachies); });
-      await Activity.findAll(isUser).then((activities) => { destroyAll(activities); });
-      await Parent.findAll(isUser).then((parents) => { destroyAll(parents); });
-      await HashTag.findAll(isUser).then((hashtags) => { destroyAll(hashtags); });
-      await Cheering.findAll(isUser).then((cheerings) => { destroyAll(cheerings); });
-      await Personality.findOne(isUser).then((personality) => { personality.destroy(); });
-      await User.findOne(isUser).then((user) => { user.destroy(); });
+    deleteUser(req.user).then(() => {
       res.redirect(`/logout`);
-    })();
+    });
   });
 });
+
+async function deleteUser(user) {
+  // image deleting
+  let personality = await Personality.findOne({where: { userId: user.id }});
+  deleteImage(personality.tachie);
+  deleteImage(personality.back_path);
+  deleteImage(personality.design_path);
+  deleteImage(personality.logo_path);
+  deleteImage(personality.ogp_path);
+  deleteImage(personality.thumbnail_path);
+  let tachies = await Tachie.findAll({where: { userId: user.id }});
+  tachies.forEach( tachie => {
+    deleteImage(tachie.path);
+  });
+  // data deleting
+  let isUser = { where: { userId: user.id }};
+  let destroyAll = (models) => { models.forEach( model => { model.destroy(); }); }
+  await Tag.findAll(isUser).then((tags) => { destroyAll(tags); });
+  await Tachie.findAll(isUser).then((tachies) => { destroyAll(tachies); });
+  await Activity.findAll(isUser).then((activities) => { destroyAll(activities); });
+  await Parent.findAll(isUser).then((parents) => { destroyAll(parents); });
+  await HashTag.findAll(isUser).then((hashtags) => { destroyAll(hashtags); });
+  await Cheering.findAll(isUser).then((cheerings) => { destroyAll(cheerings); });
+  await Personality.findOne(isUser).then((personality) => { personality.destroy(); });
+  await User.findOne(isUser).then((user) => { user.destroy(); });
+}
 
 function imageValidation(tmpFile) {
     let allowFileSize = 2 * (1024 ** 2); // 2MiB
