@@ -91,7 +91,7 @@ block content
             div(style="position: relative; top:1px;").ml-2.mt-2
               a(href="https://twitter.com/share" class="twitter-share-button"
                 data-url="http://www.meish.me/i/"+owner.username
-                data-text=personality.nameJa
+                data-text=personality.nameJa+"（βテスト中につきURL公開NG🙅‍♀️）"
                 data-lang="ja"
                 data-hashtags="Meish"
                 data-size="large"
@@ -388,7 +388,7 @@ block content
         .align-middle.form-check
           input(type="checkbox" name="isSensitive" checked=(personality.isSensitive == 'on'))#sensitiveCheck.form-check-input.my-2
           label(for="sensitiveCheck").form-check-label 
-            small このキャラクターにはセンシティブな表現が含まれる
+            small このプロフィールにはセンシティブな画像や表現が含まれる
 
     // ハッシュタグモーダル
     +modal({name: 'HashTag', action: '/hashtag', title: 'ハッシュタグ', enctype: "application/x-www-form-urlencoded"})
