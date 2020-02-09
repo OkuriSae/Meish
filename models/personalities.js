@@ -78,7 +78,15 @@ const Personality = loader.database.define('personalities', {
     get() {
       const relativePath = this.getDataValue('logo_path');
       return relativePath ? process.env.s3Path + relativePath : "";
-    }
+    } 
+  },
+  isSensitive: {
+    type: Sequelize.STRING,
+    allowNull: true
+  },
+  penaltyState: {
+    type: Sequelize.STRING,
+    allowNull: true
   },
   deleted: {
     type: Sequelize.INTEGER,

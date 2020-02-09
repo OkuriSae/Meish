@@ -39,12 +39,13 @@ block content
             span Close
 
     div.d-flex.flex-wrap.justify-content-around
-      each user in users
-        div.m-3
-          - var link = `/i/${user.username}`
-          a(href=link)
-            - var style=`width:200px; height:350px; background-image: url(${user.personality.thumbnail_path});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
-            div(style=style)
+      if results
+        each result in results
+          div.m-3
+            - var link = `/i/${result.username}`
+            a(href=link)
+              - var style=`width:200px; height:350px; background-image: url(${s3+result.thumbnail_path});background-color: rgba(255,255,255,0.5); border-radius: 8px; background-size: contain; background-repeat: no-repeat; background-position: center;`
+              div(style=style)
 
     if userCount
       div.text-center

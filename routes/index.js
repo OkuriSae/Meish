@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const loader = require('../models/sequelize-loader');
 const Sequelize = loader.Sequelize;
+const database = loader.database;
 const User = require('../models/users');
 const Personality = require('../models/personalities');
 const Tag = require('../models/tags');
@@ -55,36 +56,20 @@ router.get('/', (req, res, next) => {
 router.get('/search', (req, res, next) => {
   let query = req.query.query;
   (async () => {
-    let users = await User.findAll({
-      attributes: [
-        'username',
-        'personality.thumbnail_path',
-      ],
-      where: {
-        visibility: 1,
-        '$personality.thumbnail_path$': {
-          [Sequelize.Op.ne]: null
-        },
-        "$tag.tagname$": {
-          [Sequelize.Op.iLike]: query
-        }
-      },
-      include: [{
-        model: Personality,
-        required: false
-      },{
-        model: Tag,
-        required: false
-      }],
-      order: [ [ Sequelize.fn('RANDOM') ] ],
-      group: [
-        'username',
-        'personality.thumbnail_path',
-        'personality.userId',
-        'tag.userId',
-        'tag.tagname'
-      ],
-      limit: '30'
+    const results = await database.query(`
+      SELECT DISTINCT "username", "thumbnail_path" 
+      FROM "users" 
+        JOIN "personalities" ON "users"."userId" = "personalities"."userId"
+        JOIN "tags" ON "users"."userId" = "tags"."userId"
+      WHERE
+        "visibility" = 1
+        AND "tagname" ilike $tagname
+        AND "thumbnail_path" is not null
+      LIMIT 30
+      `
+      , {
+      bind: {tagname: query},
+      type: Sequelize.QueryTypes.SELECT
     });
     let tagSummary = await Tag.findAll({
       attributes: [
@@ -97,7 +82,8 @@ router.get('/search', (req, res, next) => {
     });
     res.render('index', {
       me: req.user,
-      users: users,
+      s3: process.env.s3Path,
+      results: results,
       tags: tagSummary
     });
   })();
@@ -109,10 +95,6 @@ router.get('/about', (req, res, next) => {
 
 router.get('/howto', (req, res, next) => {
   res.render('howto', { me: req.user });
-});
-
-router.get('/agreement', (req, res, next) => {
-  res.render('agreement', { me: req.user });
 });
 
 router.get('/specialthanks', (req, res, next) => {

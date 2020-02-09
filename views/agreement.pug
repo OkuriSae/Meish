@@ -8,8 +8,21 @@ block content
 
     section#terms.page-section
       include terms.pug
-      if me
-        br
-        br
-        a(href='/i/'+me.username+'?mode=edit').m-3
-          button.btn.btn-primary 同意してMeishを使う
+
+    section#Attention.page-section
+      h1 注意事項
+      hr.text-danger
+      .text-left
+        h4 アップロードされた画像の公開状態について
+        p プロフィールは非公開状態にすることができますが、プロフィール非公開状態でもアップロードされた画像のURLは失効しません。画像の削除はプロフィール編集画面またはMeish退会によって行えます。
+        h4 Twitterの退会およびユーザーID変更について
+        p Twitterを退会するとログインおよびプロフィール情報の編集を行えなくなります。
+        p TwitterのユーザーID変更には対応していません。TwitterのユーザーIDの変更を行う際は一旦Meishのアカウントを消してください。
+        p Twitterの退会またはユーザーID変更によるトラブルについての問い合わせや対応などは行えません。
+
+    section#Agreement.page-section
+      form(method='post' action='/i/'+me.username)
+        input(type="hidden" name="_csrf" value=csrfToken)
+        a(href="/")
+          button(type="button").btn.btn-secondary.mx-2 同意しない
+        button(type="submit").btn.btn-primary.mx-2 同意してプロフィールを作る

@@ -27,6 +27,7 @@ var AWS = require('aws-sdk');
 var s3  = new AWS.S3();
 
 let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
+let redirectTop = (req, res) => { res.redirect(`/`); };
 let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
 let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
 let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
@@ -48,20 +49,11 @@ router.get('/:username', csrfProtection, (req, res, next) => {
   User.findOne({where: {username: req.params.username}}).then(user => {
     if (!user) {
       if (isMe(req)) {
-        // create user record
-        (async () => {
-          await User.create({
-              userId: req.user.id,
-              username: req.user.username
-          });
-          await Personality.create({
-              userId: req.user.id,
-              icon: req.user._json.profile_image_url_https.replace('_normal', ''),
-              nameJa: req.user.displayName,
-              introduction: req.user._json.description
-          });
-          res.redirect('/agreement');
-        })();
+        // new user
+        res.render('agreement', {
+          me: req.user,
+          csrfToken: req.csrfToken()
+        });
         return;
 
       } else {
@@ -120,6 +112,29 @@ router.get('/:username/img/:name', function (req, res, next) {
   });
 });
 
+// POST:CreateUser
+router.post('/:username', authenticationEnsurer, csrfProtection, (req, res, next) => {
+  User.findOne({where: {username: req.params.username}}).then(user => {
+    if (!user) {
+      (async () => {
+        await User.create({
+            userId: req.user.id,
+            username: req.user.username
+        });
+        await Personality.create({
+            userId: req.user.id,
+            icon: req.user._json.profile_image_url_https.replace('_normal', ''),
+            nameJa: req.user.displayName,
+            introduction: req.user._json.description
+        });
+        redirectHome(req, res);
+      })();
+    } else {
+      redirectTop(req, res);
+    }
+  });
+});
+
 // POST:公開状態
 router.post('/:username/visibility', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findByPk(req.user.id).then(user => {
@@ -146,7 +161,8 @@ router.post(
         nameJa: req.body.nameJa.slice(0, 50),
         nameEn: req.body.nameEn.slice(0, 50),
         label: req.body.label.slice(0, 50),
-        introduction: req.body.introduction.slice(0, 500)
+        introduction: req.body.introduction.slice(0, 500),
+        isSensitive: req.body.isSensitive == "on" ? "on" : ""
       }
 
       if (req.body.imageClear) {
