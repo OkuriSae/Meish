@@ -11,29 +11,16 @@ const authenticationEnsurer = require('./authentication-ensurer');
 
 router.get('/', (req, res, next) => {
   (async () => {
-    let users = await User.findAll({
-      attributes: [
-        'username',
-        'personality.thumbnail_path'
-      ],
-      where: { 
-        visibility: 1 , 
-        '$personality.thumbnail_path$': {
-          [Sequelize.Op.ne]: null
-        }
-      },
-      include: [{
-        model: Personality,
-        required: false
-      }],
-      order: [ [ Sequelize.fn('RANDOM') ] ],
-      group: [
-        'username',
-        'personality.thumbnail_path',
-        'personality.userId'
-      ],
-      limit: '30'
-    });
+    const results = await database.query(`
+      SELECT "username", "thumbnail_path", "isSensitive"
+      FROM "users" 
+        JOIN "personalities" ON "users"."userId" = "personalities"."userId"
+      WHERE
+        "visibility" = 1
+        AND "thumbnail_path" is not null
+        ORDER BY random()
+      LIMIT 30
+      `, { type: Sequelize.QueryTypes.SELECT });
     let tagSummary = await Tag.findAll({
       attributes: [
         'tagname',
@@ -44,9 +31,11 @@ router.get('/', (req, res, next) => {
       limit: '300'
     });
     let userCount = await User.count();
+    
     res.render('index', {
       me: req.user,
-      users: users,
+      s3: process.env.s3Path,
+      results: results,
       tags: tagSummary,
       userCount: userCount
     });
@@ -57,7 +46,7 @@ router.get('/search', (req, res, next) => {
   let query = req.query.query;
   (async () => {
     const results = await database.query(`
-      SELECT DISTINCT "username", "thumbnail_path" 
+      SELECT DISTINCT "username", "thumbnail_path", "isSensitive"
       FROM "users" 
         JOIN "personalities" ON "users"."userId" = "personalities"."userId"
         JOIN "tags" ON "users"."userId" = "tags"."userId"
