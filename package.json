@@ -1,12 +1,18 @@
 {
-  "name": "prov",
-  "version": "0.0.0",
+  "name": "Meish",
+  "description": "バーチャルキャラクターのためのプロフィール登録サービス",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "author": "OkuriSae <sae.okuri@gmail.com> (https://twitter.com/OkuriSae)",
+  "homepage": "https://www.meish.com/",
   "scripts": {
     "start": "node ./bin/www",
-    "build": "node_modules/.bin/webpack",
     "test": "node_modules/mocha/bin/mocha --timeout 10000 --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/OkuriSae/Meish.git"
   },
   "keywords": [
     "css",

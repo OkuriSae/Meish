@@ -1,6 +1,6 @@
 {
-  "name": "Sette",
-  "description": "設定共有サービス",
+  "name": "Meish",
+  "description": "バーチャルキャラクターのためのプロフィール登録サービス",
   "logo": "",
   "keywords": ["node"],
   "image": "heroku/nodejs"
