@@ -33,7 +33,7 @@ router.get('/search', (req, res, next) => {
   })();
 });
 
-router.get('/all', (req, res, next) => {
+router.get('/allusers', (req, res, next) => {
   let query = req.query.query;
   (async () => {
     res.render('index', {

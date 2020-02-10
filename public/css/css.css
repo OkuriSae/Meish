@@ -290,6 +290,10 @@ p {
   object-fit: contain;
 }
 
+.sensitive_on {
+  filter: blur(5px);
+}
+
 @media screen and (max-width:640px) { 
   .profile.container {
     padding: 0px;
