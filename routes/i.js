@@ -217,7 +217,7 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
   HashTag.findOne({
     where: {userId : req.user.id, tagId: targetParse(req.body.target), deleted: 0}
   }).then(hashtag => {
-    let format = (tag) => { return tag.slice(0,1).match('#') ? tag : '#'+tag; };
+    let format = (tag) => { return tag.replace('#', ''); };
     let updateData = isDeletePost(req) ? {
       userId: req.user.id,
       deleted: req.body.deleted % 2
