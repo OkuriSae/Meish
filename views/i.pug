@@ -315,7 +315,7 @@ block content
           small （立ち絵登録時に設定できます）
         .container.mx-auto
           .text-center
-            div(style=`border: solid 1px lightgray; border-radius: 10px; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
+            div(style=`border: solid 1px lightgray; border-radius: .25rem; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
 
   if isMe && mode == "edit"
     // モーダル雛形
@@ -501,14 +501,16 @@ block content
     // OGPモーダル
     +modal({name: 'Ogp', action: '/img/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
-        div(style="display:none;").ogp.upload.imagePreview
+        div(style="display:none; background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;").ogp.upload.imagePreview
         - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/noimage.jpg";
-        div(style=`background-image: url('${ogpSample}');`).ogp.imagePreview
+        div(style=`background-image: url('${ogpSample}'); background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;`).ogp.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2
         .text-secondary
           small 2MB以下, jpg推奨, 1200x630に拡大/縮小されます
+          br
+          small 右下にウォーターマーク（Meishのロゴが入ります）
 
   // アカウント削除
   if isMe && mode == "edit"

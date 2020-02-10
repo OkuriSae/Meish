@@ -1,9 +1,9 @@
 'use strict';
 import $ from 'jquery';
-import Jimp from 'jimp';
+//import Jimp from 'jimp';
 const global = Function('return this;')();
 global.jQuery = $;
-import * as Vibrant from 'node-vibrant';
+//import * as Vibrant from 'node-vibrant';
 
 const imageValidate = (fileInput, form) => {
   let img = fileInput.prop('files')[0]; 
@@ -19,8 +19,7 @@ const imageValidate = (fileInput, form) => {
   }
   return true;
 } 
-
-
+/*
 const createOgpImage = async (filePath, cb) => {
   let origin = await Jimp.read(filePath);
 
@@ -54,6 +53,7 @@ const createOgpImage = async (filePath, cb) => {
   // jpeg 画質60 で書き出し
   return origin.background(0xFFFFFFFF).quality(60).getBase64(Jimp.MIME_JPEG, cb);
 }
+*/
 
 // 編集モード/閲覧モード
 $('#editLink').prop('href', location.href.split('?')[0] + "?mode=edit");
@@ -293,6 +293,16 @@ $('#OgpFileInput').change((e) => {
   if (imageValidate($('#OgpFileInput'))) {
     let file = e.target.files[0];
     let blobUrl = window.URL.createObjectURL(file);
+    let uploadPreview = $('.ogp.upload.imagePreview');
+    uploadPreview.css('background-image', `url('${blobUrl}')`);
+    $(`.ogp.imagePreview`).hide();
+    uploadPreview.show();
+  }
+
+  /*
+  if (imageValidate($('#OgpFileInput'))) {
+    let file = e.target.files[0];
+    let blobUrl = window.URL.createObjectURL(file);
     createOgpImage(blobUrl, (err, src) => {
       let uploadPreview = $('.ogp.upload.imagePreview');
       uploadPreview.css('background-image', `url('${src}')`);
@@ -300,6 +310,7 @@ $('#OgpFileInput').change((e) => {
       uploadPreview.show();
     });
   }
+  */
 });
 // 更新
 $('#OgpSubmitBtn').on('click', () => {
@@ -314,6 +325,7 @@ $('#OgpDeleteBtn').on('click', () => {
   form.submit();
 });
 
+/*
 $(() => {
   // カラーパレット更新
   const image = new Image();
@@ -329,3 +341,4 @@ $(() => {
   };
   image.src = $('#tachieSource').val();
 });
+*/
