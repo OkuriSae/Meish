@@ -15,6 +15,7 @@ block meta
   meta(name="twitter:site" content="@"+owner.username)
 
 block content
+  // 背景を固定化するCSS（スマホで背景流れちゃう対策）
   - var back = personality.logo_path ? personality.logo_path : '/img/meish_logo_lerge.png'
   style(type="text/css").
     body::before{
