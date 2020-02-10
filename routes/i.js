@@ -106,17 +106,6 @@ router.get('/:username', csrfProtection, (req, res, next) => {
   });
 });
 
-// GET:ユーザー画像
-router.get('/:username/img/:name', function (req, res, next) {
-  User.findOne({where: {username: req.params.username}}).then(user => {
-    if((user && user.visibility) || isMe(req)){
-      res.sendFile(path.resolve('./storage/i/' + req.url));
-    } else {
-      res.render('errors/404', { me: req.user });
-    }
-  });
-});
-
 // POST:CreateUser
 router.post('/:username', authenticationEnsurer, csrfProtection, (req, res, next) => {
   User.findOne({where: {username: req.params.username}}).then(user => {
@@ -314,7 +303,7 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
 });
 
 // POST:tachie
-router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   if (req.body.target == 'max') {
     redirectHome(req, res);
     return;
@@ -374,7 +363,7 @@ router.post('/:username/img/tachie', authenticationEnsurer, csrfProtection, uplo
 });
 
 // POST:character design
-router.post('/:username/img/design', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
@@ -407,7 +396,7 @@ router.post('/:username/img/design', authenticationEnsurer, csrfProtection, uplo
 });
 
 // POST:logo
-router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
@@ -437,7 +426,7 @@ router.post('/:username/img/logo', authenticationEnsurer, csrfProtection, upload
 });
 
 // POST:ogp
-router.post('/:username/img/ogp', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
+router.post('/:username/ogp', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
     Personality.findOne({where: { userId: req.user.id }}).then(personality => {
 
@@ -465,7 +454,6 @@ router.post('/:username/img/ogp', authenticationEnsurer, csrfProtection, upload.
     });
   });
 });
-
 
 // DELETE:account
 router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
@@ -513,7 +501,7 @@ function imageValidation(tmpFile) {
 }
 
 async function saveImage(username, suffix, tmpPath, frame_w, frame_h, mimeType) {
-  let destPath = `i/${username}/img/${username}_${suffix}${getExt(mimeType)}`;
+  let destPath = `i/${username}/${username}_${suffix}${getExt(mimeType)}`;
   let img = await Jimp.read(tmpPath);
   let w = img.bitmap.width;
   let h = img.bitmap.height;
@@ -544,8 +532,8 @@ async function createOgpImage(username, file) {
   let mimeType = "image/jpeg";
   let frame_w = 1200;
   let frame_h = 630;
-  let waterPath = "public/img/meish_logo_water.png";
-  let destPath = `i/${username}/img/${username}_ogp${getExt(mimeType)}`;
+  let waterPath = "public/img/logos/meish_logo_water.png";
+  let destPath = `i/${username}/${username}_ogp${getExt(mimeType)}`;
   let origin = await Jimp.read(file.path);
 
   // アップロード画像リサイズ

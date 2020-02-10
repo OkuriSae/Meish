@@ -1,0 +1,19 @@
+#TopSection::before{
+  content: '';
+  display:block;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+  width:100%;
+  height: 100vh;
+  background:url('/img/meish_back.jpg');
+  background-position:  center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-background-size:cover;
+}
+
+.sensitive_on {
+  filter: blur(5px);
+}

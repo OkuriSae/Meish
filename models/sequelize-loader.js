@@ -3,7 +3,8 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
   process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost/meish',
   {
-    operatorsAliases: false
+    operatorsAliases: false,
+    logging: false 
   });
 
 module.exports = {

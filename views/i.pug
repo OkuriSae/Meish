@@ -14,9 +14,13 @@ block meta
   meta(name="twitter:card" content="summary_large_image")
   meta(name="twitter:site" content="@"+owner.username)
 
+  link(rel="stylesheet" href="/css/i/i.css")
+  if !(mode == "edit")
+    link(rel="stylesheet" href="/css/i/notme.css")
+
 block content
   // 背景を固定化するCSS（スマホで背景流れちゃう対策）
-  - var back = personality.logo_path ? personality.logo_path : '/img/meish_logo_lerge.png'
+  - var back = personality.logo_path ? personality.logo_path : '/img/logos/meish_logo_back.png'
   style(type="text/css").
     body::before{
       content: '';
@@ -192,7 +196,7 @@ block content
                             a(href=activity.link target="_blank").no-shadow
                               - serviceIcon = serviceIcons[activity.link.split('/')[2]]
                               - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
-                              img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                              img(src="/img/i/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
                               span.mx-2 #{activity.name}
                         else
                           span #{activity.name}
@@ -207,7 +211,7 @@ block content
                             a(href=cheer.link target="_blank").no-shadow
                               - serviceIcon = serviceIcons[cheer.link.split('/')[2]]
                               - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
-                              img(src="/img/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
+                              img(src="/img/i/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
                               span.mx-2 #{cheer.name}
                         else
                           span #{cheer.name}
@@ -247,14 +251,12 @@ block content
 
   // 立ち絵
   if tachies.length > 0 || (isMe && mode == "edit")
-    // 背景
-    - var logo_path = personality.logo_path ? personality.logo_path : "/img/meish_logo_lerge.png";
     // コンテンツ
     .parallax-content
       +subSection('立ち絵')
         .d-flex.flex-wrap
             // 初期表示
-            - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
+            - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
             each tachie in tachiesView
               .col-sm.mx-auto.m-2
                 .tachie.card
@@ -273,7 +275,7 @@ block content
         p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
       .container.mx-auto
         .card
-          - var design_path = personality.design_path ? personality.design_path : "/img/add.png";
+          - var design_path = personality.design_path ? personality.design_path : "/img/i/add.png";
           - var description = personality.design_path ? personality.design_comment : "キャラデザの詳細とか書けます";
           div.rounded.img-fluid.card-img-top
             img(src=`${design_path}` style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
@@ -289,7 +291,7 @@ block content
           br
           | イメージ画像やキャラクターロゴを設定してください
         .container.mx-auto
-          - var logoPath = personality.logo_path ? personality.logo_path : "/img/add.png";
+          - var logoPath = personality.logo_path ? personality.logo_path : "/img/i/add.png";
           .text-center
             .card
               div.rounded.img-fluid.card-img-top
@@ -301,7 +303,7 @@ block content
       +subSection('OGPイメージ', 'bg-white')
         p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
         .container.mx-auto
-          - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/add.png";
+          - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/i/add.png";
           .text-center
             .card
               div.rounded.img-fluid.card-img-top
@@ -345,9 +347,9 @@ block content
         #ProfileImage
       
           // 既存の画像
-          - var backSample = personality.back_path ? personality.back_path : "/img/nobackimage.jpg";
+          - var backSample = personality.back_path ? personality.back_path : "/img/i/nobackimage.jpg";
           div(style=`background-image: url('${backSample}'); background-size: cover; border-radius:10px;width:75%;margin:auto;`).backImagePreview.imagePreview
-            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/noTachie.png'); background-position: bottom right;`;
+            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/i/noTachie.png'); background-position: bottom right;`;
             div(style=tachieSample).profileImagePreview.imagePreview
          
           div
@@ -441,7 +443,7 @@ block content
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
 
     // 立ち絵モーダル
-    +modal({name: 'Tachie', action: '/img/tachie', title: '立ち絵', enctype: "multipart/form-data"})
+    +modal({name: 'Tachie', action: '/tachie', title: '立ち絵', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         // 対象
         select(name="target")#TachieSelection.form-control.my-2
@@ -474,10 +476,10 @@ block content
           small 2MB以下, jpg/png, 300x600px以上推奨, 5枚まで
 
     // キャラクターデザインモーダル
-    +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
+    +modal({name: 'Design', action: '/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").design.upload.imagePreview
-        - var designSample = personality.design_path ? personality.design_path : "/img/noimage.jpg";
+        - var designSample = personality.design_path ? personality.design_path : "/img/i/noimage.jpg";
         div(style=`background-image: url('${designSample}');`).design.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
@@ -488,10 +490,10 @@ block content
           small 2MB以下, 1920x1080px以下-jpg推奨
 
     // キャラクターロゴモーダル
-    +modal({name: 'Logo', action: '/img/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})
+    +modal({name: 'Logo', action: '/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none;").logo.upload.imagePreview
-        - var logoSample = personality.logo_path ? personality.logo_path : "/img/noimage.jpg";
+        - var logoSample = personality.logo_path ? personality.logo_path : "/img/i/noimage.jpg";
         div(style=`background-image: url('${logoSample}');`).logo.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
@@ -500,10 +502,10 @@ block content
           small 2MB以下, 1920x1080px-jpg推奨
 
     // OGPモーダル
-    +modal({name: 'Ogp', action: '/img/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
+    +modal({name: 'Ogp', action: '/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
         div(style="display:none; background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;").ogp.upload.imagePreview
-        - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/noimage.jpg";
+        - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/i/noimage.jpg";
         div(style=`background-image: url('${ogpSample}'); background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;`).ogp.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
