@@ -48,8 +48,12 @@ block content
                 - var style=`width: 100%; height: 100%; ${result.isSensitive ? "filter: blur(5px);" : ""} background-image: url(${s3+result.thumbnail_path}); background-size: contain; background-repeat: no-repeat; background-position: center;`
                 div(style=style).card-img-top
 
+    if results && results.length == 30
+      div.d-flex.flex-wrap.justify-content-around
+        a(href="/all")
+          button.btn.btn-outline-info.m-3 全部見る（重いかも）
+
     if userCount
       div.text-center
         h6
           small.text-secondary Total #{userCount} characters.
-    script(data-ad-client="ca-pub-8262966340736688" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
