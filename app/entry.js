@@ -8,8 +8,8 @@ global.jQuery = $;
 const imageValidate = (fileInput, form) => {
   let img = fileInput.prop('files')[0]; 
   if (!img) { return true; }
-  if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(img.name) || !/(jpg|jpeg|png|gif)$/.test(img.type)) {
-    alert('JPG、GIF、PNGファイルの画像を添付してください。');
+  if (!/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/.test(img.name) || !/(jpg|jpeg|png)$/.test(img.type)) {
+    alert('JPG、PNGファイルの画像を添付してください。');
     $(fileInput).val(""); 
     return false;
   } else if (2*(1024**2) < img.size) {

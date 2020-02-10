@@ -354,11 +354,11 @@ block content
             // 背景画像ファイルInput
             label.input-group-btn.m-2
               span.btn.btn-primary 背景画像を選択
-                input(type="file" name="back" accept="image/jpeg, image/gif, image/png" style="display:none;")#BackImageFileInput.form-control.my-2
+                input(type="file" name="back" accept="image/jpeg, image/png" style="display:none;")#BackImageFileInput.form-control.my-2
             // プロフィール画像ファイルInput
             label.input-group-btn.m-2
               span.btn.btn-primary 立ち絵を選択
-                input(type="file" name="tachie" accept="image/jpeg, image/gif, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+                input(type="file" name="tachie" accept="image/jpeg, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
         
           .text-secondary.mb-2
             small 背景: 2MB以下, 1920x1080px以上, 横長jpg推奨
@@ -459,7 +459,7 @@ block content
         // ファイル選択
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
-            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#TachieFileInput.form-control.my-2
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#TachieFileInput.form-control.my-2
         // 検索サムネにする
         div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check
           input(type="checkbox" name="useThumbnail")#ThumbnailCheck.form-check-input.my-2
@@ -471,7 +471,7 @@ block content
         input(type="text" placeholder="タイトル [20文字まで]" name="name" maxlength="20").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント [60文字まで]" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
         .text-secondary
-          small 2MB以下, jpg/png/gif, 300x600px以上推奨, 5枚まで
+          small 2MB以下, jpg/png, 300x600px以上推奨, 5枚まで
 
     // キャラクターデザインモーダル
     +modal({name: 'Design', action: '/img/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
@@ -481,7 +481,7 @@ block content
         div(style=`background-image: url('${designSample}');`).design.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
-            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#DesignFileInput.form-control.my-2
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#DesignFileInput.form-control.my-2
         textarea(placeholder="コメント [200文字まで]" rows="4" name="comment" maxlength="200").form-control.my-2
           | #{personality.design_comment}
         .text-secondary
@@ -495,7 +495,7 @@ block content
         div(style=`background-image: url('${logoSample}');`).logo.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
-            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#LogoFileInput.form-control.my-2
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#LogoFileInput.form-control.my-2
         .text-secondary
           small 2MB以下, 1920x1080px-jpg推奨
 
@@ -507,7 +507,7 @@ block content
         div(style=`background-image: url('${ogpSample}'); background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;`).ogp.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
-            input(type="file" name="img" style="display:none" accept="image/jpeg, image/gif, image/png" required)#OgpFileInput.form-control.my-2
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#OgpFileInput.form-control.my-2
         .text-secondary
           small 2MB以下, jpg推奨, 1200x630に拡大/縮小されます
           br

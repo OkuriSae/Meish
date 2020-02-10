@@ -38,8 +38,6 @@ let getExt = (mimeType) => {
       return ".jpg";
     case "image/png":
       return ".png";
-    case "image/gif":
-      return ".gif";
     default:
       return ".jpg";
   }
@@ -506,7 +504,7 @@ async function deleteUser(user) {
 
 function imageValidation(tmpFile) {
     let allowFileSize = 2 * (1024 ** 2); // 2MiB
-    let allowMimeTypes = ['image/png', 'image/jpeg', 'image/gif'];
+    let allowMimeTypes = ['image/png', 'image/jpeg'];
     let ext = Path.extname(tmpFile.originalname);
     
     if (tmpFile.size > allowFileSize) { throw new Error('filesize'); } 
