@@ -21,6 +21,17 @@ router.get('/', (req, res, next) => {
   })();
 });
 
+router.get('/tag_suggest', (req, res, next) => {
+  (async () => {
+    res.render('index', {
+      me: req.user,
+      s3: process.env.s3Path,
+      tags: await getTags(),
+      tag_suggest: true
+    });
+  })();
+});
+
 router.get('/search', (req, res, next) => {
   let query = req.query.query;
   (async () => {

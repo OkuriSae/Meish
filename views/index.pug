@@ -17,8 +17,8 @@ block content
     div.text-center
       div(style="height:100px;").logo.mb-4
       h6.m-3 バーチャルキャラクターのためのプロフィール登録サービス
-      .tags.mt-5
-        div.m-2
+      div(style=`${ tag_suggest ? "display:none;" : ""}`).tags.mt-5
+        .m-2
           - var topTag = tags.slice(0,15)
           each tag in topTag
             - var tagLink = "/search?query=" + tag.tagname
@@ -28,16 +28,17 @@ block content
               span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
           button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span ...
-      div(style="display:none;").tags
-        div.m-2
+      div(style=`${ tag_suggest ? "" : "display:none;"}`).tags.mt-5
+        .m-2
           each tag in tags.slice(0,300)
             - var tagLink = "/search?query=" + tag.tagname
             - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
             - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
             a(href=tagLink)
               span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
-          button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
-            span Close
+          if !tag_suggest
+            button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
+              span Close
 
     div.d-flex.flex-wrap.justify-content-around
       if results
@@ -53,11 +54,12 @@ block content
       if results && results.length == 30
         a(href="/allusers")
           button.btn.btn-outline-info.m-3 全部見る（重いかも）
-      
-      .align-middle.form-check
-        input(type="checkbox" name="isSensitive" onclick="$('.sensitive').toggleClass('sensitive_on');")#sensitiveCheck.form-check-input.my-2
-        label(for="sensitiveCheck").form-check-label
-          span センシティブな表現が含まれるキャラクターも見る
+
+      if results
+        .align-middle.form-check
+          input(type="checkbox" name="isSensitive" onclick="$('.sensitive').toggleClass('sensitive_on');")#sensitiveCheck.form-check-input.my-2
+          label(for="sensitiveCheck").form-check-label
+            span センシティブな表現が含まれるキャラクターも見る
 
     if userCount
       div.text-center.mt-5
