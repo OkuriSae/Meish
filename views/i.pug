@@ -150,11 +150,13 @@ block content
                 - serviceIcons["mobile.twitter.com"] = "twitter_icon.png"
                 - serviceIcons["www.youtube.com"] = "youtube_icon.png"
                 - serviceIcons["m.youtube.com"] = "youtube_icon.png"
+                - serviceIcons["youtu.be"] = "youtube_icon.png"
                 - serviceIcons["marshmallow-qa.com"] = "marshmallow_icon.png"
                 - serviceIcons["coconala.com"] = "coconala_icon.jpg"
                 - serviceIcons["17.live"] = "17.live_icon.png"
                 - serviceIcons["com.nicovideo.jp"] = "niconico_icon.png"
                 - serviceIcons["www.nicovideo.jp"] = "niconico_icon.png"
+                - serviceIcons["nico.ms"] = "niconico_icon.png"
                 - serviceIcons["discord.gg"] = "discord_icon.png"
                 - serviceIcons["nana-music.com"] = "nana_icon.png"
                 - serviceIcons["note.com"] = "note_icon.png"
@@ -175,6 +177,14 @@ block content
                 - serviceIcons["steamcommunity.com"] = "steam_icon.png"
                 - serviceIcons["soundcloud.com"] = "soundcloud_icon.png"
                 - serviceIcons["www.amazon.co.jp"] = "amazon_icon.png"
+                - serviceIcons["www.amazon.jp"] = "amazon_icon.png"
+                - serviceIcons["giftee.co"] = "giftee_icon.png"
+                - serviceIcons["store.line.me"] = "line_icon.png"
+                - serviceIcons["topia.tv"] = "topia_icon.jpg"
+                - serviceIcons["virtual-youtuber.userlocal.jp"] = "userlocal_icon.jpeg"
+                - serviceIcons["vtuber-post.com"] = "vpos_icon.png"
+                - serviceIcons["profile.coconala.com"] = "coconala_icon.jpg"
+                - serviceIcons["vtubers.love"] = "vtubers_icon.png"
                   
                 // ハッシュタグ
                 if hashTags.length > 0 || (isMe && mode == "edit")
@@ -195,6 +205,8 @@ block content
                           b
                             a(href=activity.link target="_blank").no-shadow
                               - serviceIcon = serviceIcons[activity.link.split('/')[2]]
+                              - serviceIcon = activity.link.match('booth') ? "booth_icon.png" : serviceIcon
+                              - serviceIcon = activity.link.match('fanbox') ? "fanbox_icon.jpg" : serviceIcon
                               - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
                               img(src="/img/i/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
                               span.mx-2 #{activity.name}
@@ -210,6 +222,8 @@ block content
                           b
                             a(href=cheer.link target="_blank").no-shadow
                               - serviceIcon = serviceIcons[cheer.link.split('/')[2]]
+                              - serviceIcon = cheer.link.match('booth') ? "booth_icon.png" : serviceIcon
+                              - serviceIcon = cheer.link.match('fanbox') ? "fanbox_icon.jpg" : serviceIcon
                               - serviceIcon = serviceIcon ? serviceIcon : "meish_icon.png"
                               img(src="/img/i/serviceIcons/"+serviceIcon style="width:22px;padding-bottom:4px;")
                               span.mx-2 #{cheer.name}
