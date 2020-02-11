@@ -66,20 +66,6 @@ $('#QueryInput').keypress((e) => {
   }
 });
 
-// 画像アップロードのプレビュー表示
-const setPreview = (fileInput, view, success) => {
-  $(fileInput).change((e) => {
-    if (imageValidate($(fileInput))) {
-      let file = e.target.files[0];
-      let blobUrl = window.URL.createObjectURL(file);
-      $(view).css('background-image', `url('${blobUrl}')`);
-      if (success) {
-        success(file, $(view));
-      }
-    } 
-  });
-}
-
 // 新規追加or編集のスイッチャー
 const targetSwitcher = (selection, deleteBtn, cb) => {
   $(selection).change(() => {
@@ -92,15 +78,6 @@ const targetSwitcher = (selection, deleteBtn, cb) => {
     cb(idx);
   });
 }
-
-const setDeleteBtn = (deleteBtn, deleteHidden, deleteForm) => {
-  $(deleteBtn).on('click', () => {
-    $(deleteHidden).val(1);
-    $(deleteForm).submit();
-  });
-}
-
-// ターゲット切り替え
 targetSwitcher('#HashTagSelection', '#HashTagDeleteBtn', i => {
   $(`#HashTagNameForm`).val($(`.${i}.hashTagHidden`).attr('name'));
   $(`#HashTagCommentForm`).val($(`.${i}.hashTagHidden`).attr('comment'));
@@ -127,7 +104,19 @@ targetSwitcher('#TachieSelection', '#TachieDeleteBtn', i => {
   $('#ThumbnailCheckForm').hide();
 });
 
-// アップロードのプレビュー表示
+// 画像アップロードのプレビュー表示
+const setPreview = (fileInput, view, success) => {
+  $(fileInput).change((e) => {
+    if (imageValidate($(fileInput))) {
+      let file = e.target.files[0];
+      let blobUrl = window.URL.createObjectURL(file);
+      $(view).css('background-image', `url('${blobUrl}')`);
+      if (success) {
+        success(file, $(view));
+      }
+    } 
+  });
+}
 setPreview('#ProfileImageFileInput', '.profileImagePreview.imagePreview');
 setPreview('#BackImageFileInput', '.backImagePreview.imagePreview');
 setPreview('#TachieFileInput', '.tachie.upload.imagePreview', (file, preview) => {
@@ -163,56 +152,54 @@ setPreview('#OgpFileInput', '.ogp.upload.imagePreview', (file, preview) => {
   */
 });
 
-// 更新
-$('#BasicInfoSubmitBtn').on('click', () => {
-  if (imageValidate($('#BackImageFileInput')) && imageValidate($('#ProfileImageFileInput'))) {
-    $('#BasicInfoForm').submit();
-  }
-});
-$('#HashTagSubmitBtn').on('click', () => { $('#HashTagForm').submit(); });
-$('#ActivitySubmitBtn').on('click', () => { $('#ActivityForm').submit(); });
-$('#CheeringSubmitBtn').on('click', () => { $('#CheeringForm').submit(); });
-$('#ParentSubmitBtn').on('click', () => {
-  $('#ParentForm').submit();
-});
-$('#TachieSubmitBtn').on('click', () => {
-  if (imageValidate($('#TachieFileInput'))) {
-    $('#TachieForm').submit();
-  }
-});
-$('#DesignSubmitBtn').on('click', () => {
-  if (imageValidate($('#DesignFileInput'))) {
-    $('#DesignForm').submit();
-  }
-});
-$('#MovieSubmitBtn').on('click', () => { $('#MovieForm').submit(); });
-$('#LogoSubmitBtn').on('click', () => {
-  if (imageValidate($('#LogoFileInput'))) {
-    $('#LogoForm').submit();
-  }
-});
-$('#OgpSubmitBtn').on('click', () => {
-  if (imageValidate($('#OgpFileInput'))) {
-    $('#OgpForm').submit();
-  }
+// 更新アクションの設定
+[ { key: 'BasicInfo', images: ['BackImage', 'ProfileImage'] },
+  { key: 'HashTag', images: null },
+  { key: 'Activity', images: null },
+  { key: 'Cheering', images: null },
+  { key: 'Parent', images: null },
+  { key: 'HashTag', images: null },
+  { key: 'Tachie', images: ['Tachie'] },
+  { key: 'Design', images: ['Design'] },
+  { key: 'Movie', images: null },
+  { key: 'Logo', images: ['Logo'] },
+  { key: 'Ogp', images: ['Ogp'] },
+].forEach( (e) => {
+  $(`#${e.key}SubmitBtn`).on('click', () => {
+    if (e.images) {
+      let validationResults = e.images.map( img => {
+        return imageValidate($(`#${img}FileInput`));
+      });
+      if (validationResults.includes(false)) {
+        return;
+      }
+    }
+    $(`#${e.key}Form`).submit();
+    $('#loading').show();
+  });
 });
 
-// 削除
-$('#BasicInfoDeleteBtn').hide();
-$('#ActivityDeleteBtn').hide();
-setDeleteBtn('#ActivityDeleteBtn', '#ActivityDeleted', '#ActivityForm');
-$('#HashTagDeleteBtn').hide();
-setDeleteBtn('#HashTagDeleteBtn', '#HashTagDeleted', '#HashTagForm');
-$('#CheeringDeleteBtn').hide();
-setDeleteBtn('#CheeringDeleteBtn', '#CheeringDeleted', '#CheeringForm');
-$('#ParentDeleteBtn').hide();
-setDeleteBtn('#ParentDeleteBtn', '#ParentDeleted', '#ParentForm');
-$('#TachieDeleteBtn').hide();
-setDeleteBtn('#TachieDeleteBtn', '#TachieDeleted', '#TachieForm');
-setDeleteBtn('#DesignDeleteBtn', '#DesignDeleted', '#DesignForm');
-setDeleteBtn('#MovieDeleteBtn', '#MovieDeleted', '#MovieForm');
-setDeleteBtn('#LogoDeleteBtn', '#LogoDeleted', '#LogoForm');
-setDeleteBtn('#OgpDeleteBtn', '#OgpDeleted', '#OgpForm');
+// 削除アクションの設定
+[ { key: 'BasicInfo' , hide: true },
+  { key: 'Activity' , hide: true },
+  { key: 'HashTag' , hide: true },
+  { key: 'Cheering' , hide: true },
+  { key: 'Parent' , hide: true },
+  { key: 'Tachie' , hide: true },
+  { key: 'Design' , hide: false },
+  { key: 'Movie' , hide: false },
+  { key: 'Logo' , hide: false },
+  { key: 'Ogp' , hide: false },
+].forEach( (e) => {
+  if (e.hide) {
+    $(`#${e.key}DeleteBtn`).hide();
+  }
+  $(`#${e.key}DeleteBtn`).on('click', () => {
+    $(`#${e.key}Deleted`).val(1);
+    $(`#${e.key}Form`).submit();
+    $('#loading').show();
+  });
+});
 
 /* Vibrant容量おっきいのでいったんなし
 $(() => {
