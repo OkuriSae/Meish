@@ -149,3 +149,20 @@ ul {
 p {
   margin-bottom:0.8rem;
 }
+
+.thanks {
+  width: 200px;
+  height: 60px;
+  background-position: center;
+  background-size: cover;
+  border-radius:5px;
+}
+
+.thanks-btn {
+  background-color: rgba(255,255,255,0.8);
+  text-shadow: 0px 1px #FFFFFFAA;
+}
+
+.thanks-btn:hover{
+  text-shadow: 0px 0px;
+}

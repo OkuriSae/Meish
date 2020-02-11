@@ -2,17 +2,92 @@ extends layout/layout
 
 block content
   
-  div(style="width:100%; max-width:800px; margin:auto;")#about.text-center
+  div(style="width:100%; max-width:1200px; margin:auto;")#about.text-center
     section.page-section
       .logo
       h1.m-4 Special Thanks!
 
     section#terms.page-section
       h1.text-info βTesters
-      h6 Meish*のβテストに参加してくれた方々
+      h6 Meish*のβテストに参加してくれた方々（一部）
       hr.text-primary
       .d-flex.flex-wrap.justify-content-center
-        each tester in betatesters
-            p(style="width:200px;")
-              a(href=tester.link) #{tester.name}
-            
+        - var thanks = []
+        - thanks.push({id: 'miyu430', name: '光幸'});
+        - thanks.push({id: 'Mosco_Japan', name: 'Mosco（もすこ）'});
+        - thanks.push({id: 'Amamiya_Conoha', name: '甘味夜木乃葉'});
+        - thanks.push({id: 'mame0635', name: 'まめにゃん'});
+        - thanks.push({id: 'milana_lavina', name: 'ミラナ・ラヴィーナ'});
+        - thanks.push({id: 'MER_ONLYp', name: 'MER-メール-'});
+        - thanks.push({id: 'meeko_yagi', name: '矢木めーこ'});
+        - thanks.push({id: 'leon_hearts__', name: 'レオン・ハーツ'});
+        - thanks.push({id: 'formerdemonking', name: '元魔王MAO'});
+        - thanks.push({id: 'shimanaga_ena', name: 'シマナガエナ'});
+        - thanks.push({id: 'makikonohara', name: 'このはらまき'});
+        - thanks.push({id: 'V_kurokuro', name: 'kuro:a'});
+        - thanks.push({id: 'SR_VTuber', name: '木龍せり'});
+        - thanks.push({id: 'V_Alchemist', name: '☆天才美少女錬金術師クラリスちゃん☆'});
+        - thanks.push({id: 'tamanakinaru', name: '珠鳴なる'});
+        - thanks.push({id: 'yunyunQ7', name: '叶兎ユニ'});
+        - thanks.push({id: 'Ten_96V', name: '黒良　天'});
+        - thanks.push({id: 'hourimico', name: '鳳梨みこ'});
+        - thanks.push({id: 'Hinamori_Rico', name: 'Hinamori_Rico'});
+        - thanks.push({id: 'suica_saku', name: '星空スイカ'});
+        - thanks.push({id: 'moyashi81', name: 'もやし'});
+        - thanks.push({id: 'yuruico_2go', name: '毘沙門天ゆるいこ'});
+        - thanks.push({id: 'Umbrasan', name: 'υμβραν'});
+        - thanks.push({id: '3po_michi', name: '三歩未知'});
+        - thanks.push({id: 'AoinekoVtuber', name: 'アオイネコ'});
+        - thanks.push({id: 'Su1_Sakura', name: '咲良スイ'});
+        - thanks.push({id: 'kuzunohasuzuha', name: 'くずのはスズハ'});
+        - thanks.push({id: 'poyajuv', name: 'ぽやーじゅ'});
+        - thanks.push({id: 'Mystia', name: 'Mystia'});
+        - thanks.push({id: 'hayanagi_tigusa', name: '葉柳ちぐさ'});
+        - thanks.push({id: 'chicha_farmer', name: '十六夜 千夜'});
+        - thanks.push({id: 'Higure_Izumi?mode=edit', name: '和泉緋紅'});
+        - thanks.push({id: 'chiroru_vt', name: '📦甘箱 ちろる🍫'});
+        - thanks.push({id: 'SR_VTuber', name: '木龍せり'});
+        - thanks.push({id: 'YaduAM_', name: '星空 夜月'});
+        - thanks.push({id: 'Nego_Floro', name: '花雪 桔梗'});
+        - thanks.push({id: 'Mea_Chigaya', name: '茅妹愛'});
+        - thanks.push({id: 'Maron_Vtuber', name: '八ツ橋まろん'});
+        - thanks.push({id: 'narumiya_koto', name: '鳴宮こと'});
+        - thanks.push({id: 'Chiroru_h1006', name: '星空チロル'});
+        - thanks.push({id: 'yasai_ichini', name: '野菜ゆうき'});
+        - thanks.push({id: 'Calra_Chan', name: 'カルラちゃん'});
+        - thanks.push({id: 'Ren221bVtuber', name: '立花レン'});
+        - thanks.push({id: 'YUKINEKO0O', name: '朝倉 ゆきね'});
+        - thanks.push({id: 'erukamea', name: '頼宮エルカ/メア'});
+        - thanks.push({id: 'NKuwon', name: '野宮狗音'});
+        - thanks.push({id: 'souha0730', name: '相羽いとい🎨☕'});
+        - thanks.push({id: 'HarunoKoneko', name: '春乃こね子'});
+        - thanks.push({id: 'algomk4', name: 'ALGO(Alugo)'});
+        - thanks.push({id: 'KurukuruOuka', name: '久瑠璃桜華 🌙 🌸ぽんこつVtuber(Vウィッチ)'});
+        - thanks.push({id: 'enpel', name: 'えんぺる'});
+        - thanks.push({id: 'tamayurasouki', name: '珠響そうき'});
+        - thanks.push({id: 'HAL_itika', name: '✾✞しゅうとう はるか✞✾'});
+        - thanks.push({id: 'shibue_hasuki', name: '渋江はすき'});
+        - thanks.push({id: 'sukeimu_v', name: 'レナス・スケイム'});
+        - thanks.push({id: 'uguisu8moti', name: 'うぐいすもち🐥🌸ばーちゃる吟詠うぐいす'});
+        - thanks.push({id: '821_wakana', name: '葉新 ワカナ / hanii wakana'});
+        - thanks.push({id: 'ikki_aoba', name: '一鬼青葉'});
+        - thanks.push({id: 'amanekudoh', name: '九藤周'});
+        - thanks.push({id: 'monaka_yui001?mode=edit', name: '最中ゆい'});
+        - thanks.push({id: 'y_cohina', name: '宵闇コヒナ'});
+        - thanks.push({id: 'suzuki_ravi', name: '鈴木ラヴィ'});
+        - thanks.push({id: 'ikasu_saamon', name: '佐門さぁーもん'});
+        - thanks.push({id: 'shinobu_kiki', name: '機鬼しのぶ'});
+        - thanks.push({id: 'terunari', name: '輝鳴紅葉(ルミナスタジオ)'});
+        - thanks.push({id: 'b0xp2', name: '一箱（BOXP）'});
+        - thanks.push({id: 'Tsukimori_Izumi', name: '月森イズミ'});
+        - thanks.push({id: 'IMAWAMADA_seiga', name: '今和間田せぃが'});
+        - thanks.push({id: 'miyu430', name: '光幸'});
+        - thanks.push({id: 'Vtuber84406321?mode=edit', name: '遊我★ただの喋り好き関西人Vtuber★'});
+        - thanks.push({id: 'PMoromizato', name: '諸見里パトリシア'});
+        - thanks.push({id: 'sorano_mile', name: '空乃まいる'});
+        - thanks.push({id: 'u_tan_vt', name: 'うーたん💤@バ美肉眠り姫vtuber'});
+        each t in thanks
+          a(href="/i/"+t.id target='_blank').m-3
+            div(style=`background-image: url('https://meish.s3-ap-northeast-1.amazonaws.com/i/${t.id}/img/${t.id}_ogp.jpg');`).thanks
+              button.thanks-btn.w-100.h-100.btn.btn-outline-info
+                b #{t.name}
