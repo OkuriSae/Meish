@@ -236,7 +236,10 @@ block content
           each parent in parents
             div
               - var parentDisplay = parent.relationship ? `${parent.relationship}: ${parent.name}` : parent.name
-              a(href=parent.link) #{parentDisplay}
+              if parent.link
+                a(href=parent.link) #{parentDisplay}
+              else
+                span #{parentDisplay}
         else
           h5.edit 関係者・協力者
         i(data-toggle="modal" data-target="#ParentModal" style="cursor: pointer;").fas.fa-pen.text-info.edit
