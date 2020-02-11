@@ -395,6 +395,39 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
   });
 });
 
+// POST: movie url
+router.post('/:username/movie', authenticationEnsurer, csrfProtection, (req, res, next) => {
+  User.findOne({where: { userId: req.user.id }}).then(user => {
+    Personality.findOne({where: { userId: req.user.id }}).then(personality => {
+
+      if (!isDeletePost(req)) {
+        let getYouTubeId = (url) => {
+          return url ?
+          url.replace('https://youtu.be/', '')
+          .replace('https://www.youtube.com/watch?v=', '')
+          .replace('https://www.youtube.com/embed/', '') : '';
+        };
+        (async () => {
+          console.log(req.body.movie_url);
+          let updateData = { movie_id: getYouTubeId(req.body.movie_url).slice(0, 100) };
+          console.log(updateData);
+          await personality.update(updateData);
+          redirectHome(req, res);
+        })();
+
+      } else {
+        // image destroy
+        (async () => {
+          await personality.update({
+            movie_id: '',
+          })
+          redirectHome(req, res);
+        })();
+      }
+    });
+  });
+});
+
 // POST:logo
 router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   User.findOne({where: { userId: req.user.id }}).then(user => {
@@ -406,7 +439,7 @@ router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.sin
           if (req.file) {
             await deleteImage(personality.logo_path);
             imageValidation(req.file);
-            let destPath = await saveImage(user.username, 'logo', req.file.path, 1920, 1080, "image/jpg");
+            let destPath = await saveImage(user.username, 'logo', req.file.path, 1920, 1080, "image/jpeg");
             await personality.update({ logo_path: destPath });
           }
           redirectHome(req, res);
@@ -445,8 +478,8 @@ router.post('/:username/ogp', authenticationEnsurer, csrfProtection, upload.sing
       } else {
         // image destroy
         (async () => {
-          await deleteImage(personality.logo_path);
-          await personality.update({ logo_path: '' });
+          await deleteImage(personality.ogp_path);
+          await personality.update({ ogp_path: '' });
           redirectHome(req, res);
         })();
 

@@ -80,6 +80,10 @@ const Personality = loader.database.define('personalities', {
       return relativePath ? process.env.s3Path + relativePath : "";
     } 
   },
+  movie_id: {
+    type: Sequelize.STRING,
+    allowNull: true
+  },
   isSensitive: {
     type: Sequelize.STRING,
     allowNull: true

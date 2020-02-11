@@ -235,81 +235,88 @@ block content
         if parents.length != 0
           each parent in parents
             div
-              a(href=parent.link) #{parent.relationship}: #{parent.name}
+              - var parentDisplay = parent.relationship ? `${parent.relationship}: ${parent.name}` : parent.name
+              a(href=parent.link) #{parentDisplay}
         else
-          h5.edit 協力者
-            small （ママ/パパなど）
+          h5.edit 関係者・協力者
         i(data-toggle="modal" data-target="#ParentModal" style="cursor: pointer;").fas.fa-pen.text-info.edit
 
   // サブセクション雛形
   mixin subSection(title,bg)
     section(class=bg)#about.page-section
       div(style="max-width:100%;").container
-        .row.justify-content-center
-          .text-center
+        .text-center
+          if title
             h1 #{title}
             hr.divider.my-4
-            block
+          block
 
   // 立ち絵
   if tachies.length > 0 || (isMe && mode == "edit")
     // コンテンツ
-    .parallax-content
-      +subSection('立ち絵')
-        .d-flex.flex-wrap
-            // 初期表示
-            - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
-            each tachie in tachiesView
-              .col-sm.mx-auto.m-2
-                .tachie.card
-                  // 画像
-                  img(src=`${tachie.path}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
-                  if tachie.name || tachie.comment
-                    div(style="background-color:rgba(255,255,255,1.00);").card-body
-                      // タイトル、コメント
-                      h5.card-title #{tachie.name}
-                      p.card-text #{tachie.comment}
+    +subSection('立ち絵')
+      .d-flex.flex-wrap
+          // 初期表示
+          - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
+          each tachie in tachiesView
+            .col-sm.mx-auto.m-2
+              .tachie.card
+                // 画像
+                img(src=`${tachie.path}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
+                if tachie.name || tachie.comment
+                  div(style="background-color:rgba(255,255,255,1.00);").card-body
+                    // タイトル、コメント
+                    h5.card-title #{tachie.name}
+                    p.card-text #{tachie.comment}
 
   // キャラデザ
   if personality.design_path || (isMe && mode == "edit")
     +subSection('キャラクターデザイン', 'bg-white')
-      if isMe && mode == "edit"
-        p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
-      .container.mx-auto
-        .card
-          - var design_path = personality.design_path ? personality.design_path : "/img/i/add.png";
-          - var description = personality.design_path ? personality.design_comment : "キャラデザの詳細とか書けます";
-          div.rounded.img-fluid.card-img-top
-            img(src=`${design_path}` style="max-width:100%; max-height:600px;" data-toggle="modal" data-target="#DesignModal")
-          if description
-            .card-body
-              p(style="white-space:pre-wrap;").card-text #{description}
+        if isMe && mode == "edit"
+          p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
+        .row.justify-content-center
+          .card
+            - var design_path = personality.design_path ? personality.design_path : "/img/i/add.png";
+            - var description = personality.design_path ? personality.design_comment : "キャラデザの詳細とか書けます";
+            div.rounded.img-fluid.card-img-top
+              img(src=`${design_path}` style="max-width:100%; max-height:500px;" data-toggle="modal" data-target="#DesignModal")
+            if description
+              .card-body
+                p(style="white-space:pre-wrap;").card-text #{description}
 
-  // キャラクターロゴ
+  // 紹介動画
+  if personality.movie_id || (isMe && mode == "edit")
+    +subSection('紹介動画')
+      if isMe && mode == "edit"
+        p.text-secondary YouTubeのみ対応
+        button(data-toggle="modal" data-target="#MovieModal").btn.btn-info.m-3 動画URLを入力
+      if personality.movie_id
+        div(style="width:90%; max-width:640px;").mx-auto.m-4
+          .youtube-inner
+            iframe(width="640" height="360" src="https://www.youtube.com/embed/"+personality.movie_id frameborder="0" allow="autoplay; encrypted-media" allowfullscreen).mx-auto
+
+  // ロゴ/背景
   if isMe && mode == "edit"
     div.edit
-      +subSection('キャラクターロゴ', 'bg-white')
+      +subSection('ロゴ/背景', 'bg-white')
         p.text-secondary ページ背景に表示されます
           br
           | イメージ画像やキャラクターロゴを設定してください
-        .container.mx-auto
+        .row.justify-content-center
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/i/add.png";
-          .text-center
             .card
               div.rounded.img-fluid.card-img-top
-                img(src=`${logoPath}` style="width:auto;max-width:100%;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
+                img(src=`${logoPath}` style="width:auto;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
 
   // OGP画像
   if isMe && mode == "edit"
     div.edit
-      +subSection('OGPイメージ', 'bg-white')
+      +subSection('OGPイメージ')
         p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
-        .container.mx-auto
           - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/i/add.png";
-          .text-center
-            .card
-              div.rounded.img-fluid.card-img-top
-                img(src=`${ogpPath}` style="max-width:600px;width:100%" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+          div(style="max-width:600px;").card.mx-auto
+            div.rounded.img-fluid.card-img-top
+              img(src=`${ogpPath}` style="width:100%" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
 
   // サムネイル
   if isMe && mode == "edit"
@@ -318,9 +325,7 @@ block content
         p.text-secondary 検索ページで表示されます
           br
           small （立ち絵登録時に設定できます）
-        .container.mx-auto
-          .text-center
-            div(style=`border: solid 1px lightgray; border-radius: .25rem; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
+        div(style=`border: solid 1px lightgray; border-radius: .25rem; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
 
   if isMe && mode == "edit"
     // モーダル雛形
@@ -440,7 +445,7 @@ block content
             option(value=parent.parentId) #{parent.name}
         each parent in parents
           input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
-        input(type="text" placeholder="ツヅキガラ [20文字まで]" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
+        input(type="text" placeholder="関係 [20文字まで]" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
         input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="20")#ParentNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
 
@@ -490,6 +495,19 @@ block content
           | #{personality.design_comment}
         .text-secondary
           small 2MB以下, 1920x1080px以下-jpg推奨
+
+    // 動画モーダル
+    +modal({name: 'Movie', action: '/movie', title: '動画'})
+      .form-group.text-center.m-0
+        input(type="text" placeholder="YouTubeのURL/ID" name="movie_url" value=personality.movie_id maxlength="100")#MovieUrlForm.form-control.my-2
+        .text-secondary
+          small 以下の形式で入力できます
+            br
+            | https://youtu.be/M0UzJSQ8jJ8
+            br
+            | https://www.youtube.com/watch?v=EnoiwXBRDnI
+            br 
+            | https://www.youtube.com/embed/-S9j9S9xMe4
 
     // キャラクターロゴモーダル
     +modal({name: 'Logo', action: '/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})

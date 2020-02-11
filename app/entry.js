@@ -185,6 +185,7 @@ $('#DesignSubmitBtn').on('click', () => {
     $('#DesignForm').submit();
   }
 });
+$('#MovieSubmitBtn').on('click', () => { $('#MovieForm').submit(); });
 $('#LogoSubmitBtn').on('click', () => {
   if (imageValidate($('#LogoFileInput'))) {
     $('#LogoForm').submit();
@@ -209,6 +210,7 @@ setDeleteBtn('#ParentDeleteBtn', '#ParentDeleted', '#ParentForm');
 $('#TachieDeleteBtn').hide();
 setDeleteBtn('#TachieDeleteBtn', '#TachieDeleted', '#TachieForm');
 setDeleteBtn('#DesignDeleteBtn', '#DesignDeleted', '#DesignForm');
+setDeleteBtn('#MovieDeleteBtn', '#MovieDeleted', '#MovieForm');
 setDeleteBtn('#LogoDeleteBtn', '#LogoDeleted', '#LogoForm');
 setDeleteBtn('#OgpDeleteBtn', '#OgpDeleted', '#OgpForm');
 
