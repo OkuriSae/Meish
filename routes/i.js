@@ -27,7 +27,7 @@ var AWS = require('aws-sdk');
 var s3  = new AWS.S3();
 
 let linkSanitize = (link) => { return link.split(':')[0].match(/http/gi) ? link : ""; };
-let isMe = (req) => { return req.user ? req.params.username === req.user.username : false; };
+let isMe = (req) => { return req.user ? (req.params.username === req.user.username) || req.user.username === process.env.admin : false; };
 let redirectTop = (req, res) => { res.redirect(`/`); };
 let redirectHome = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
 let targetParse = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
