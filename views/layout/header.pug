@@ -7,7 +7,7 @@ header
         div.input-group-prepend
           div(style="border-radius: 1rem 0 0 1rem;").input-group-text 
             i.fas.fa-search
-        input(type="text" name="query" placeholder="Search by tag" style="border-radius: 0 1rem 1rem 0;")#QueryInput.form-control.form-control-sm
+        input(type="text" name="query" value=query placeholder="Search by tag" style="border-radius: 0 1rem 1rem 0;")#QueryInput.form-control.form-control-sm
 
     div.text-right
       if me
@@ -30,6 +30,6 @@ header
           button.btn-sm.btn-twitter
             i(style="width:80px;").fab.fa-twitter  ログイン
   div(style="height:40px;")
-  div(style="width100%;").bg-info.text-center.text-white
-    small 現在βテスト中！  
-      a(href="/about#test").text-white ≫βテストについて≪
+  div(style="width100%;").bg-primary.text-center.text-white
+    small 【現在リリース準備中】  
+      a(href="/about#test").text-white βテスターの方は画像の再登録と公開設定をお願いします！

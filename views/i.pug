@@ -244,7 +244,8 @@ block content
                       span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
                   // 編集ボタン
                   i(data-toggle="modal" data-target="#BasicInfoModal" style="position:relative; top:3px; cursor: pointer; font-size: 1.4rem;").m-1.fas.fa-pen.text-info.edit
-              a(href="/tag_suggest" target="_blank").edit 人気タグを見る
+              div.edit.mx-1.mb-2
+                a(href="/tag_suggest" target="_blank") 人気タグを見る
 
       // ママ/パパ（キャラ絵右下）
       .text-right

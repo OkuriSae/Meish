@@ -39,7 +39,8 @@ router.get('/search', (req, res, next) => {
       me: req.user,
       s3: process.env.s3Path,
       results: await getRandomUsers(query),
-      tags: await getTags()
+      tags: await getTags(),
+      query: query
     });
   })();
 });

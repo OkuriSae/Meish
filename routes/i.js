@@ -195,7 +195,7 @@ router.post(
         if (tag) {
           await Tag.upsert({
             userId: req.user.id,
-            tagname: tag
+            tagname: tag.replace('#', '').replace(/\r?\n/g,"")
           });
         }
       }
