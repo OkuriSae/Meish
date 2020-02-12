@@ -1,15 +1,22 @@
 h4, h5, h6 {
   font-weight: bold;
 } 
-
-h4, h5 {
+h4 {
+  margin-top:2.0rem;
+}
+h5 {
   margin-top:1.5rem;
+}
+
+h6 {
+  margin-top:1.0rem;
 }
 
 p, ul, h5, h6 {
   margin-left: 1.5rem;
 }
 
-.domain {
-  border: solid 1px #aaa;
+.domain, img {
+  border-radius: .25rem;
+  border: solid 1px #ccc;
 }
