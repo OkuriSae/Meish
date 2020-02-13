@@ -415,8 +415,7 @@ block content
         textarea(placeholder="自己紹介 [500文字まで]" rows="6" name="introduction" maxlength="500").form-control.my-2
           | #{personality.introduction}
         - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
-        textarea(placeholder="検索タグ（スペース区切り）[合計100文字まで]" rows="2" name="tags" maxlength="100").form-control.my-2
-          | #{tagtext}
+        input(type="text" placeholder="検索タグ（スペース区切り）[合計100文字まで]" value=tagtext name="tags" maxlength="100").form-control.my-2
         .align-middle.form-check
           input(type="checkbox" name="isSensitive" checked=(personality.isSensitive == 'on'))#sensitiveCheck.form-check-input.my-2
           label(for="sensitiveCheck").form-check-label 
