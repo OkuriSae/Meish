@@ -540,9 +540,9 @@ async function saveImage(username, suffix, tmpPath, frame_w, frame_h, mimeType) 
   let h = img.bitmap.height;
   if (h > frame_h || w > frame_w) {
     if ((w/h) > (frame_w/frame_h)) {
-      await img.resize(frame_w, Jimp.AUTO);// 横長
+      await img.resize(frame_w, Jimp.AUTO, Jimp.RESIZE_BICUBIC); // 横長
     } else {
-      await img.resize(Jimp.AUTO, frame_h);　// 縦長
+      await img.resize(Jimp.AUTO, frame_h, Jimp.RESIZE_BICUBIC); // 縦長
     }
   }
 
