@@ -14,6 +14,8 @@ block meta
   meta(name="twitter:card" content="summary_large_image")
   meta(name="twitter:site" content="@"+owner.username)
 
+  script(src="/javascripts/autolink.js")
+
   link(rel="stylesheet" href="/css/i/i.css")
   if !(mode == "edit")
     link(rel="stylesheet" href="/css/i/notme.css")
@@ -129,7 +131,7 @@ block content
               hr.profHR
               h5.m-2.text-secondary.shadow-gray
                 span #{personality.label}
-              p(style="white-space:pre-wrap;").shadow-gray.m-2 #{personality.introduction}
+              p(style="white-space:pre-wrap;")#introduction.shadow-gray.m-2 #{personality.introduction}
               hr.profHR
 
             // カテゴリ情報

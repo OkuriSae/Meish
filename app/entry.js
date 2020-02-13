@@ -1,5 +1,6 @@
 'use strict';
 import $ from 'jquery';
+import autolink from 'autolink';
 //import Jimp from 'jimp';
 const global = Function('return this;')();
 global.jQuery = $;
@@ -218,3 +219,10 @@ $(() => {
   image.src = $('#tachieSource').val();
 });
 */
+
+$(document).ready(() => {
+  let intro = $('#introduction');
+  let linkedText = window.autolink(intro.text(), "_blank");
+  linkedText = window.autolinkTwitter(intro.text(), "_blank");
+  intro.html(linkedText);
+});
