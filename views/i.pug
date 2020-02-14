@@ -279,7 +279,9 @@ block content
     +subSection('立ち絵')
       .d-flex.flex-wrap
           // 初期表示
-          - tachiesView = tachies.length != 0 ? tachies : [{path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()}]
+          - var tachiesView = tachies.length != 0 ? tachies.slice(0, 5) : []
+          if isMe && mode == "edit" && tachies.length < 5
+            - tachiesView.push({path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()})
           each tachie in tachiesView
             .col-sm.mx-auto.m-2
               .tachie.card
