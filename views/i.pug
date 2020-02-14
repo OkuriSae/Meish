@@ -10,7 +10,7 @@ block meta
   if personality.ogp_path
     meta(property="og:image" content=`${personality.ogp_path}`)
   else
-    meta(property="og:image" content='https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.png')
+    meta(property="og:image" content='https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.jpg')
   meta(name="twitter:card" content="summary_large_image")
   meta(name="twitter:site" content="@"+owner.username)
 
@@ -98,7 +98,7 @@ block content
             div(style="position: relative; top:1px;").ml-2.mt-2
               a(href="https://twitter.com/share" class="twitter-share-button"
                 data-url="http://www.meish.me/i/"+owner.username
-                data-text=personality.nameJa+"のバーチャルプロフィール / Meish*（βテスト中につきURL公開NG🙅‍♀️）"
+                data-text=personality.nameJa+"のバーチャルプロフィール / Meish* "
                 data-lang="ja"
                 data-hashtags="Meish"
                 data-size="large"
