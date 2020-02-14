@@ -166,3 +166,7 @@ p {
 .thanks-btn:hover{
   text-shadow: 0px 0px;
 }
+
+html {
+  scroll-padding-top: 50px;
+}

@@ -21,7 +21,7 @@ block content
         h5 初期表示
         p Meishに登録されているキャラクターのうちランダムな30キャラクターが表示されます。
         
-        h5 登録タグ一覧
+        h5#TopTags 登録タグ一覧
         p 登録数の多いタグ上位15件が表示されます。
           br
           | 右端の [...] タグを押すことにより上位500件までの登録タグを見ることができます。
@@ -36,7 +36,7 @@ block content
         img(src="/img/howto/toppage_bottom.png" width="90%").ml-4
 
     section.page-section
-      h2 キャラクター登録/編集
+      h2#BasicInfo キャラクター登録/編集
       hr.text-info
       img(src="/img/howto/profile_sample.png" width="80%")
       .text-left
@@ -164,13 +164,13 @@ block content
         p プロフィール編集と同様に、それぞれのタイトル横にある編集ボタン(鉛筆マーク)から編集パネルを開きます。
         img(src="/img/howto/subcategory_sample.png" width="80%").ml-4
 
-        h5 ハッシュタグ
+        h5#HashTag ハッシュタグ
         p Twitterのハッシュタグと説明を登録します。それぞれ20文字まで入力できます。
           br
           | 入力されたタグ名に自動でTwitterハッシュタグ検索へのリンクがつきます。
         p 登録済みのハッシュタグを編集する場合は、プルダウンから編集したいタグを選びます。
 
-        h5 活動場所
+        h5#Activity 活動場所
         p 活動しているプラットフォームや、サイト情報を登録します。
           br
           | 表示名[20文字まで]とリンク先[200文字まで]を設定できます。
@@ -238,12 +238,17 @@ block content
           div.domain.px-2.m-1.rounded www.amazon.co.jp
           div.domain.px-2.m-1.rounded giftee.co
 
-        h5 応援する
+        h5#Cheering 応援する
         p ファンがキャラクターの活動を応援するための方法を記入できます。
           br
           | 活動方法と同じく、表示名とリンク先の入力が可能です。アイコンも設定されます。
 
-        h4 立ち絵
+        h5#Parent 関係者・協力者
+        p キャラクター制作や運営に関わっいてる方をリンク付きで紹介できます。
+          br
+          | (リンク先によるアイコンはつきません)
+
+        h4#Tachie 立ち絵
         img(src="/img/howto/tachie_sample.png" width="90%").ml-4
         p キャラクターの立ち絵を5つまでアップロードできます。
           br
@@ -267,7 +272,7 @@ block content
           br
           | 初期状態はMeishのロゴになります。
 
-        h4 キャラクターデザイン
+        h4#Design キャラクターデザイン
         p キャラクターデザインの画像を1つまでアップロードできます。
           br
           | テキストでの補足説明[200文字まで]が書けます。
@@ -281,7 +286,7 @@ block content
           li 画像の解像度: 1920x1080px推奨
         p サーバー側で推奨形式に自動変換されます。
 
-        h4 紹介動画
+        h4#Movie 紹介動画
         p 自己紹介に使える動画を1つだけ設定できます。（YouTube動画限定）
         p 以下のいずれの形でも設定できます。ID部分だけ保存されます。
         ul
@@ -289,7 +294,7 @@ block content
           li https://www.youtube.com/watch?v=EnoiwXBRDnI
           li https://www.youtube.com/embed/-S9j9S9xMe4
         
-        h4 ロゴ/背景
+        h4#Logo ロゴ/背景
         p 立ち絵領域の背景に表示されるロゴ/背景を1つまでアップロードできます。
         img(src="/img/howto/logo_sample.png" width="70%").ml-4
         h6 制限、推奨フォーマット
@@ -301,7 +306,7 @@ block content
         img(src="/img/howto/logo_view.png" width="80%").ml-4
         p ロゴ/背景は明るさが50%あがり、立ち絵の背景に設定されます
 
-        h4 OGPイメージ
+        h4#Ogp OGPイメージ
         p Twitterなど（OGPに対応している）外部のサイトへ、MeishのプロフィールURLを貼りつけた際に展開される画像を設定します。
         p 画像は1200x630pxになるように切り取られ、右下部にウォーターマーク（Meishのロゴ）がつきます。
         img(src="/img/howto/ogp_form.png" width="70%").ml-4
