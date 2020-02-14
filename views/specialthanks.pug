@@ -92,6 +92,6 @@ block content
         - thanks.push({id: 'amamania_vtuber', name: '天満ニア'});
         each t in thanks
           a(href="/i/"+t.id target='_blank').m-3
-            div(style=`background-image: url('https://meish.s3-ap-northeast-1.amazonaws.com/i/${t.id}/img/${t.id}_ogp.jpg');`).thanks
+            div(style=`background-image: url('https://meish.s3-ap-northeast-1.amazonaws.com/i/${t.id}/${t.id}_ogp.jpg');`).thanks
               button.thanks-btn.w-100.h-100.btn.btn-outline-info
                 b #{t.name}
