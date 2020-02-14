@@ -171,7 +171,7 @@ router.post(
           await deleteImage(personality.tachie);
           let file = req.files.tachie[0];
           imageValidation(file);
-          updateData.tachie = await saveImage(req.user.username, 'tachie', file.path, 1920, 1080, file.mimetype);
+          updateData.tachie = await saveImage(req.user.username, 'tachie', file.path, 1920, 1920, file.mimetype);
           
           // thumbnail
           if (!personality.thumbnail_path) {
