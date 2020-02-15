@@ -6,19 +6,7 @@ block content
     section.page-section
       .logo
 
-    section#terms.page-section
-      include terms.pug
-
-    section#Attention.page-section
-      h1 注意事項
-      hr.text-danger
-      .text-left
-        h4 アップロードされた画像の公開状態について
-        p プロフィールは非公開状態にすることができますが、プロフィール非公開状態でもアップロードされた画像のURLは失効しません。画像の削除はプロフィール編集画面またはMeish退会によって行えます。
-        h4 Twitterの退会およびユーザーID変更について
-        p Twitterを退会するとログインおよびプロフィール情報の編集を行えなくなります。
-        p TwitterのユーザーID変更には対応していません。TwitterのユーザーIDの変更を行う際は一旦Meishのアカウントを消してください。
-        p Twitterの退会またはユーザーID変更によるトラブルについての問い合わせや対応などは行えません。
+    include terms_block.pug
 
     section#Agreement.page-section
       form(method='post' action='/i/'+me.username)
