@@ -322,6 +322,16 @@ block content
         p サーバー側で推奨形式に自動変換されます。
         img(src="/img/howto/ogp_discord.jpg" width="60%").ml-4
         p discordでのogp表示
+        h6 OGPイメージの変更が反映されないとき
+        p TwitterやDiscord、その他サービスではURLごとに画像をキャッシュ（保存）していることがあります。
+          |サービスごとのキャッシュクリア方法をお試しください。
+        ul
+          li Twitter: 
+            a(href="https://cards-dev.twitter.com/validator" target="_blank") Card Validator
+          li FaceBook: 
+            a(href="https://developers.facebook.com/tools/debug/og/object/" target="_blank") Open Graphオブジェクトデバッガー
+          li Discord: キャッシュクリア方法は無いようなので、URLの末尾に『?適当な文字』をつけることで別URL扱いする方法があります。
+            |（例: https://www.meish.me/i/OkuriSae?123）
 
         h4 検索サムネイル
         img(src="/img/howto/thumbnail_sample.jpg" width="60%").ml-4

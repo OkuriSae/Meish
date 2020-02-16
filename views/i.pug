@@ -335,10 +335,12 @@ block content
     div.edit
       +subSection('OGPイメージ')
         p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
-          - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/i/add.png";
-          div(style="max-width:600px;").card.mx-auto
-            div.rounded.img-fluid.card-img-top
-              img(src=`${ogpPath}` style="max-height:400px;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+        - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/i/add.png";
+        div(style="max-width:600px;").card.mx-auto
+          div.rounded.img-fluid.card-img-top
+            img(src=`${ogpPath}` style="max-height:400px;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+        p.text-secondary.mt-2 Twitter Card のプレビューやキャッシュ削除は 
+          a(href="https://cards-dev.twitter.com/validator" target="_blank") こちら(Twitter Card validator)
 
   // サムネイル
   if isMe && mode == "edit"
