@@ -213,7 +213,7 @@ block content
         i(data-toggle="modal" data-target="#ParentModal" style="cursor: pointer;").fas.fa-pen.text-info.edit
 
   // サブセクション雛形
-  mixin subSection(title,bg)
+  mixin subSection(title, bg)
     section(class=bg)#about.page-section
       div(style="max-width:100%;").container
         .text-center
@@ -300,7 +300,7 @@ block content
         p.text-secondary 検索ページで表示されます
           br
           small （立ち絵登録時に設定できます）
-        div(style=`border: solid 1px lightgray; border-radius: .25rem; width: 200px; height: 350px; background-image: url(${personality.thumbnail_path}); background-size: contain; background-position:center; background-repeat: no-repeat; background-color: rgba(255,255,255,0.5); margin:auto;`).img-fluid
+        div(style=`background-image: url(${personality.thumbnail_path});`).thumbnail.img-fluid
 
   if isMe && mode == "edit"
     include i_modals.pug

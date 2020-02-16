@@ -12,55 +12,52 @@ block meta
   link(rel="stylesheet" href="/css/index.css")
 
 block content
-  
+
   section#TopSection.page-section
     div.text-center
+
+      // ロゴ
       div(style="height:100px;").logo.mb-4
       h6.m-3 バーチャルキャラクターのためのプロフィール登録サービス
-      div(style=`${ tag_suggest ? "display:none;" : ""}`).tags.mt-5
-        .m-2
-          - var topTag = tags.slice(0,15)
-          each tag in topTag
-            - var tagLink = "/search?query=" + tag.tagname
-            - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
+
+      // タグ
+      mixin tag(display)
+        each tag in tags.slice(0, display)
+          a(href=`/search?query=${tag.tagname}`)
             - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
-            a(href=tagLink)
-              span(style=`background-color:hsl(${tagHue}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
-          button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
-            span ...
+            // タグによって色変えてる
+            span(style=`background-color:hsl(${tag.tagname.charCodeAt(0) % 36 * 10}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
+      div(style=`${ tag_suggest ? "display:none;" : ""}`).tags.mt-5.mb-3
+        +tag(15)
+        button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
+          span ...
       div(style=`${ tag_suggest ? "" : "display:none;"}`).tags.mt-5
-        .m-2
-          each tag in tags.slice(0,300)
-            - var tagLink = "/search?query=" + tag.tagname
-            - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
-            - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
-            a(href=tagLink)
-              span(style=`background-color:hsl(${tagHue}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
-          if !tag_suggest
-            button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
-              span Close
+        +tag(300)
+        if !tag_suggest
+          button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
+            span Close
 
-    div.d-flex.flex-wrap.justify-content-around
-      if results
+    // キャラクター
+    if results.length > 0
+      div.d-flex.flex-wrap.justify-content-around
         each result in results
-          div.m-3
-            - var link = `/i/${result.username}`
-            a(href=link)
-              div(style="background-color: rgba(255,255,255,0.5); width:200px; height:350px; overflow: hidden;").card
-                - var style=`width: 100%; height: 100%; background-image: url(${s3+result.thumbnail_path}); background-size: contain; background-repeat: no-repeat; background-position: center;`
-                div(style=style class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).card-img-top
+          .m-3
+            a(href=`/i/${result.username}`)
+              .thumbnail_frame.card
+                div(style=`background-image: url(${s3+result.thumbnail_path});` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top
 
-    div.text-center
-      if results && results.length == 30
-        a(href="/allusers")
-          button.btn.btn-outline-info.m-3 全員見る（重いかも）
+      // 表示制御系ボタン
+      .text-center
+        if results.length == 30
+          a(href="/allusers")
+            button.btn.btn-outline-info.m-3 全員見る（重いかも）
 
-      if results
         .align-middle.form-check
           input(type="checkbox" name="isSensitive" onclick="$('.sensitive').toggleClass('sensitive_on');")#sensitiveCheck.form-check-input.my-2
           label(for="sensitiveCheck").form-check-label
             span センシティブなキャラクターも見る
 
+    // 登録者数
     if userCount
       div.text-center.mt-5
         h6
