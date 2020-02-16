@@ -48,7 +48,7 @@ block content
     .profile.container.justify-content-center.rounded
 
       // 操作パネル
-      if isMe 
+      if isMyPage 
         if (!personality.ogp_path || !personality.thumbnail_path || !visibility)
           #CautionPane.my-3
             ul.m-0
@@ -148,7 +148,7 @@ block content
                       block
                   
                 // ハッシュタグ
-                if hashTags.length > 0 || (isMe && mode == "edit")
+                if hashTags.length > 0 || (isMyPage && mode == "edit")
                   +categorizedInfo('ハッシュタグ', 'HashTag')
                     each tag in hashTags
                       p.mx-2
@@ -157,7 +157,7 @@ block content
                           span.text-secondary  - #{tag.comment}
 
                 // 活動場所
-                if activities.length > 0 || (isMe && mode == "edit")
+                if activities.length > 0 || (isMyPage && mode == "edit")
                   +categorizedInfo('活動場所', 'Activity')
                     each activity in activities
                       p.mx-2
@@ -169,7 +169,7 @@ block content
                           span #{activity.name}
 
                 // 応援方法
-                if cheerings.length > 0 || (isMe && mode == "edit")
+                if cheerings.length > 0 || (isMyPage && mode == "edit")
                   +categorizedInfo('応援する', 'Cheering')
                     each cheer in cheerings
                       p.mx-2 
@@ -213,13 +213,13 @@ block content
           block
 
   // 立ち絵
-  if tachies.length > 0 || (isMe && mode == "edit")
+  if tachies.length > 0 || (isMyPage && mode == "edit")
     // コンテンツ
     +subSection('立ち絵')
       .d-flex.flex-wrap
           // 初期表示
           - var tachiesView = tachies.length != 0 ? tachies.slice(0, 5) : []
-          if isMe && mode == "edit" && tachies.length < 5
+          if isMyPage && mode == "edit" && tachies.length < 5
             - tachiesView.push({path: '/img/i/add.png', name: 'Title', comment: '', updatedAt: new Date()})
           each tachie in tachiesView
             .col-sm.mx-auto.m-2
@@ -233,9 +233,9 @@ block content
                     p.card-text #{tachie.comment}
 
   // キャラデザ
-  if personality.design_path || (isMe && mode == "edit")
+  if personality.design_path || (isMyPage && mode == "edit")
     +subSection('キャラクターデザイン', 'bg-white')
-        if isMe && mode == "edit"
+        if isMyPage && mode == "edit"
           p.text-secondary 三面図などキャラクターのディティールがわかる画像を設定します
         .row.justify-content-center
           .card
@@ -248,9 +248,9 @@ block content
                 p.characterDesignText.card-text #{description}
 
   // 紹介動画
-  if personality.movie_id || (isMe && mode == "edit")
+  if personality.movie_id || (isMyPage && mode == "edit")
     +subSection('紹介動画')
-      if isMe && mode == "edit"
+      if isMyPage && mode == "edit"
         p.text-secondary YouTubeのみ対応
         button(data-toggle="modal" data-target="#MovieModal").btn.btn-info.m-3 動画URLを入力
       if personality.movie_id
@@ -259,7 +259,7 @@ block content
             iframe(width="640" height="360" src="https://www.youtube.com/embed/"+personality.movie_id frameborder="0" allow="autoplay; encrypted-media" allowfullscreen).mx-auto
 
   // ここから先は編集モードのみ
-  if isMe && mode == "edit"
+  if isMyPage && mode == "edit"
     //モーダル群
     include i_modals.pug
 
