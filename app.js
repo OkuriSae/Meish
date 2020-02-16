@@ -72,7 +72,7 @@ app.use(passport.session());
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
-  // セッションから復元 routerのreq.userから利用可能
+// セッションから復元 routerのreq.userから利用可能
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
