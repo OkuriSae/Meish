@@ -155,7 +155,6 @@ setPreview('#OgpFileInput', '.ogp.upload.imagePreview', (file, preview) => {
 
 // 更新アクションの設定
 [ { key: 'BasicInfo', images: ['BackImage', 'ProfileImage'] },
-  { key: 'HashTag', images: null },
   { key: 'Activity', images: null },
   { key: 'Cheering', images: null },
   { key: 'Parent', images: null },

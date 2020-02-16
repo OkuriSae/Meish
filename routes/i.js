@@ -55,7 +55,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
       // page owner not found
 
       if (isMyPage(req)) {
-          let me = await getMe(req.user.id);
+          let me = await getMe(req);
           if (me) {
             // exist old user (maybe change twitter screen_name)
             await deleteUser(req.user);
@@ -90,7 +90,7 @@ router.get('/:username', csrfProtection, (req, res, next) => {
     let renderParams = {
       me: req.user,
       owner: pageOwner,
-      visibility: user.visibility,
+      visibility: pageOwner.visibility,
       isMyPage: isMyPage(req),
       mode: req.query.mode ? req.query.mode : "view",
       csrfToken: req.csrfToken()
@@ -133,7 +133,7 @@ router.post('/:username', authenticationEnsurer, csrfProtection, (req, res, next
 // POST:公開状態
 router.post('/:username/visibility', authenticationEnsurer, csrfProtection, (req, res, next) => {
   (async () => {
-    let me = await getMe(req.user.id);
+    let me = await getMe(req);
     await me.update({ visibility : req.body.visibility == '0' ? '1' : '0' });
     redirectMyPage(req, res);
   })();
@@ -359,7 +359,7 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
 router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   (async () => {
     let personality = await Personality.findOne({where: { userId: req.user.id }});
-    if (personality) {
+    if (!personality) {
       res.render('errors/404', { me: req.user });
       return;
     }
@@ -387,7 +387,7 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
 router.post('/:username/movie', authenticationEnsurer, csrfProtection, (req, res, next) => {
   (async () => {
     let personality = await Personality.findOne({where: { userId: req.user.id }});
-    if (personality) {
+    if (!personality) {
       res.render('errors/404', { me: req.user });
       return;
     }
@@ -415,7 +415,7 @@ router.post('/:username/movie', authenticationEnsurer, csrfProtection, (req, res
 router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   (async () => {
     let personality = await Personality.findOne({where: { userId: req.user.id }});
-    if (personality) {
+    if (!personality) {
       res.render('errors/404', { me: req.user });
       return;
     }
@@ -442,7 +442,7 @@ router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.sin
 router.post('/:username/ogp', authenticationEnsurer, csrfProtection, upload.single('img'), (req, res, next) => {
   (async () => {
     let personality = await Personality.findOne({where: { userId: req.user.id }});
-    if (personality) {
+    if (!personality) {
       res.render('errors/404', { me: req.user });
       return;
     }
@@ -467,16 +467,15 @@ router.post('/:username/ogp', authenticationEnsurer, csrfProtection, upload.sing
 // DELETE:account
 router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, res, next) => {
   (async () => {
-    await deleteUser(req.user);
+    let user = await User.findOne({where: { userId: req.user.id }});
+    if (user) {
+      await deleteUser(req.user);
+    }
     res.redirect(`/logout`);
   })();
 });
 
 async function deleteUser(user) {
-  let user = await User.findOne({where: { userId: req.user.id }});
-  if (!user) {
-    return;
-  }
   // image deleting
   let personality = await Personality.findOne({where: { userId: user.id }});
   deleteImage(personality.tachie);
