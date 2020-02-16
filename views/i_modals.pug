@@ -1,0 +1,209 @@
+block modals
+
+    // モーダル雛形
+    mixin modal(modalParams)
+      div(style="max-width:100%;" tabindex="-1" role="dialog" aria-labelledby=modalParams.name+"ModalLabel" aria-hidden="true" id=modalParams.name+"Modal").modal.fade
+        div(role="document").modal-dialog
+          .modal-content
+            - var actionString = `/i/${me.username+modalParams.action}?_csrf=${csrfToken}`; 
+            form(method='post' action=actionString enctype=modalParams.enctype id=modalParams.name+"Form")
+              .modal-header
+                h5(id=modalParams.name+"ModalLabel").modal-title #{modalParams.title}  
+                  a(href="/howto#"+modalParams.name target="_blank")
+                    i.text-secondary.far.fa-question-circle
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                  span(aria-hidden="true") &times;
+              .modal-body
+                input(type="hidden" name="deleted" value="0" id=modalParams.name+"Deleted")
+                if block
+                  block
+              .modal-footer
+                button(type="button" id=modalParams.name+"DeleteBtn").btn.btn-danger 削除
+                button(type="button" data-dismiss="modal").btn.btn-secondary キャンセル
+                button(type="button" id=modalParams.name+"SubmitBtn").btn.btn-primary 更新
+
+    // プロフィールモーダル
+    +modal({name: 'BasicInfo', action: '/basicinfo', title: '基本プロフィール', enctype: "multipart/form-data"})
+      .form-group.text-center
+        #ProfileImage
+      
+          // 既存の画像
+          - var backSample = personality.back_path ? personality.back_path : "/img/i/nobackimage.jpg";
+          div(style=`background-image: url('${backSample}'); background-size: cover; border-radius:10px;width:75%;margin:auto;`).backImagePreview.imagePreview
+            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/i/noTachie.png'); background-position: bottom right;`;
+            div(style=tachieSample).profileImagePreview.imagePreview
+         
+          div
+            // 背景画像ファイルInput
+            label.input-group-btn.m-2
+              span.btn.btn-primary 背景画像を選択
+                input(type="file" name="back" accept="image/jpeg, image/png" style="display:none;")#BackImageFileInput.form-control.my-2
+            // プロフィール画像ファイルInput
+            label.input-group-btn.m-2
+              span.btn.btn-primary 立ち絵を選択
+                input(type="file" name="tachie" accept="image/jpeg, image/png" style="display:none;")#ProfileImageFileInput.form-control.my-2
+        
+          .text-secondary.mb-2
+            small 背景: 2MB以下, 1920x1080px以上, 横長jpg推奨
+              br
+              span 立ち絵: 2MB以下, 高さ1920px以上, 縦長透過png推奨
+
+          // アス比スライダー
+          div.d-flex.justify-content-center
+            div(style="width:100px;").text-right
+              span スマホ表示
+            input(type="range" id="aspectRatioRange" style="width:50%;" min="18" max="72" oninput="$('.backImagePreview').css('width', $('#aspectRatioRange').val()+'%');").custom-range.mx-2
+            div(style="width:100px;").text-left
+              span PC表示
+
+        if personality.back_path || personality.tachie
+          .align-middle.form-check
+            input(type="checkbox" name="imageClear" onchange="$('#ProfileImage').toggle();")#ProfileImageClearCheck.form-check-input.my-2
+            label(for="ProfileImageClearCheck").form-check-label 画像をクリア
+
+        input(type="text" placeholder="よみ [50文字まで]" value=personality.nameEn name="nameEn" maxlength="50").form-control.my-2
+        input(type="text" placeholder="名前 [50文字まで]" value=personality.nameJa name="nameJa" maxlength="50").form-control.my-2
+        input(type="text" placeholder="推しマ、肩書き（〇〇系VTuber）、所属など [50文字まで]" maxlength="50" value=personality.label name="label").form-control.my-2
+        textarea(placeholder="自己紹介 [500文字まで]" rows="6" name="introduction" maxlength="500").form-control.my-2
+          | #{personality.introduction}
+        - var tagtext = tags.map((tag) => { return tag.tagname }).join(' ');
+        input(type="text" placeholder="検索タグ（スペース区切り）[合計100文字まで]" value=tagtext name="tags" maxlength="100").form-control.my-2
+        .align-middle.form-check
+          input(type="checkbox" name="isSensitive" checked=(personality.isSensitive == 'on'))#sensitiveCheck.form-check-input.my-2
+          label(for="sensitiveCheck").form-check-label 
+            small このプロフィールにはセンシティブな表現が含まれる
+
+    // ハッシュタグモーダル
+    +modal({name: 'HashTag', action: '/hashtag', title: 'ハッシュタグ', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+        select(name="target")#HashTagSelection.form-control
+          option(value="new" selected) 新規追加
+            each hashTag in hashTags
+              option(value=hashTag.tagId) #{hashTag.name}
+        each hashTag in hashTags
+          input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
+        input(type="text" placeholder="タグ名（#は自動でつきます）[20文字まで]" name="name" maxlength="20")#HashTagNameForm.form-control.my-2
+        input(type="text" placeholder="タグの説明 [20文字まで]" name="comment" maxlength="20")#HashTagCommentForm.form-control.my-2
+
+    // 活動場所モーダル
+    +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+        select(name="target")#ActivitySelection.form-control
+          option(value="new" selected) 新規追加
+          each activity in activities
+            option(value=activity.activityId) #{activity.name}
+        each activity in activities
+          input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#ActivityNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
+
+    // 応援方法モーダル
+    +modal({name: 'Cheering', action: '/cheering', title: '応援方法', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+        select(name="target")#CheeringSelection.form-control
+          option(value="new" selected) 新規追加
+          each cheering in cheerings
+            option(value=cheering.cheeringId) #{cheering.name}
+        each cheering in cheerings
+          input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#CheeringNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
+
+    // ママ/パパモーダル
+    +modal({name: 'Parent', action: '/parent', title: 'ママ/パパ', enctype: "application/x-www-form-urlencoded"})
+      .form-group
+        select(name="target")#ParentSelection.form-control
+          option(value="new" selected) 新規追加
+          each parent in parents
+            option(value=parent.parentId) #{parent.name}
+        each parent in parents
+          input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
+        input(type="text" placeholder="関係 [20文字まで]" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
+        input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="20")#ParentNameForm.form-control.my-2
+        input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
+
+    // 立ち絵モーダル
+    +modal({name: 'Tachie', action: '/tachie', title: '立ち絵', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        // 対象
+        select(name="target")#TachieSelection.form-control.my-2
+          if tachies.length < 5
+            option(value="new" selected) 新規追加
+          else 
+            option(value="max" selected) - (立ち絵は5枚までです)
+          if tachies.length > 0
+            each tachie in tachies
+              option(value=tachie.tachieId).tachie #{tachie.name}
+        // プレビュー
+        div(style="display:none;").tachie.imagePreview.upload
+        each tachie in tachies
+          div(class=tachie.tachieId style=`background-image: url('${tachie.path}'); display:none;`).tachie.imagePreview
+        // ファイル選択
+        label.input-group-btn.m-2
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#TachieFileInput.form-control.my-2
+        // 検索サムネにする
+        div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check
+          input(type="checkbox" name="useThumbnail")#ThumbnailCheck.form-check-input.my-2
+          label(for="ThumbnailCheck").form-check-label 検索サムネにする
+        // タイトル、説明
+        each tachie in tachies
+          input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
+          input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
+        input(type="text" placeholder="タイトル [20文字まで]" name="name" maxlength="20").tachieNameForm.form-control.my-2
+        input(type="text" placeholder="コメント [60文字まで]" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
+        .text-secondary
+          small 2MB以下, jpg/png, 300x600px以上推奨, 5枚まで
+
+    // キャラクターデザインモーダル
+    +modal({name: 'Design', action: '/design', title: 'キャラクターデザイン', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none;").design.upload.imagePreview
+        - var designSample = personality.design_path ? personality.design_path : "/img/i/noimage.jpg";
+        div(style=`background-image: url('${designSample}');`).design.imagePreview
+        label.input-group-btn.m-2
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#DesignFileInput.form-control.my-2
+        textarea(placeholder="コメント [200文字まで]" rows="4" name="comment" maxlength="200").form-control.my-2
+          | #{personality.design_comment}
+        .text-secondary
+          small 2MB以下, 1920x1080px以下-jpg推奨
+
+    // 動画モーダル
+    +modal({name: 'Movie', action: '/movie', title: '動画'})
+      .form-group.text-center.m-0
+        input(type="text" placeholder="YouTubeのURL/ID" name="movie_url" value=personality.movie_id maxlength="100")#MovieUrlForm.form-control.my-2
+        .text-secondary
+          small 以下の形式で入力できます
+            br
+            | https://youtu.be/M0UzJSQ8jJ8
+            br
+            | https://www.youtube.com/watch?v=EnoiwXBRDnI
+            br 
+            | https://www.youtube.com/embed/-S9j9S9xMe4
+
+    // キャラクターロゴモーダル
+    +modal({name: 'Logo', action: '/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none;").logo.upload.imagePreview
+        - var logoSample = personality.logo_path ? personality.logo_path : "/img/i/noimage.jpg";
+        div(style=`background-image: url('${logoSample}');`).logo.imagePreview
+        label.input-group-btn.m-2
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#LogoFileInput.form-control.my-2
+        .text-secondary
+          small 2MB以下, 1920x1080px-jpg推奨
+
+    // OGPモーダル
+    +modal({name: 'Ogp', action: '/ogp', title: 'OGP画像', enctype: "multipart/form-data"})
+      .form-group.text-center.m-0
+        div(style="display:none; background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;").ogp.upload.imagePreview
+        - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/i/noimage.jpg";
+        div(style=`background-image: url('${ogpSample}'); background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;`).ogp.imagePreview
+        label.input-group-btn.m-2
+          span.btn.btn-primary ファイルを選択
+            input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#OgpFileInput.form-control.my-2
+        .text-secondary
+          small 2MB以下, jpg推奨, 1200x630に拡大/縮小されます
+          br
+          small 右下にウォーターマーク（Meishのロゴが入ります）

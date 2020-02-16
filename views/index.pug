@@ -25,7 +25,7 @@ block content
             - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
             - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
             a(href=tagLink)
-              span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+              span(style=`background-color:hsl(${tagHue}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
           button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span ...
       div(style=`${ tag_suggest ? "" : "display:none;"}`).tags.mt-5
@@ -35,7 +35,7 @@ block content
             - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
             - var tagText = `${tag.tagname}: ${tag.dataValues.count}`
             a(href=tagLink)
-              span(style="background-color:hsl("+tagHue+", 50%, 45%);").badge.badge-secondary.p-2.m-1 #{tagText}
+              span(style=`background-color:hsl(${tagHue}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
           if !tag_suggest
             button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
               span Close
