@@ -21,7 +21,6 @@ module.exports = {
   externals: [
     {
       jquery: 'jQuery',
-      autolink: 'autolink'
     }
   ]
 };
