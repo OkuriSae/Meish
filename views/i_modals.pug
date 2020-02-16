@@ -29,9 +29,9 @@ block modals
       
           // 既存の画像
           - var backSample = personality.back_path ? personality.back_path : "/img/i/nobackimage.jpg";
-          div(style=`background-image: url('${backSample}'); background-size: cover; border-radius:10px;width:75%;margin:auto;`).backImagePreview.imagePreview
-            - var tachieSample = personality.tachie ? `background-image: url('${personality.tachie}'); background-position: bottom right;` : `background-image: url('/img/i/noTachie.png'); background-position: bottom right;`;
-            div(style=tachieSample).profileImagePreview.imagePreview
+          div(style=`background-image: url('${backSample}');`).backImagePreview.imagePreview
+            - var tachieSample = personality.tachie ? personality.tachie : `'/img/i/noTachie.png'`;
+            div(style=`background-image: url('${tachieSample}');`).profileImagePreview.imagePreview
          
           div
             // 背景画像ファイルInput
@@ -46,15 +46,15 @@ block modals
           .text-secondary.mb-2
             small 背景: 2MB以下, 1920x1080px以上, 横長jpg推奨
               br
-              span 立ち絵: 2MB以下, 高さ1920px以上, 縦長透過png推奨
+              | 立ち絵: 2MB以下, 高さ1920px以上, 縦長透過png推奨
 
           // アス比スライダー
           div.d-flex.justify-content-center
-            div(style="width:100px;").text-right
-              span スマホ表示
+            .previewSliderText.text-right
+              | スマホ表示
             input(type="range" id="aspectRatioRange" style="width:50%;" min="18" max="72" oninput="$('.backImagePreview').css('width', $('#aspectRatioRange').val()+'%');").custom-range.mx-2
-            div(style="width:100px;").text-left
-              span PC表示
+            .previewSliderText.text-left
+              | PC表示
 
         if personality.back_path || personality.tachie
           .align-middle.form-check
@@ -176,11 +176,13 @@ block modals
         .text-secondary
           small 以下の形式で入力できます
             br
+            | M0UzJSQ8jJ8
+            br
             | https://youtu.be/M0UzJSQ8jJ8
             br
-            | https://www.youtube.com/watch?v=EnoiwXBRDnI
+            | https://www.youtube.com/watch?v=M0UzJSQ8jJ8
             br 
-            | https://www.youtube.com/embed/-S9j9S9xMe4
+            | https://www.youtube.com/embed/M0UzJSQ8jJ8
 
     // キャラクターロゴモーダル
     +modal({name: 'Logo', action: '/logo', title: 'キャラクターロゴ', enctype: "multipart/form-data"})
@@ -197,13 +199,13 @@ block modals
     // OGPモーダル
     +modal({name: 'Ogp', action: '/ogp', title: 'OGPイメージ', enctype: "multipart/form-data"})
       .form-group.text-center.m-0
-        div(style="display:none; background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;").ogp.upload.imagePreview
+        div(style="display:none;").ogpPreview.ogp.upload.imagePreview
         - var ogpSample = personality.ogp_path ? personality.ogp_path : "/img/i/noimage.jpg";
-        div(style=`background-image: url('${ogpSample}'); background-size: cover; width:400px; height:210px;margin:auto;border-radius:.25rem;`).ogp.imagePreview
+        div(style=`background-image: url('${ogpSample}');`).ogpPreview.ogp.imagePreview
         label.input-group-btn.m-2
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#OgpFileInput.form-control.my-2
         .text-secondary
           small 2MB以下, jpg推奨, 1200x630に拡大/縮小されます
           br
-          small 右下にウォーターマーク（Meishのロゴが入ります）
+          small 右下にウォーターマーク（Meishのロゴ）が入ります

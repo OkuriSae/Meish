@@ -276,3 +276,25 @@ hr {
 .ogpImage {
   max-height: 400px;
 }
+
+.backImagePreview {
+  background-size: cover;
+  border-radius: 10px;
+  width: 75%;
+  margin: auto;
+}
+.profileImagePreview {
+  background-position: bottom right;
+}
+
+.previewSliderText {
+  width: 100px;
+}
+
+.ogpPreview {
+  background-size: cover;
+  width: 400px;
+  height: 210px;
+  margin: auto;
+  border-radius: .25rem;
+}
