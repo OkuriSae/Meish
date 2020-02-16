@@ -4,3 +4,5 @@ node_modules/
 *.lock
 storage/
 *.DS_Store
+.png
+.jpg
