@@ -2,6 +2,7 @@ extends layout/layout
 
 block meta
 
+  // OGP & Twitter Card
   meta(property="og:type" content="article")
   meta(property="og:site_name" content="Meish*")
   meta(property="og:title" content=`${personality.nameJa} | ${personality.label}`)
@@ -15,10 +16,12 @@ block meta
   meta(name="twitter:site" content="@"+owner.username)
 
   link(rel="stylesheet" href="/css/i/i.css")
-  if !(mode == "edit")
-    link(rel="stylesheet" href="/css/i/notme.css")
 
-block content
+  // 編集系UIのだし分け
+  if !(mode == "edit")
+    style(type="text/css").
+      .edit{ display: none; }
+
   // 背景を固定化するCSS（スマホで背景流れちゃう対策）
   - var back = personality.logo_path ? personality.logo_path : '/img/logos/meish_logo_back.png'
   style(type="text/css").
@@ -38,32 +41,35 @@ block content
       -webkit-background-size: contain;
       filter: opacity(50%);
     }
-  section(style="border-top: solid 1px; padding-bottom:80px;").page-section.bg-gray
-    div.profile.container.justify-content-center.rounded
+
+block content
+
+  section#ProfileSection.page-section.bg-gray
+    .profile.container.justify-content-center.rounded
+
       // 操作パネル
       if isMe 
         if (!personality.ogp_path || !personality.thumbnail_path || !visibility)
-          div(style="width:100%; background-color: #F6F6F6; border-radius:10px; padding: 10px;").my-3
-            ul(style="margin: 0;")
+          #CautionPane.my-3
+            ul.m-0
               if !personality.ogp_path
                 li 
-                  span
-                    a(href="https://www.google.com/search?q=OGP" target="_blank").text-danger  OGPイメージ
+                  a(href="/howto#Ogp" target="_blank").text-danger  OGPイメージ
                   span.text-dark （URL展開用の画像）がありません 
-                  span(data-toggle="modal" data-target="#OgpModal" style="cursor: pointer;").text-info ≫設定する
+                  span(data-toggle="modal" data-target="#OgpModal").pointer.text-info ≫設定する
               if !personality.thumbnail_path
                 li 
-                  span.text-danger 検索用サムネイル
+                  a(href="/howto#Thumbnail" target="_blank").text-danger 検索用サムネイル
                   span.text-dark  がありません（TOP画面や検索結果に表示されません）
-                  span(data-toggle="modal" data-target="#TachieModal" style="cursor: pointer;").text-info ≫設定する
+                  span(data-toggle="modal" data-target="#TachieModal").pointer.text-info ≫設定する
               if !visibility
                 li プロフィールは
-                  span.text-danger  非公開状態 
+                  a(href="/howto#Visibility" target="_blank").text-danger  非公開状態 
                   span です 
 
         p
-          div.d-flex.flex-wrap
-            div.ml-2.mt-2
+          .d-flex.flex-wrap
+            .ml-2.mt-2
               // 公開/非公開
               form(method='post' action='/i/'+me.username+'/visibility' id="VisibilityForm" style="display: inline-flex;").edit
                 input(type="hidden" name="visibility" value=visibility)
@@ -75,7 +81,7 @@ block content
                   button.btn-sm.btn-outline-info 
                     i.fas.fa-play  公開する
             
-            div.ml-2.mt-2
+            .ml-2.mt-2
               // 編集/プレビュー
               if mode == "edit"
                 a#viewLink
@@ -86,7 +92,7 @@ block content
                   button.btn-sm.btn-outline-info
                     i.fas.fa-pen  編集モードにする
 
-            div.ml-2.mt-2
+            .ml-2.mt-2
               // 使い方
               a(href="/howto" target="_blank")
                 button.btn-sm.btn-outline-secondary
@@ -103,57 +109,50 @@ block content
               ) ツイート
               script(async src="https://platform.twitter.com/widgets.js" charset="utf-8")
 
-
       // 背景画像
-      - var backImage = personality.back_path ? `background-image:url(${personality.back_path}); background-size: cover; background-position:center;border-radius:8px;` : "";
-      div(style=backImage).profileImage.row.m-0
+      div(style=`background-image:url(${personality.back_path});`)#profileBackground.row.m-0
         // プロフィール画像
-        - var backImage = personality.tachie ? `background-image:url(${personality.tachie}); border-radius:0px;` : "";
-        div(style=backImage+"width:100%; margin:0;").profileImage.row
-          if personality.tachie
-            input(type="hidden" value=personality.tachie)#tachieSource
-          div(style="width:550px; max-width:100%;").personalities.py-2
+        div(style=`background-image:url(${personality.tachie});`)#profileImage.row
+          .personalities.py-2
             div
 
               // 編集ボタン
-              div.m-3.text-right
-                i(data-toggle="modal" data-target="#BasicInfoModal" style="cursor: pointer; font-size: 1.6rem;").fas.fa-pen.text-info.edit
+              .m-3.text-right
+                i(data-toggle="modal" data-target="#BasicInfoModal").editButton.pointer.fas.fa-pen.text-info.edit
               
+              // よみ,名前
               div(style="margin-top:.83rem;").mx-2.my-3
-                // よみ
                 div(style="font-size: 1.2rem;").text-secondary.shadow-gray.mx-1.nameEn #{personality.nameEn}
-                // 名前
                 div(style="font-size: 2.5rem; line-height:1.2;").name 
                   b #{personality.nameJa}
-              // プロフィール本文
+
               hr.profHR
-              h5.m-2.text-secondary.shadow-gray
-                span #{personality.label}
-              p(style="white-space:pre-wrap;")#introduction.shadow-gray.m-2 #{personality.introduction}
+
+              // プロフィール
+              h5.m-2.text-secondary.shadow-gray #{personality.label}
+              p#introduction.shadow-gray.m-2 #{personality.introduction}
+              
               hr.profHR
 
             // カテゴリ情報
+            include i_icons.pug
             .container.m-2.shadow-gray
               .row
                 mixin categorizedInfo(title, name)
-
-                  div(style="min-width:250px;").mt-2
-                    div(style=" margin-bottom: 0.5rem;").d-flex.align-items-center
+                  .subInfoPane.mt-2
+                    .mb-1.d-flex.align-items-center
                       h3.category #{title}
                         small
-                          i(data-toggle="modal" data-target="#"+name+"Modal" style="cursor: pointer;").mx-2.fas.fa-pen.text-info.edit
+                          i(data-toggle="modal" data-target="#"+name+"Modal").pointer.mx-2.fas.fa-pen.text-info.edit
                     div
                       block
-
-                include i_icons.pug
                   
                 // ハッシュタグ
                 if hashTags.length > 0 || (isMe && mode == "edit")
                   +categorizedInfo('ハッシュタグ', 'HashTag')
                     each tag in hashTags
                       p.mx-2
-                        b
-                          a(href="https://twitter.com/hashtag/"+tag.name target="_blank").no-shadow ##{tag.name}
+                        a(href="https://twitter.com/hashtag/"+tag.name target="_blank").no-shadow.font-weight-bold ##{tag.name}
                         if tag.comment
                           span.text-secondary  - #{tag.comment}
 
@@ -163,10 +162,9 @@ block content
                     each activity in activities
                       p.mx-2
                         if activity.link
-                          b
-                            a(href=activity.link target="_blank").no-shadow
-                              img(src="/img/i/icons/"+getIcon(activity.link) style="width:22px;padding-bottom:4px;")
-                              span.mx-2 #{activity.name}
+                          a(href=activity.link target="_blank").no-shadow.font-weight-bold
+                            img(src="/img/i/icons/"+getIcon(activity.link)).icon
+                            span.mx-2 #{activity.name}
                         else
                           span #{activity.name}
 
@@ -176,26 +174,18 @@ block content
                     each cheer in cheerings
                       p.mx-2 
                         if cheer.link
-                          b
-                            a(href=cheer.link target="_blank").no-shadow
-                              img(src="/img/i/icons/"+getIcon(cheer.link) style="width:22px;padding-bottom:4px;")
-                              span.mx-2 #{cheer.name}
+                          a(href=cheer.link target="_blank").no-shadow.font-weight-bold
+                            img(src="/img/i/icons/"+getIcon(cheer.link)).icon
+                            span.mx-2 #{cheer.name}
                         else
                           span #{cheer.name}
             
             // 検索タグ
             div(style="text-shadow: none;")
-              h5
-                p
-                  each tag in tags
-                    - var tagLink = "/search?query=" + tag.tagname
-                    - var tagHue = tag.tagname.charCodeAt(0) % 36 * 10;
-                    - var tagText = tag.tagname
-                    a(href=tagLink)
-                      span(style=`background-color:hsl(${tagHue}, 50%, 45%);`).badge.badge-secondary.p-2.m-1 #{tagText}
-                  // 編集ボタン
-                  i(data-toggle="modal" data-target="#BasicInfoModal" style="position:relative; top:3px; cursor: pointer; font-size: 1.4rem;").m-1.fas.fa-pen.text-info.edit
-              div.edit.mx-1.mb-2
+              each tag in tags
+                a(href=`/search?query=${tag.tagname}` style=`background-color:hsl(${tag.tagname.charCodeAt(0) % 36 * 10}, 50%, 45%);`).tag.badge.badge-secondary.p-2.m-1 #{tag.tagname}
+              i(data-toggle="modal" data-target="#BasicInfoModal").tagEdit.pointer.m-1.fas.fa-pen.text-info.edit
+              .edit.mx-2.my-2
                 a(href="/tag_suggest" target="_blank") 人気タグを見る
 
       // ママ/パパ（キャラ絵右下）
@@ -210,12 +200,12 @@ block content
                 span #{parentDisplay}
         else
           h5.edit 関係者・協力者
-        i(data-toggle="modal" data-target="#ParentModal" style="cursor: pointer;").fas.fa-pen.text-info.edit
+        i(data-toggle="modal" data-target="#ParentModal").pointer.fas.fa-pen.text-info.edit
 
   // サブセクション雛形
   mixin subSection(title, bg)
     section(class=bg)#about.page-section
-      div(style="max-width:100%;").container
+      .subSectionPane.container
         .text-center
           if title
             h1 #{title}
@@ -237,7 +227,7 @@ block content
                 // 画像
                 img(src=`${tachie.path}` style="" data-toggle="modal" data-target="#TachieModal").tachie.card-img-top
                 if tachie.name || tachie.comment
-                  div(style="background-color:rgba(255,255,255,1.00);").card-body
+                  .tachieText.card-body
                     // タイトル、コメント
                     h5.card-title #{tachie.name}
                     p.card-text #{tachie.comment}
@@ -251,11 +241,11 @@ block content
           .card
             - var design_path = personality.design_path ? personality.design_path : "/img/i/add.png";
             - var description = personality.design_path ? personality.design_comment : "キャラデザの詳細とか書けます";
-            div.rounded.img-fluid.card-img-top
-              img(src=`${design_path}` style="max-width:100%; max-height:500px;" data-toggle="modal" data-target="#DesignModal")
+            .rounded.img-fluid.card-img-top
+              img(src=`${design_path}` data-toggle="modal" data-target="#DesignModal").characterDesignImage
             if description
               .card-body
-                p(style="white-space:pre-wrap;").card-text #{description}
+                p.characterDesignText.card-text #{description}
 
   // 紹介動画
   if personality.movie_id || (isMe && mode == "edit")
@@ -264,12 +254,16 @@ block content
         p.text-secondary YouTubeのみ対応
         button(data-toggle="modal" data-target="#MovieModal").btn.btn-info.m-3 動画URLを入力
       if personality.movie_id
-        div(style="width:90%; max-width:640px;").mx-auto.m-4
+        #MoviePane.mx-auto.m-4
           .youtube-inner
             iframe(width="640" height="360" src="https://www.youtube.com/embed/"+personality.movie_id frameborder="0" allow="autoplay; encrypted-media" allowfullscreen).mx-auto
 
-  // ロゴ/背景
+  // ここから先は編集モードのみ
   if isMe && mode == "edit"
+    //モーダル群
+    include i_modals.pug
+
+    // ロゴ/背景
     div.edit
       +subSection('ロゴ/背景', 'bg-white')
         p.text-secondary ページ背景に表示されます
@@ -279,22 +273,20 @@ block content
           - var logoPath = personality.logo_path ? personality.logo_path : "/img/i/add.png";
             .card
               div.rounded.img-fluid.card-img-top
-                img(src=`${logoPath}` style="width:auto;max-height:400px;" data-toggle="modal" data-target="#LogoModal").rounded.img-fluid
+                img(src=`${logoPath}` data-toggle="modal" data-target="#LogoModal").logoImage.rounded.img-fluid
 
-  // OGP画像
-  if isMe && mode == "edit"
+    // OGP画像
     div.edit
       +subSection('OGPイメージ')
         p.text-secondary TwitterなどにURLを貼り付けた時の画像展開で表示されます
         - var ogpPath = personality.ogp_path ? personality.ogp_path : "/img/i/add.png";
         div(style="max-width:600px;").card.mx-auto
           div.rounded.img-fluid.card-img-top
-            img(src=`${ogpPath}` style="max-height:400px;" data-toggle="modal" data-target="#OgpModal").rounded.img-fluid
+            img(src=`${ogpPath}` data-toggle="modal" data-target="#OgpModal").ogpImage.rounded.img-fluid
         p.text-secondary.mt-2 Twitter Card のプレビューやキャッシュ削除は 
           a(href="https://cards-dev.twitter.com/validator" target="_blank") こちら(Twitter Card validator)
 
-  // サムネイル
-  if isMe && mode == "edit"
+    // サムネイル
     div.edit
       +subSection('検索サムネイル', 'bg-white')
         p.text-secondary 検索ページで表示されます
@@ -302,11 +294,7 @@ block content
           small （立ち絵登録時に設定できます）
         div(style=`background-image: url(${personality.thumbnail_path});`).thumbnail.img-fluid
 
-  if isMe && mode == "edit"
-    include i_modals.pug
-
-  // アカウント削除
-  if isMe && mode == "edit"
+    // アカウント削除
     section(class=bg)#about.page-section.bg-secondary
       .container
         .row.justify-content-center
