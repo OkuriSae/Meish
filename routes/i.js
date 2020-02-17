@@ -25,7 +25,7 @@ const s3  = new AWS.S3();
 const multer = require('multer');
 const upload = multer({
   dest: 'storage/img/tmp/'
-})
+});
 
 let linkSanitize = (link) => { return link.split(':')[0].match(/http/gi) ? link : ""; };
 let isMyPage = (req) => { return req.user ? (req.params.username === req.user.username) || req.user.username === process.env.ADMIN : false; };

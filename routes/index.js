@@ -116,6 +116,10 @@ router.get('/terms', (req, res, next) => {
   res.render('terms', { me: req.user });
 });
 
+router.get('/privacy_policy', (req, res, next) => {
+  res.render('privacy_policy', { me: req.user });
+});
+
 router.get('/specialthanks', (req, res, next) => {
   res.render('specialthanks', { me: req.user });
 });
