@@ -60,19 +60,23 @@ router.get('/allusers', (req, res, next) => {
 
 async function getAllUsers(query, order) {
   // sequelizeでうまくかけないのでベタがき
+  // タグ検索文字列があれば、空白で区切られたタグの数だけJOINが増える（３つまで）
+  let q = query ? query.split(' ').slice(0,3) : [];
+  let createTagJoinStr = (i) => { return `JOIN "tags" AS ${i} ON "users"."userId" = ${i}."userId" AND ${i}."tagname" ilike :${i} ` };
   return database.query(`
     SELECT DISTINCT "username", "thumbnail_path", "isSensitive", "users"."createdAt"
     FROM "users" 
       JOIN "personalities" ON "users"."userId" = "personalities"."userId"
-      ${ query ? `JOIN "tags" ON "users"."userId" = "tags"."userId"` : "" }
+      ${ q[0] ? createTagJoinStr('a') : "" }
+      ${ q[1] ? createTagJoinStr('b') : "" }
+      ${ q[2] ? createTagJoinStr('c') : "" }
     WHERE
       "visibility" = 1
-      ${ query ? `AND "tagname" ilike $tagname` : "" }
       AND "thumbnail_path" is not null
     ${ order == 'latest' ? `ORDER BY "users"."createdAt" desc` : "" }
     `
     , {
-    bind: {tagname: query},
+    replacements: { a: q[0], b: q[1], c: q[2] },
     type: Sequelize.QueryTypes.SELECT
   });
 }
