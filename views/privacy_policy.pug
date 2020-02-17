@@ -1,0 +1,72 @@
+extends layout/layout
+
+block meta
+  link(rel="stylesheet" href="/css/howto.css")
+
+block content
+  
+  div(style="width:100%; max-width:800px; margin:auto;")#about.text-center
+    section.page-section
+      .logo
+
+    section#terms.page-section
+      h1 プライバシーポリシー
+      p Meishは取得した個人情報等について、このプライバシーポリシーに基づき取り扱います。
+      hr.text-primary
+      .text-left
+        h3 Meishが取得、管理する情報
+        h5 Twitterアカウントの情報
+        p Meishではログイン時のTwitter認証の際に、ユーザーの持つTwitterアカウントへの
+          br
+          |『
+          a(href="https://developer.twitter.com/ja/docs/basics/apps/guides/app-permissions") 読み取り専用のアクセス権限
+          |』を要求します。
+        p これによりMeishはユーザーのTwitterに関する以下の情報を取得、管理します。
+        h6 ユーザーID（ユーザー固有の普遍な数字のID）
+        p プロフィールデータ所有者の識別子として、データベースに保存されます。アカウント削除により破棄されます。
+        h6 スクリーンネーム（リプライなどに使われる英字やハイフンからなる識別ID）
+        p プロフィールのURLやアップロード画像の識別子として使用されます。アカウント削除により破棄されます。
+        h6 ユーザーのアイコンのURL
+        p ログイン時の識別画像として、ヘッダーにURLの画像を表示します。ログインの都度取得し、サーバーでは保存しません。
+        h6 ディスプレイネーム（日本語可能な表示名）
+        p プロフィール初期状態時の表示名として設定されます。プロフィール編集によって変更、破棄可能です。
+        h6 ユーザーのプロフィール
+        p プロフィール初期状態時のプロフィール詳細として設定されます。プロフィール編集によって変更、破棄可能です。
+        h5 アクセスログ
+        p その他本サービスへのアクセス時に生成されるログや、プロフィール入力内容のログを必要最低限の期間だけ保持・管理します。
+        p 必要最低限の期間とは、規約違反や不正利用を発見するためや、Meish内で起きた犯罪行為（爆破・殺害予告など）に対する警察からの情報開示請求などに対応するための期間です。
+
+        h3 個人情報や非公開情報の開示について
+        p 弊社が取得した情報のうちサービス上で公開されていない情報について、次のような場合を除き第三者に開示することはありません。
+        ul
+          li ユーザー本人の同意がある場合
+          li 開示すべき法的義務を負っている場合
+          li 不正利用が疑われる場合
+          li 弊社または第三者であるユーザーの権利・財産を保護するために必要だと運営が合理的に判断した場合
+
+        h3 Cookie
+        p 本サービスではログイン状態の確認、ユーザー利便性の向上、トラフィックデータ収集、広告配信のためにCookieを利用しています。
+        p Cookieを利用する外部サービス以下になります。
+        ul
+          li Google Analytics
+          li Google AdSense
+        p ユーザーはブラウザの設定によりCookieの送信を拒否することができます。
+        p Meishから収集した情報の GOOGLE による使用については 
+          a(href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank") こちら
+          | をご覧ください。
+        h5 Google Analytics
+        p Meishではサイトの改善を行なうため、Google Analyticsを利用しています。
+        p ユーザーはディスプレイ広告に対応する
+          a(href="https://tools.google.com/dlpage/gaoptout/" target="_blank") Googleアナリティクス機能によるデータ収集を無効化
+          |することや、
+          a(href="https://adssettings.google.com/u/0/authenticated?hl=ja" target="_blank") 広告設定
+          |を使用してGoogleディスプレイネットワークで表示される広告をカスタマイズすることができます。
+        h5 Google AdSense
+        p Google AdSenseではCookieを使用して、本サービスや他のサービスへの過去のアクセス情報に基づいてGoogleを含む第三者配信事業者が広告を配信します。
+        p ユーザーは
+          a(href="http://www.google.com/ads/preferences/" target="_blank") Ads Preferences Manager
+          |で、インタレスト ベースでの広告掲載に使用される DoubleClick Cookie を無効にできます。
+        p 
+          a(href="http://www.aboutads.info/" target="_blank") aboutads.infoページ
+          |では、インタレスト ベースでの広告掲載に使用される第三者配信事業者の Cookie を無効にできます。
+
