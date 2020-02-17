@@ -402,7 +402,7 @@ router.post('/:username/movie', authenticationEnsurer, csrfProtection, (req, res
         return url ?
         url.replace('https://youtu.be/', '')
         .replace('https://www.youtube.com/watch?v=', '')
-        .replace('https://www.youtube.com/embed/', '') : '';
+        .replace('https://www.youtube.com/embed/', '').split('&')[0] : '';
       };
       let updateData = { movie_id: getYouTubeId(req.body.movie_url).slice(0, 100) };
       await personality.update(updateData);
