@@ -123,6 +123,11 @@ router.post('/:username', authenticationEnsurer, csrfProtection, (req, res, next
           nameJa: req.user.displayName,
           introduction: req.user._json.description
       });
+      await Activity.create({
+          userId: req.user.id,
+          name: 'Twitter',
+          link: 'https://twitter.com/'+req.user.username,
+      });
       redirectMyPage(req, res);
     } else {
       redirectTop(req, res);
