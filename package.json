@@ -8,6 +8,7 @@
   "homepage": "https://www.meish.com/",
   "scripts": {
     "start": "node ./bin/www",
+    "build:dev": "webpack --mode=development",
     "build": "webpack --mode=production",
     "test": "NODE_PATH=app/ mocha --timeout 10000 --exit"
   },
