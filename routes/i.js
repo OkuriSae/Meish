@@ -214,6 +214,25 @@ router.post(
   })();
 });
 
+// POST:サブプロフィール
+router.post('/:username/subprofile', authenticationEnsurer, csrfProtection, (req, res, next) => {
+  (async () => {
+    let personality = await Personality.findOne({where: { userId: req.user.id }});
+    if (!personality) {
+      res.render('errors/404', { me: req.user });
+    }
+    let updateData = {};
+    if (isDeletePost(req)) {
+      updateData.subprofile = '';
+    } else {
+      updateData.subprofile = req.body.subprofile.slice(0, 1000);
+    }
+
+    await personality.update(updateData);
+    redirectMyPage(req, res);
+  })();
+});
+
 // POST:ハッシュタグ
 router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, res, next) => {
   (async () => {

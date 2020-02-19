@@ -155,6 +155,7 @@ setPreview('#OgpFileInput', '.ogp.upload.imagePreview', (file, preview) => {
 
 // 更新アクションの設定
 [ { key: 'BasicInfo', images: ['BackImage', 'ProfileImage'] },
+  { key: 'Subprofile', images: null },
   { key: 'Activity', images: null },
   { key: 'Cheering', images: null },
   { key: 'Parent', images: null },
@@ -181,6 +182,7 @@ setPreview('#OgpFileInput', '.ogp.upload.imagePreview', (file, preview) => {
 
 // 削除アクションの設定
 [ { key: 'BasicInfo' , hide: true },
+  { key: 'Subprofile', hide: false },
   { key: 'Activity' , hide: true },
   { key: 'HashTag' , hide: true },
   { key: 'Cheering' , hide: true },
@@ -220,8 +222,12 @@ $(() => {
 */
 
 $(document).ready(() => {
-  let intro = $('#introduction');
-  let linkedText = autolink.autolink(intro.text(), "_blank");
-  linkedText = autolink.autolinkTwitter(intro.text(), "_blank");
-  intro.html(linkedText);
+  let link = (selecter) => {
+    let linkedText = autolink.autolinkTwitter($(selecter).text(), "_blank");
+    $(selecter).html(linkedText);
+  };
+  link('#introduction');
+  $('.subprofile-text').each((index, subprofile) => {
+    link(subprofile);
+  })
 });

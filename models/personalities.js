@@ -28,6 +28,10 @@ const Personality = loader.database.define('personalities', {
     type: Sequelize.TEXT,
     allowNull: true
   },
+  subprofile: {
+    type: Sequelize.TEXT,
+    allowNull: true
+  },
   ogp_path: {
     type: Sequelize.STRING,
     allowNull: true,

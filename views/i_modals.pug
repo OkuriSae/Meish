@@ -73,6 +73,15 @@ block modals
           label(for="sensitiveCheck").form-check-label 
             small このプロフィールにはセンシティブな表現が含まれる
 
+    // サブプロフィール
+    +modal({name: 'Subprofile', action: '/subprofile', title: 'サブプロフィール'})
+      .form-group
+        textarea(placeholder="サブプロフィール [1000文字まで]" rows="15" name="subprofile" maxlength="1000").form-control.my-2
+          | #{personality.subprofile}
+        .text-center.text-secondary
+          small [ !page ]でページ分け、[ !--- ]でタイトルにできます。詳しくは 
+            a(href="/howto#Subprofile" target="_blank") こちら
+
     // ハッシュタグモーダル
     +modal({name: 'HashTag', action: '/hashtag', title: 'ハッシュタグ', enctype: "application/x-www-form-urlencoded"})
       .form-group

@@ -202,9 +202,24 @@ block content
           h5.edit 関係者・協力者
         i(data-toggle="modal" data-target="#ParentModal").pointer.fas.fa-pen.text-info.edit
 
+  // サブプロフィール
+  if personality.subprofile || (isMyPage && mode == "edit")
+    section.page-section
+      .d-flex.flex-wrap.justify-content-center.m-auto
+        - var texts = personality.subprofile ? personality.subprofile.split('!page') : ['サブプロフィール!---プロフィールが長い場合はこちらに！']
+        each text in texts
+          - var title_text = text.match('!---') ? text.split('!---') : [ '', text ]
+          .subprofile.py-4.px-5
+
+            // 編集ボタン
+            i(data-toggle="modal" data-target="#SubprofileModal").editButton.pointer.fas.fa-pen.text-info.edit.m-3
+            
+            h5.text-secondary.shadow-gray #{title_text[0].trim()}
+            p#Subprofile.subprofile-text.shadow-gray #{title_text[1].trim()}
+
   // サブセクション雛形
   mixin subSection(title, bg)
-    section(class=bg)#about.page-section
+    section(class=bg).page-section
       .subSectionPane.container
         .text-center
           if title
@@ -258,7 +273,6 @@ block content
           .youtube-inner
             iframe(width="640" height="360" src="https://www.youtube.com/embed/"+personality.movie_id frameborder="0" allow="autoplay; encrypted-media" allowfullscreen).mx-auto
 
-  // ここから先は編集モードのみ
   if isMyPage && mode == "edit"
     //モーダル群
     include i_modals.pug
@@ -294,8 +308,9 @@ block content
           small （立ち絵登録時に設定できます）
         div(style=`background-image: url(${personality.thumbnail_path});`).thumbnail.img-fluid
 
+  if isMyPage && mode == "edit"
     // アカウント削除
-    section(class=bg)#about.page-section.bg-secondary
+    section(class=bg).page-section.bg-secondary
       .container
         .row.justify-content-center
           .text-center
