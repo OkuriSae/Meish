@@ -136,6 +136,13 @@ block content
         h5 詳細プロフィール
         p キャラクターの詳細プロフィールを記入します。500文字まで入力できます。
         p 一部の文字（半角英数や海外の文字など）が自動改行されなく、プロフィール領域を突き抜けてしまうことがあるのでご注意ください。
+        h6 自動リンク
+        p 以下の表記には自動でリンクがつきます
+        ul
+          li [http://]または[https://]で始まる文字列は外部リンクになります。
+          li [@]で始まる文字列は、Twitterアカウントへのリンクになります。（メールアドレスなど、文字列に[.]がつく場合はリンクになりません）
+          li [#]で始まる文字列は、Twitterハッシュタグ検索へのリンクになります。
+        img(src="/img/howto/autolink.jpg" width="50%").ml-4
         h6 入力のヒント
         ul
           li キャラ設定（誕生日とか）
@@ -263,7 +270,14 @@ block content
           li 
             b !page
             |  : ページ区切り用の構文です。 !page を区切りとして、別のパネルとなります。
-        img(src="/img/howto/subprofile_form.jpg" width="50%").ml-4.mb-3
+        img(src="/img/howto/subprofile_form.jpg" width="50%").ml-4
+        p 入力サンプル
+        h6 自動リンク
+        p プロフィール詳細と同じく、以下の表記には自動でリンクがつきます
+        ul
+          li [http://]または[https://]で始まる文字列は外部リンクになります。
+          li [@]で始まる文字列は、Twitterアカウントへのリンクになります。（メールアドレスなど、文字列に[.]がつく場合はリンクになりません）
+          li [#]で始まる文字列は、Twitterハッシュタグ検索へのリンクになります。
 
         h4#Tachie 立ち絵
         img(src="/img/howto/tachie_sample.jpg" width="80%").ml-4.mb-3
