@@ -209,7 +209,7 @@ block content
         - var texts = personality.subprofile ? personality.subprofile.split('!page') : ['サブプロフィール!---プロフィールが長い場合はこちらに！']
         each text in texts
           - var title_text = text.match('!---') ? text.split('!---') : [ '', text ]
-          .subprofile.py-4.px-5
+          .subprofile.card
 
             // 編集ボタン
             i(data-toggle="modal" data-target="#SubprofileModal").editButton.pointer.fas.fa-pen.text-info.edit.m-3
