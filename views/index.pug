@@ -22,6 +22,21 @@ block content
       div(style="height:100px;").logo.mb-4
       h6.m-3 バーチャルキャラクターのためのプロフィール登録サービス
 
+      // 今週のオススメタグ
+      if recommendWord
+        h5.mt-5
+          b 今週のオススメタグ
+        a(href=`/search?query=${recommendWord}`)
+          span(style=`background-color:hsl(${recommendWord.charCodeAt(0) % 36 * 10}, 50%, 45%); font-size:1rem;`).badge.badge-secondary.p-2.m-1 #{recommendWord}
+        div(style="max-width:800px;").m-auto
+          - recommendUsers = recommendUsers.slice(0, 3)
+          div.d-flex.flex-wrap.justify-content-around
+            each result in recommendUsers
+              .m-3
+                a(href=`/i/${result.username}`)
+                  .thumbnail-frame.card
+                    div(style=`background-image: url(${s3+result.thumbnail_path});` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top
+
       // タグ
       mixin tag(display)
         each tag in tags.slice(0, display)
@@ -39,17 +54,16 @@ block content
           button(onclick="$('.tags').toggle();").badge.badge-secondary.p-2.m-1 
             span Close
 
-    // キャラクター
-    if results && results.length > 0
-      div.d-flex.flex-wrap.justify-content-around
-        each result in results
-          .m-3
-            a(href=`/i/${result.username}`)
-              .thumbnail_frame.card
-                div(style=`background-image: url(${s3+result.thumbnail_path});` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top
+      // キャラクター
+      if results && results.length > 0
+        div.d-flex.flex-wrap.justify-content-around
+          each result in results
+            .m-3
+              a(href=`/i/${result.username}`)
+                .thumbnail-frame.card
+                  div(style=`background-image: url(${s3+result.thumbnail_path});` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top
 
-      // 表示制御系ボタン
-      .text-center
+        // 表示制御系ボタン
         if results.length == 30
           a(href="/allusers")
             button.btn.btn-outline-info.m-3 全員見る（重いかも）
@@ -59,8 +73,7 @@ block content
           label(for="sensitiveCheck").form-check-label
             span センシティブなキャラクターも見る
 
-    // 登録者数
-    if userCount
-      div.text-center.mt-5
-        h6
+      // 登録者数
+      if userCount
+        h6.mt-5
           small.text-secondary Total #{userCount} characters.

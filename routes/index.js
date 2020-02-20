@@ -10,13 +10,16 @@ const Tag = require('../models/tags');
 const authenticationEnsurer = require('./authentication-ensurer');
 
 router.get('/', (req, res, next) => {
+  let recoomendWord = '';
   (async () => {
     res.render('index', {
       me: req.user,
       s3: process.env.s3Path,
       results: await getRandomUsers(),
       tags: await getTags(),
-      userCount: await User.count()
+      userCount: await User.count(),
+      recommendWord: recoomendWord,
+      recommendUsers: await getRandomUsers(recoomendWord)
     });
   })();
 });

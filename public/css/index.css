@@ -18,7 +18,7 @@
   filter: blur(5px);
 }
 
-.thumbnail_frame {
+.thumbnail-frame {
   background-color: rgba(255,255,255,0.5);
   width:200px;
   height:350px;
