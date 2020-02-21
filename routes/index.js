@@ -96,7 +96,7 @@ async function getRandomUsers(query) {
     users[r] = tmp;
   }
   
-  return users.slice(0, 30);
+  return users.slice(0, 24);
 }
 
 async function getTags() {
