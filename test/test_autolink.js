@@ -6,10 +6,10 @@ describe('autolink', () => {
         it('should replace @xxx with a twitter link to xxx', () => {
             assert.equal(
                 autolink.autolinkTwitter('@OkuriSae', '_blank'),
-                '<a href="http://twitter.com/OkuriSae" target="_blank">@OkuriSae</a>');
+                '<a href="http://twitter.com/OkuriSae" target="_blank" rel="noopener">@OkuriSae</a>');
             assert.equal(
                 autolink.autolinkTwitter('@OkuriSaeちゃん', '_blank'),
-                '<a href="http://twitter.com/OkuriSae" target="_blank">@OkuriSae</a>ちゃん');
+                '<a href="http://twitter.com/OkuriSae" target="_blank" rel="noopener">@OkuriSae</a>ちゃん');
         });
 
         it('should not replace mail addresses', () => {
