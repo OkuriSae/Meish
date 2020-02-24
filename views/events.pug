@@ -1,0 +1,38 @@
+extends layout/layout
+
+block meta
+  link(rel="stylesheet" href="/css/index.css")
+
+block content
+  
+  div(style="width:100%; max-width:1200px; margin:auto;")#about.text-center
+    section#TopSection.page-section
+      h1 ウィークリー
+        span.d-inline-block オススメタグ
+      hr.text-primary
+      h2(style="color: #A96;").m-4 - March -
+      .d-flex.justify-content-center
+        .text-left
+          - const split = (array, n) => array.reduce((a, c, i) => i % n == 0 ? [...a, [c]] : [...a.slice(0, -1), [...a[a.length - 1], c]], [])
+          - var monthlyTags = split(dailyTags, 7)
+          .d-flex.justify-content-center.text-center
+            div(style="width:9%; color:#C33;").m-1.text-center.font-weight-bold SUN
+            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold MON
+            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold TUE
+            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold WED
+            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold THU
+            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold FRI
+            div(style="width:9%; color:#0AA;").m-1.text-center.font-weight-bold SAT
+          hr(style="width:80%; border-top: 2px dotted #AAA;")
+          each weeklyTags in monthlyTags
+            p
+              .d-flex.justify-content-center
+                each dailyTag in weeklyTags
+                  div(style="width:9%;").mx-1.text-center.text-secondary
+                    //small
+                    b #{dailyTag.day.getDate()}
+              .d-flex.justify-content-center
+                each dailyTag in weeklyTags
+                  div(style="width:9%;min-height:60px;background-color: rgba(255,255,255,0.7);").mx-1.p-1.text-center.border.rounded.d-flex.align-items-center.justify-content-center
+                    a(href="/search?query="+dailyTag.tag target="_blank")
+                      b #{dailyTag.tag}

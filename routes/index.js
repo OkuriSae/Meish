@@ -65,7 +65,7 @@ async function getAllUsers(query, order) {
   // sequelizeでうまくかけないのでベタがき
   // タグ検索文字列があれば、空白で区切られたタグの数だけJOINが増える（３つまで）
   let q = query ? query.replace('　', ' ').split(' ').slice(0,3) : [];
-  let createTagJoinStr = (i) => { return `JOIN "tags" AS ${i} ON "users"."userId" = ${i}."userId" AND ${i}."tagname" ilike :${i} ` };
+  let createTagJoinStr = (i) => { return `JOIN "tags" AS ${i} ON "users"."userId" = ${i}."userId" AND ${i}."tagname" like :${i} ` };
   return database.query(`
     SELECT DISTINCT "username", "thumbnail_path", "isSensitive", "users"."createdAt"
     FROM "users" 
@@ -79,7 +79,7 @@ async function getAllUsers(query, order) {
     ${ order == 'latest' ? `ORDER BY "users"."createdAt" desc` : "" }
     `
     , {
-    replacements: { a: q[0], b: q[1], c: q[2] },
+    replacements: { a: `%${q[0]}%`, b: `%${q[1]}%`, c: `%${q[2]}%` },
     type: Sequelize.QueryTypes.SELECT
   });
 }
@@ -130,5 +130,40 @@ router.get('/privacy_policy', (req, res, next) => {
 router.get('/specialthanks', (req, res, next) => {
   res.render('specialthanks', { me: req.user });
 });
+
+router.get('/events', (req, res, next) => {
+  res.render('events', { me: req.user, dailyTags });
+});
+
+const dailyTags = [
+  { day: new Date('2020-03-01'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-02'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-03'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-04'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-05'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-06'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-07'), tag: 'ケモ耳' },
+  { day: new Date('2020-03-08'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-09'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-10'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-11'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-12'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-13'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-14'), tag: 'バーチャルキャスト' },
+  { day: new Date('2020-03-15'), tag: '緑髪' },
+  { day: new Date('2020-03-16'), tag: '緑髪' },
+  { day: new Date('2020-03-17'), tag: '緑髪' },
+  { day: new Date('2020-03-18'), tag: '緑髪' },
+  { day: new Date('2020-03-19'), tag: '緑髪' },
+  { day: new Date('2020-03-20'), tag: '緑髪' },
+  { day: new Date('2020-03-21'), tag: '緑髪' },
+  { day: new Date('2020-03-22'), tag: '和服' },
+  { day: new Date('2020-03-23'), tag: '和服' },
+  { day: new Date('2020-03-24'), tag: '和服' },
+  { day: new Date('2020-03-25'), tag: '和服' },
+  { day: new Date('2020-03-26'), tag: '和服' },
+  { day: new Date('2020-03-27'), tag: '和服' },
+  { day: new Date('2020-03-28'), tag: '和服' },
+];
 
 module.exports = router;

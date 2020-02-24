@@ -32,3 +32,10 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+@media screen and (max-width:640px) { 
+  section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
