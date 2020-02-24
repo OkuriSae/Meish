@@ -183,7 +183,7 @@ block content
             // 検索タグ
             div(style="text-shadow: none;")
               each tag in tags
-                a(href=`/search?query=${tag.tagname}` style=`background-color:hsl(${tag.tagname.charCodeAt(0) % 36 * 10}, 50%, 45%);`).tag.badge.badge-secondary.p-2.m-1 #{tag.tagname}
+                a(href=`/search?q="${tag.tagname}"` style=`background-color:hsl(${tag.tagname.charCodeAt(0) % 36 * 10}, 50%, 45%);`).tag.badge.badge-secondary.p-2.m-1 #{tag.tagname}
               i(data-toggle="modal" data-target="#BasicInfoModal").tagEdit.pointer.m-1.fas.fa-pen.text-info.edit
               .edit.mx-2.my-2
                 a(href="/tag_suggest" target="_blank") 人気タグを見る

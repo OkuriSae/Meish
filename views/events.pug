@@ -7,10 +7,14 @@ block content
   
   div(style="width:100%; max-width:1200px; margin:auto;")#about.text-center
     section#TopSection.page-section
-      h1 ウィークリー
+      h1.mt-5 ウィークリー
         span.d-inline-block オススメタグ
       hr.text-primary
-      h2(style="color: #A96;").m-4 - March -
+      p.mt-5
+        b Meish*のTOPページに今週のオススメタグが表示されます！
+      img(src="/img/events/recommend_event.jpeg" width="50%").border.rounded.border-secondary
+      h2.mt-5 オススメタグカレンダー
+      h3(style="color: #A96;").m-4 - March -
       .d-flex.justify-content-center
         .text-left
           - const split = (array, n) => array.reduce((a, c, i) => i % n == 0 ? [...a, [c]] : [...a.slice(0, -1), [...a[a.length - 1], c]], [])
@@ -30,9 +34,9 @@ block content
                 each dailyTag in weeklyTags
                   div(style="width:9%;").mx-1.text-center.text-secondary
                     //small
-                    b #{dailyTag.day.getDate()}
+                    b #{new Date(dailyTag.day).getDate()}
               .d-flex.justify-content-center
                 each dailyTag in weeklyTags
                   div(style="width:9%;min-height:60px;background-color: rgba(255,255,255,0.7);").mx-1.p-1.text-center.border.rounded.d-flex.align-items-center.justify-content-center
-                    a(href="/search?query="+dailyTag.tag target="_blank")
+                    a(href="/search?q="+dailyTag.tag target="_blank")
                       b #{dailyTag.tag}

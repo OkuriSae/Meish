@@ -10,7 +10,10 @@ const Tag = require('../models/tags');
 const authenticationEnsurer = require('./authentication-ensurer');
 
 router.get('/', (req, res, next) => {
-  let recoomendWord = '';
+  let now = new Date();
+  let nowDate = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
+  let recommendTag = dailyTags.filter( i => { return i.day == nowDate; } );
+  recommendTag = recommendTag.length > 0 ? recommendTag[0].tag : null;
   (async () => {
     res.render('index', {
       me: req.user,
@@ -18,8 +21,8 @@ router.get('/', (req, res, next) => {
       results: await getRandomUsers(),
       tags: await getTags(),
       userCount: await User.count(),
-      recommendWord: recoomendWord,
-      recommendUsers: await getRandomUsers(recoomendWord)
+      recommendTag: recommendTag,
+      recommendUsers: await getRandomUsers(recommendTag)
     });
   })();
 });
@@ -36,14 +39,14 @@ router.get('/tag_suggest', (req, res, next) => {
 });
 
 router.get('/search', (req, res, next) => {
-  let query = req.query.query;
+  let q = req.query.q;
   (async () => {
     res.render('index', {
       me: req.user,
       s3: process.env.s3Path,
-      results: await getRandomUsers(query),
+      results: await getAllUsers(q),
       tags: await getTags(),
-      query: query
+      q
     });
   })();
 });
@@ -64,7 +67,12 @@ router.get('/allusers', (req, res, next) => {
 async function getAllUsers(query, order) {
   // sequelizeでうまくかけないのでベタがき
   // タグ検索文字列があれば、空白で区切られたタグの数だけJOINが増える（３つまで）
-  let q = query ? query.replace('　', ' ').split(' ').slice(0,3) : [];
+  let convLikeQery = i => i.match(`"`) ? i.replace(/"/gi, '') : `%${i}%`; // ""付きは全文一致、なしは部分一致
+  let q = query ? query
+    .replace('　', ' ')
+    .split(' ')
+    .slice(0,3)
+    .map(convLikeQery) : [];
   let createTagJoinStr = (i) => { return `JOIN "tags" AS ${i} ON "users"."userId" = ${i}."userId" AND ${i}."tagname" like :${i} ` };
   return database.query(`
     SELECT DISTINCT "username", "thumbnail_path", "isSensitive", "users"."createdAt"
@@ -79,7 +87,7 @@ async function getAllUsers(query, order) {
     ${ order == 'latest' ? `ORDER BY "users"."createdAt" desc` : "" }
     `
     , {
-    replacements: { a: `%${q[0]}%`, b: `%${q[1]}%`, c: `%${q[2]}%` },
+    replacements: { a: q[0], b: q[1], c: q[2] },
     type: Sequelize.QueryTypes.SELECT
   });
 }
@@ -136,34 +144,34 @@ router.get('/events', (req, res, next) => {
 });
 
 const dailyTags = [
-  { day: new Date('2020-03-01'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-02'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-03'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-04'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-05'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-06'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-07'), tag: 'ケモ耳' },
-  { day: new Date('2020-03-08'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-09'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-10'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-11'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-12'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-13'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-14'), tag: 'バーチャルキャスト' },
-  { day: new Date('2020-03-15'), tag: '緑髪' },
-  { day: new Date('2020-03-16'), tag: '緑髪' },
-  { day: new Date('2020-03-17'), tag: '緑髪' },
-  { day: new Date('2020-03-18'), tag: '緑髪' },
-  { day: new Date('2020-03-19'), tag: '緑髪' },
-  { day: new Date('2020-03-20'), tag: '緑髪' },
-  { day: new Date('2020-03-21'), tag: '緑髪' },
-  { day: new Date('2020-03-22'), tag: '和服' },
-  { day: new Date('2020-03-23'), tag: '和服' },
-  { day: new Date('2020-03-24'), tag: '和服' },
-  { day: new Date('2020-03-25'), tag: '和服' },
-  { day: new Date('2020-03-26'), tag: '和服' },
-  { day: new Date('2020-03-27'), tag: '和服' },
-  { day: new Date('2020-03-28'), tag: '和服' },
+  { day: '2020/3/1', tag: 'ケモ耳' },
+  { day: '2020/3/2', tag: 'ケモ耳' },
+  { day: '2020/3/3', tag: 'ケモ耳' },
+  { day: '2020/3/4', tag: 'ケモ耳' },
+  { day: '2020/3/5', tag: 'ケモ耳' },
+  { day: '2020/3/6', tag: 'ケモ耳' },
+  { day: '2020/3/7', tag: 'ケモ耳' },
+  { day: '2020/3/8', tag: 'バーチャルキャスト' },
+  { day: '2020/3/9', tag: 'バーチャルキャスト' },
+  { day: '2020/3/10', tag: 'バーチャルキャスト' },
+  { day: '2020/3/11', tag: 'バーチャルキャスト' },
+  { day: '2020/3/12', tag: 'バーチャルキャスト' },
+  { day: '2020/3/13', tag: 'バーチャルキャスト' },
+  { day: '2020/3/14', tag: 'バーチャルキャスト' },
+  { day: '2020/3/15', tag: '緑髪' },
+  { day: '2020/3/16', tag: '緑髪' },
+  { day: '2020/3/17', tag: '緑髪' },
+  { day: '2020/3/18', tag: '緑髪' },
+  { day: '2020/3/19', tag: '緑髪' },
+  { day: '2020/3/20', tag: '緑髪' },
+  { day: '2020/3/21', tag: '緑髪' },
+  { day: '2020/3/22', tag: '和服' },
+  { day: '2020/3/23', tag: '和服' },
+  { day: '2020/3/24', tag: '和服' },
+  { day: '2020/3/25', tag: '和服' },
+  { day: '2020/3/26', tag: '和服' },
+  { day: '2020/3/27', tag: '和服' },
+  { day: '2020/3/28', tag: '和服' },
 ];
 
 module.exports = router;
