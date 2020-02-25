@@ -6,6 +6,10 @@ const global = Function('return this;')();
 global.jQuery = $;
 //import * as Vibrant from 'node-vibrant';
 
+// 画像の遅延ロードの有効化
+import lozad from 'lozad';
+lozad().observe();
+
 const imageValidate = (fileInput, form) => {
   let img = fileInput.prop('files')[0]; 
   if (!img) { return true; }
