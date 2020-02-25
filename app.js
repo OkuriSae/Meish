@@ -7,6 +7,7 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const session = require('express-session');
 const passport = require('passport');
+const compression = require('compression')
 
 // モデルの読み込み
 const User = require('./models/users');
@@ -49,6 +50,7 @@ const app = express();
 
 process.env.s3Path = `https://${process.env.AWS_S3_BUCKET_NAME}.s3-ap-northeast-1.amazonaws.com/`;
 
+app.use(compression());
 app.use(helmet());
 
 app.use(cookieParser());
