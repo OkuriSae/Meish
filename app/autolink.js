@@ -18,12 +18,14 @@
         return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, '&#39;');
     }
 
-	function anchor(url, label, target) {
-		label = label || url;
-		target = target ? ' target="' + target + '"' : "";
-		
-		return '<a href="' + url + '"' + target + '>' + label + '</a>';
-	}
+    function anchor(url, label, target) {
+        // append 'rel="noopener"' if the target is '_blank'
+        // SEE: https://developers.google.com/web/tools/lighthouse/audits/noopener
+        const noopener = (target && target === '_blank') ? ' rel="noopener"' : '';
+        label = label || url;
+        target = target ? ' target="' + target + '"' : "";
+        return '<a href="' + url + '"' + target + noopener + '>' + label + '</a>';
+    }
 
     Y.autolink = function (src, target) {
         return src.replace(
