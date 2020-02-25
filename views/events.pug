@@ -38,5 +38,5 @@ block content
               .d-flex.justify-content-center
                 each dailyTag in weeklyTags
                   div(style="width:9%;min-height:60px;background-color: rgba(255,255,255,0.7);").mx-1.p-1.text-center.border.rounded.d-flex.align-items-center.justify-content-center
-                    a(href="/search?q="+dailyTag.tag target="_blank")
+                    a(href=`/search?q="${dailyTag.tag}"` target="_blank")
                       b #{dailyTag.tag}
