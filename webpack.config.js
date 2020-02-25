@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
   context: __dirname + '/app',
   entry: './entry',
   mode: 'none',
@@ -24,3 +24,11 @@ module.exports = {
     }
   ]
 };
+
+module.exports = (env, argv) => {
+  // https://webpack.js.org/configuration/mode/
+  if (argv.mode === 'development') {
+    config.devtool = 'eval-source-map';
+  }
+  return config;
+}
