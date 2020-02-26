@@ -499,7 +499,7 @@ class ImageManager {
     this.username = username;
   }
 
-  async save(source, suffix, options, oldPath) {
+  async update(source, suffix, options, oldPath) {
     S3Client.delete(oldPath);
     const outPath = await ImageGenerator.create(source, options);
     const mimetype = options.mimetype || source.mimetype;
