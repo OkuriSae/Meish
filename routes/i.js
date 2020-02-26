@@ -512,7 +512,7 @@ class ImageManager {
     return await this.update(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 }, oldPath);
   }
   async updateProfileBackground (source, oldPath) {
-    return await this.update(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" }), oldPath;
+    return await this.update(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" }, oldPath);
   }
   async updateThumbnail (source, oldPath) {
     return await this.update(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 }, oldPath);
