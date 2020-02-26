@@ -473,28 +473,24 @@ router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, r
 
 async function deleteUser(user) {
   // image deleting
-  let personality = await Personality.findOne({where: { userId: user.id }});
-  S3Client.delete(personality.tachie);
-  S3Client.delete(personality.back_path);
-  S3Client.delete(personality.design_path);
-  S3Client.delete(personality.logo_path);
-  S3Client.delete(personality.ogp_path);
-  S3Client.delete(personality.thumbnail_path);
-  let tachies = await Tachie.findAll({where: { userId: user.id }});
-  tachies.forEach( tachie => {
-    S3Client.delete(tachie.path);
-  });
+  await Personality.findOne({where: { userId: user.id }}).then( p => {
+    [ p.tachie, p.back_path, p.design_path, p.logo_path, p.ogp_path, p.thumbnail_path ].forEach(i => {
+      S3Client.delete(i);
+    });
+  })
+  await Tachie.findAll({ where: { userId: user.id } }).then( tachies => {
+    tachies.forEach( tachie => { S3Client.delete(tachie.path); });
+  })
+  
   // data deleting
-  let isUser = { where: { userId: user.id }};
-  let destroyAll = (models) => { models.forEach( model => { model.destroy(); }); }
-  await Tag.findAll(isUser).then((tags) => { destroyAll(tags); });
-  await Tachie.findAll(isUser).then((tachies) => { destroyAll(tachies); });
-  await Activity.findAll(isUser).then((activities) => { destroyAll(activities); });
-  await Parent.findAll(isUser).then((parents) => { destroyAll(parents); });
-  await HashTag.findAll(isUser).then((hashtags) => { destroyAll(hashtags); });
-  await Cheering.findAll(isUser).then((cheerings) => { destroyAll(cheerings); });
-  await Personality.findOne(isUser).then((personality) => { personality.destroy(); });
-  await User.findOne(isUser).then((user) => { user.destroy(); });
+  const whereIsMine = { where: { userId: user.id }};
+  const models = [ Tag, Tachie, Activity, Parent, HashTag, Cheering, Personality ];
+  const destroyPromises = models.map(model => {
+    return model.destroy(whereIsMine);
+  });
+  return Promise.all(destroyPromises).then(() => {
+    User.findOne(whereIsMine).then( u => { u.destroy(); });
+  });
 }
 
 class ImageManager {
