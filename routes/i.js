@@ -149,10 +149,10 @@ router.post(
     }
 
     let updateData = {
-      nameJa: req.body.nameJa.slice(0, 50),
-      nameEn: req.body.nameEn.slice(0, 50),
-      label: req.body.label.slice(0, 50),
-      introduction: req.body.introduction.slice(0, 500),
+      nameJa: req.body.nameJa.slice(0, 52),
+      nameEn: req.body.nameEn.slice(0, 52),
+      label: req.body.label.slice(0, 52),
+      introduction: req.body.introduction.slice(0, 502),
       isSensitive: req.body.isSensitive == "on" ? "on" : ""
     }
 
@@ -205,7 +205,7 @@ router.post('/:username/subprofile', authenticationEnsurer, csrfProtection, (req
     if (isDeletePost(req)) {
       updateData.subprofile = '';
     } else {
-      updateData.subprofile = req.body.subprofile.slice(0, 1000);
+      updateData.subprofile = req.body.subprofile.slice(0, 1002);
     }
 
     await personality.update(updateData);
@@ -221,8 +221,8 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
       let format = (tag) => { return tag.replace('#', ''); };
-      updateData.name = format(req.body.name).slice(0, 20);
-      updateData.comment = req.body.comment.slice(0, 20);
+      updateData.name = format(req.body.name).slice(0, 22);
+      updateData.comment = req.body.comment.slice(0, 22);
     }
 
     let where = { where: { userId : req.user.id, tagId: parseTarget(req.body.target), deleted: 0 }};
@@ -243,8 +243,8 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = req.body.name.slice(0, 20);
-      updateData.link = linkSanitize(req.body.link).slice(0, 200);
+      updateData.name = req.body.name.slice(0, 22);
+      updateData.link = linkSanitize(req.body.link).slice(0, 202);
     }
 
     let where = { where: { userId : req.user.id, activityId: parseTarget(req.body.target), deleted: 0 }};
@@ -265,8 +265,8 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = req.body.name.slice(0, 20);
-      updateData.link = linkSanitize(req.body.link).slice(0, 200);
+      updateData.name = req.body.name.slice(0, 22);
+      updateData.link = linkSanitize(req.body.link).slice(0, 202);
     }
 
     let where = {where: {userId : req.user.id, cheeringId: parseTarget(req.body.target), deleted: 0}};
@@ -287,9 +287,9 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.relationship = req.body.relationship.slice(0, 20);
+      updateData.relationship = req.body.relationship.slice(0, 22);
       updateData.name = req.body.name.slice(0, 20);
-      updateData.link = linkSanitize(req.body.link).slice(0, 200);
+      updateData.link = linkSanitize(req.body.link).slice(0, 202);
     }
 
     let where = {where: {userId : req.user.id, parentId: parseTarget(req.body.target), deleted: 0}};
@@ -329,8 +329,8 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
       // image upload / update 
       let updateData = {};
       updateData.userId = req.user.id;
-      updateData.name = req.body.name.slice(0, 20);
-      updateData.comment = req.body.comment.slice(0, 60);
+      updateData.name = req.body.name.slice(0, 22);
+      updateData.comment = req.body.comment.slice(0, 62);
 
       if (req.file) {
         const im = new ImageManager(req.user.username);
@@ -370,7 +370,7 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
       await personality.update({ design_path: '', design_comment: '' })
 
     } else {
-      let updateData = { design_comment: req.body.comment.slice(0, 200) };
+      let updateData = { design_comment: req.body.comment.slice(0, 202) };
       if (req.file) {
         const im = new ImageManager(req.user.username);
         updateData.design_path = await im.updateCharacterDesign(req.file, personality.design_path);
