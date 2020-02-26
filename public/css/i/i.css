@@ -212,7 +212,6 @@ hr {
   border-radius: .25rem;
   width: 200px;
   height: 350px;
-  background-image: url(${personality.thumbnail_path});
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

@@ -30,7 +30,7 @@ block modals
           // 既存の画像
           - var backSample = personality.back_path ? personality.back_path : "/img/i/nobackimage.jpg";
           div(style=`background-image: url('${backSample}');`).backImagePreview.imagePreview
-            - var tachieSample = personality.tachie ? personality.tachie : `'/img/i/noTachie.png'`;
+            - var tachieSample = personality.tachie ? personality.tachie : `/img/i/noTachie.png`;
             div(style=`background-image: url('${tachieSample}');`).profileImagePreview.imagePreview
          
           div

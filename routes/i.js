@@ -17,15 +17,12 @@ const Parent = require('../models/parents');
 const Tachie = require('../models/tachies');
 
 // modules
-const Jimp = require('jimp');
-const Path = require('path');
-const fs = require('fs');
-const AWS = require('aws-sdk');
-const s3  = new AWS.S3();
 const multer = require('multer');
 const upload = multer({
   dest: 'storage/img/tmp/'
 });
+const ImageGenerator = require('./ImageGenerator');
+const S3Client = require('./S3Client');
 
 let linkSanitize = (link) => { return link.split(':')[0].match(/http/gi) ? link : ""; };
 let isMyPage = (req) => { return req.user ? (req.params.username === req.user.username) || req.user.username === process.env.ADMIN : false; };
@@ -33,16 +30,6 @@ let redirectTop = (req, res) => { res.redirect(`/`); };
 let redirectMyPage = (req, res) => { res.redirect(`/i/${req.user.username}?mode=edit`); };
 let parseTarget = (target) => { return isNaN(parseInt(target)) ? 0 : target; };
 let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
-let getExt = (mimeType) => {
-  switch (mimeType) {
-    case "image/jpeg":
-      return ".jpg";
-    case "image/png":
-      return ".png";
-    default:
-      return ".jpg";
-  }
-}
 let getPageOwner = async (req) => { return await User.findOne({where: {username: req.params.username}}) };
 let getMe = async (req) => { return await User.findByPk(req.user.id) };
 
@@ -171,31 +158,24 @@ router.post(
 
     if (req.body.imageClear) {
       // delete profile images
-      await deleteImage(personality.tachie);
-      await deleteImage(personality.back_path);
+      await S3Client.delete(personality.tachie);
+      await S3Client.delete(personality.back_path);
       updateData.tachie = null;
       updateData.back_path = null;
 
     } else {
+      const im = new ImageManager(req.user.username);
       if (req.files.tachie) {
-        // file saving
-        await deleteImage(personality.tachie);
-        let file = req.files.tachie[0];
-        imageValidation(file);
-        updateData.tachie = await saveImage(req.user.username, 'tachie', file.path, 1920, 1920, file.mimetype);
+        updateData.tachie = await im.updateProfileImage(req.files.tachie[0], personality.tachie);
         
-        // thumbnail
+        // thumbnail (only first time)
         if (!personality.thumbnail_path) {
-          updateData.thumbnail_path = await createThumbnail(req.user.username, file);
+          updateData.thumbnail_path = await im.updateThumbnail(req.files.tachie[0]);
         }
       }
 
       if (req.files.back) {
-        // background
-        await deleteImage(personality.back_path);
-        let file = req.files.back[0];
-        imageValidation(file);
-        updateData.back_path = await saveImage(req.user.username, 'back', file.path, 1920, 1920, "image/jpeg");
+        updateData.back_path = await im.updateProfileBackground(req.files.back[0], personality.back_path);
       }
     }
 
@@ -342,7 +322,7 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
         return;
       }
       // image destroy
-      await deleteImage(tachie.path);
+      await S3Client.delete(tachie.path);
       await tachie.update({ deleted: req.body.deleted % 2 });
 
     } else {
@@ -353,18 +333,14 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
       updateData.comment = req.body.comment.slice(0, 60);
 
       if (req.file) {
-        // image saving
-        if (tachie) {
-          await deleteImage(tachie.path);
-        }
-        imageValidation(req.file);
-        updateData.path = await saveImage(req.user.username, `tachie_${Date.now()}`, req.file.path, 700, 1000, req.file.mimetype);
+        const im = new ImageManager(req.user.username);
+        updateData.path = await im.updateTachie(req.file, tachie ? tachie.path : null);
 
         // thumbnail
         if (req.body.useThumbnail) {
-          let thumbnailS3Path = await createThumbnail(req.user.username, req.file);
-          let personality = await Personality.findOne({where: { userId: req.user.id }});
-          await personality.update({ thumbnail_path: thumbnailS3Path});
+          let personality = await Personality.findOne({ where: { userId: req.user.id } });
+          const thumbnail_path = await im.updateThumbnail(req.file, personality.thumbnail_path);
+          await personality.update({ thumbnail_path });
         }
       }
 
@@ -390,16 +366,14 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
 
     if (isDeletePost(req)) {
       // image destroy
-        await deleteImage(personality.design_path);
-        await personality.update({ design_path: '', design_comment: '' })
+      await S3Client.delete(personality.design_path);
+      await personality.update({ design_path: '', design_comment: '' })
 
     } else {
-      // image saving
       let updateData = { design_comment: req.body.comment.slice(0, 200) };
       if (req.file) {
-        await deleteImage(personality.design_path);
-        imageValidation(req.file);
-        updateData.design_path = await saveImage(req.user.username, 'design', req.file.path, 1920, 1080, "image/jpeg");
+        const im = new ImageManager(req.user.username);
+        updateData.design_path = await im.updateCharacterDesign(req.file, personality.design_path);
       } 
       await personality.update(updateData);
     }
@@ -446,16 +420,15 @@ router.post('/:username/logo', authenticationEnsurer, csrfProtection, upload.sin
 
     if (isDeletePost(req)) {
       // destroy
-      await deleteImage(personality.logo_path);
+      await S3Client.delete(personality.logo_path);
       await personality.update({ logo_path: '' });
 
     } else {
       // image saving
       if (req.file) {
-        await deleteImage(personality.logo_path);
-        imageValidation(req.file);
-        let destPath = await saveImage(req.user.username, 'logo', req.file.path, 1920, 1080, "image/jpeg");
-        await personality.update({ logo_path: destPath });
+        const im = new ImageManager(req.user.username);
+        const logo_path = await im.updateLogoImage(req.file, personality.logo_path);
+        await personality.update({ logo_path });
       }
     }
     redirectMyPage(req, res);
@@ -472,16 +445,15 @@ router.post('/:username/ogp', authenticationEnsurer, csrfProtection, upload.sing
     }
 
     if (isDeletePost(req)) {
-      await deleteImage(personality.ogp_path);
+      await S3Client.delete(personality.ogp_path);
       await personality.update({ ogp_path: '' });
 
     } else {
       // image saving
       if (req.file) {
-        await deleteImage(personality.ogp_path);
-        imageValidation(req.file);
-        let destPath = await createOgpImage(req.user.username, req.file);
-        await personality.update({ ogp_path: destPath });
+        const im = new ImageManager(req.user.username);
+        const ogp_path = await im.updateOgpImage(req.file, personality.ogp_path);
+        await personality.update({ ogp_path });
       }
     }
     redirectMyPage(req, res);
@@ -502,15 +474,15 @@ router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, r
 async function deleteUser(user) {
   // image deleting
   let personality = await Personality.findOne({where: { userId: user.id }});
-  deleteImage(personality.tachie);
-  deleteImage(personality.back_path);
-  deleteImage(personality.design_path);
-  deleteImage(personality.logo_path);
-  deleteImage(personality.ogp_path);
-  deleteImage(personality.thumbnail_path);
+  S3Client.delete(personality.tachie);
+  S3Client.delete(personality.back_path);
+  S3Client.delete(personality.design_path);
+  S3Client.delete(personality.logo_path);
+  S3Client.delete(personality.ogp_path);
+  S3Client.delete(personality.thumbnail_path);
   let tachies = await Tachie.findAll({where: { userId: user.id }});
   tachies.forEach( tachie => {
-    deleteImage(tachie.path);
+    S3Client.delete(tachie.path);
   });
   // data deleting
   let isUser = { where: { userId: user.id }};
@@ -525,105 +497,48 @@ async function deleteUser(user) {
   await User.findOne(isUser).then((user) => { user.destroy(); });
 }
 
-function imageValidation(tmpFile) {
-    let allowFileSize = 2 * (1024 ** 2); // 2MiB
-    let allowMimeTypes = ['image/png', 'image/jpeg'];
-    let ext = Path.extname(tmpFile.originalname);
-    
-    if (tmpFile.size > allowFileSize) { throw new Error('filesize'); } 
-    if (!allowMimeTypes.includes(tmpFile.mimetype)) { throw new Error('mimetype'); }
-    if (!ext) { throw new Error('extension'); }
-}
+class ImageManager {
 
-async function saveImage(username, suffix, tmpPath, frame_w, frame_h, mimeType) {
-  let destPath = `i/${username}/${username}_${suffix}${getExt(mimeType)}`;
-  let img = await Jimp.read(tmpPath);
-  let w = img.bitmap.width;
-  let h = img.bitmap.height;
-  if (h > frame_h || w > frame_w) {
-    if ((w/h) > (frame_w/frame_h)) {
-      await img.resize(frame_w, Jimp.AUTO, Jimp.RESIZE_BICUBIC); // 横長
-    } else {
-      await img.resize(Jimp.AUTO, frame_h, Jimp.RESIZE_BICUBIC); // 縦長
-    }
+  constructor(username) {
+    this.username = username;
   }
 
-  if (mimeType == "image/jpeg") {
-    await img.background(0xFFFFFFFF).quality(85);
+  async save(source, suffix, options) {
+    const outPath = await ImageGenerator.create(source, options);
+    const mimetype = options.mimetype || source.mimetype;
+    const destPath = `i/${this.username}/${this.username}_${suffix}${ImageGenerator.getExt(mimetype)}`;
+    await S3Client.put(outPath, mimetype, destPath);
+    return `${destPath}?${new Date().getTime()}`;
   }
-
-  let normalizedImagePath = getExt(mimeType);
-  await img.writeAsync(normalizedImagePath);
-
-  await s3Put(normalizedImagePath, mimeType , destPath);
-  return `${destPath}?${new Date().getTime()}`;
-}
-
-async function createThumbnail(username, file) {
-  return await saveImage(username, 'thumbnail', file.path, 400, 700, file.mimetype);
-}
-
-async function createOgpImage(username, file) {
-  let mimeType = "image/jpeg";
-  let frame_w = 1200;
-  let frame_h = 630;
-  let waterPath = "public/img/logos/meish_logo_water.png";
-  let destPath = `i/${username}/${username}_ogp${getExt(mimeType)}`;
-  let origin = await Jimp.read(file.path);
-
-  // アップロード画像リサイズ
-  await origin.cover(frame_w, frame_h);
-
-  // ウォーターマークリサイズ
-  let water_frame_w = frame_w/2;
-  let water_frame_h = frame_h/2;
-  let water = await Jimp.read(waterPath);
-  let water_w = water.bitmap.width;
-  let water_h = water.bitmap.height;
-  if ( water_w > water_frame_w || water_h > water_frame_h ) {
-    if ( (water_w/water_h) > (water_frame_w/water_frame_h) ) {
-      await water.resize(water_frame_w, Jimp.AUTO); // 横長
-    } else {
-      await water.resize(Jimp.AUTO, water_frame_h);　// 縦長
-    }
+  
+  async updateProfileImage (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 });
   }
-
-  // ウォーターマーク合成
-  await origin.composite(
-    water, 
-    origin.bitmap.width - water.bitmap.width, 
-    origin.bitmap.height - water.bitmap.height, 
-    { mode: Jimp.BLEND_SOURCE_OVER }
-  );
-
-  // jpeg 画質60 で書き出し
-  await origin.background(0xFFFFFFFF).quality(60).writeAsync(file.path+".jpg");
-  await s3Put(file.path+".jpg", mimeType , destPath);
-  return `${destPath}?${new Date().getTime()}`;
-}
-
-async function s3Put(filePath, mimeType , destPath) {
-  const params = {
-    Body: fs.readFileSync(filePath),
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: destPath,
-    ContentType: mimeType,
-    ACL: 'public-read'
+  async updateProfileBackground (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" });
   }
-  console.log(`s3Put:`);
-  console.log(params);
-  return s3.putObject(params).promise();
-}
-
-async function deleteImage(key) {
-  if (!key) { return; }
-  var params = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: key.replace(process.env.s3Path,'')
-  };
-  console.log(`s3Delete:`);
-  console.log(params);
-  return s3.deleteObject(params).promise();
+  async updateThumbnail (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 });
+  }
+  async updateTachie (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, `tachie_${Date.now()}`, { mode: 'resize', w: 700, h: 1000 });
+  }
+  async updateCharacterDesign (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'design', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+  }
+  async updateLogoImage (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'logo', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+  }
+  async updateOgpImage (source, oldPath) {
+    S3Client.delete(oldPath);
+    return await this.save(source, 'ogp', { mode: 'crop', w: 1200, h: 630, water: true, mimetype: "image/jpeg" });
+  }
 }
 
 module.exports = router;
