@@ -499,7 +499,8 @@ class ImageManager {
     this.username = username;
   }
 
-  async save(source, suffix, options) {
+  async save(source, suffix, options, oldPath) {
+    S3Client.delete(oldPath);
     const outPath = await ImageGenerator.create(source, options);
     const mimetype = options.mimetype || source.mimetype;
     const destPath = `i/${this.username}/${this.username}_${suffix}${ImageGenerator.getExt(mimetype)}`;
@@ -508,32 +509,25 @@ class ImageManager {
   }
   
   async updateProfileImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 });
+    return await this.update(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 }, oldPath);
   }
   async updateProfileBackground (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" });
+    return await this.update(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" }), oldPath;
   }
   async updateThumbnail (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 });
+    return await this.update(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 }, oldPath);
   }
   async updateTachie (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, `tachie_${Date.now()}`, { mode: 'resize', w: 700, h: 1000 });
+    return await this.update(source, `tachie_${Date.now()}`, { mode: 'resize', w: 700, h: 1000 }, oldPath);
   }
   async updateCharacterDesign (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'design', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+    return await this.update(source, 'design', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" }, oldPath);
   }
   async updateLogoImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'logo', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+    return await this.update(source, 'logo', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" }, oldPath);
   }
   async updateOgpImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'ogp', { mode: 'crop', w: 1200, h: 630, water: true, mimetype: "image/jpeg" });
+    return await this.update(source, 'ogp', { mode: 'crop', w: 1200, h: 630, water: true, mimetype: "image/jpeg" }, oldPath);
   }
 }
 
