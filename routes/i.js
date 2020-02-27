@@ -33,7 +33,7 @@ let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
 let getPageOwner = async (req) => { return await User.findOne({where: {username: req.params.username}}) };
 let getMe = async (req) => { return await User.findByPk(req.user.id) };
 
-const limitString = (str, length) => { return Array.from(str).slice(0, length).join(); };
+const limitString = (str, length) => { return Array.from(str).slice(0, length).join(''); };
 
 // GET:ユーザーページ
 router.get('/:username', csrfProtection, (req, res, next) => {
