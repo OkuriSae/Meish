@@ -151,10 +151,10 @@ router.post(
     }
 
     let updateData = {
-      nameJa: limitString(req.body.nameJa, 50),
-      nameEn: limitString(req.body.nameEn, 50),
-      label: limitString(req.body.label, 50),
-      introduction: limitString(req.body.introduction, 500),
+      nameJa: limitString(req.body.nameJa, 52),
+      nameEn: limitString(req.body.nameEn, 52),
+      label: limitString(req.body.label, 52),
+      introduction: limitString(req.body.introduction, 600),
       isSensitive: req.body.isSensitive == "on" ? "on" : ""
     }
 
@@ -184,7 +184,7 @@ router.post(
     // data saving
     await personality.update(updateData);
     await Tag.destroy({where: { userId: req.user.id }});
-    for(let tag of limitString(req.body.tags, 100).replace(/　/gi, ' ').split(' ')) {
+    for(let tag of limitString(req.body.tags, 150).replace(/　/gi, ' ').split(' ')) {
       if (tag) {
         await Tag.upsert({
           userId: req.user.id,
@@ -207,7 +207,7 @@ router.post('/:username/subprofile', authenticationEnsurer, csrfProtection, (req
     if (isDeletePost(req)) {
       updateData.subprofile = '';
     } else {
-      updateData.subprofile = limitString(req.body.subprofile, 1000);
+      updateData.subprofile = limitString(req.body.subprofile, 1200);
     }
 
     await personality.update(updateData);
@@ -223,8 +223,8 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
       let format = (tag) => { return tag.replace('#', ''); };
-      updateData.name = limitString(format(req.body.name), 20);
-      updateData.comment = limitString(req.body.comment, 20);
+      updateData.name = limitString(format(req.body.name), 80);
+      updateData.comment = limitString(req.body.comment, 80);
     }
 
     let where = { where: { userId : req.user.id, tagId: parseTarget(req.body.target), deleted: 0 }};
@@ -245,8 +245,8 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = limitString(req.body.name, 20);
-      updateData.link = limitString(linkSanitize(req.body.link), 200);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = { where: { userId : req.user.id, activityId: parseTarget(req.body.target), deleted: 0 }};
@@ -267,8 +267,8 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = limitString(req.body.name, 20);
-      updateData.link = limitString(linkSanitize(req.body.link), 200);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = {where: {userId : req.user.id, cheeringId: parseTarget(req.body.target), deleted: 0}};
@@ -289,9 +289,9 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.relationship = limitString(req.body.relationship, 20);
-      updateData.name = limitString(req.body.name, 20);
-      updateData.link = limitString(linkSanitize(req.body.link), 200);
+      updateData.relationship = limitString(req.body.relationship, 80);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = {where: {userId : req.user.id, parentId: parseTarget(req.body.target), deleted: 0}};
@@ -331,8 +331,8 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
       // image upload / update 
       let updateData = {};
       updateData.userId = req.user.id;
-      updateData.name = limitString(req.body.name, 20);
-      updateData.comment = limitString(req.body.comment, 60);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.comment = limitString(req.body.comment, 100);
 
       if (req.file) {
         const im = new ImageManager(req.user.username);
@@ -372,7 +372,7 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
       await personality.update({ design_path: '', design_comment: '' })
 
     } else {
-      let updateData = { design_comment: limitString(req.body.comment, 200) };
+      let updateData = { design_comment: limitString(req.body.comment, 250) };
       if (req.file) {
         const im = new ImageManager(req.user.username);
         updateData.design_path = await im.updateCharacterDesign(req.file, personality.design_path);
@@ -475,28 +475,24 @@ router.post('/:username/destroy', authenticationEnsurer, csrfProtection, (req, r
 
 async function deleteUser(user) {
   // image deleting
-  let personality = await Personality.findOne({where: { userId: user.id }});
-  S3Client.delete(personality.tachie);
-  S3Client.delete(personality.back_path);
-  S3Client.delete(personality.design_path);
-  S3Client.delete(personality.logo_path);
-  S3Client.delete(personality.ogp_path);
-  S3Client.delete(personality.thumbnail_path);
-  let tachies = await Tachie.findAll({where: { userId: user.id }});
-  tachies.forEach( tachie => {
-    S3Client.delete(tachie.path);
-  });
+  await Personality.findOne({where: { userId: user.id }}).then( p => {
+    [ p.tachie, p.back_path, p.design_path, p.logo_path, p.ogp_path, p.thumbnail_path ].forEach(i => {
+      S3Client.delete(i);
+    });
+  })
+  await Tachie.findAll({ where: { userId: user.id } }).then( tachies => {
+    tachies.forEach( tachie => { S3Client.delete(tachie.path); });
+  })
+  
   // data deleting
-  let isUser = { where: { userId: user.id }};
-  let destroyAll = (models) => { models.forEach( model => { model.destroy(); }); }
-  await Tag.findAll(isUser).then((tags) => { destroyAll(tags); });
-  await Tachie.findAll(isUser).then((tachies) => { destroyAll(tachies); });
-  await Activity.findAll(isUser).then((activities) => { destroyAll(activities); });
-  await Parent.findAll(isUser).then((parents) => { destroyAll(parents); });
-  await HashTag.findAll(isUser).then((hashtags) => { destroyAll(hashtags); });
-  await Cheering.findAll(isUser).then((cheerings) => { destroyAll(cheerings); });
-  await Personality.findOne(isUser).then((personality) => { personality.destroy(); });
-  await User.findOne(isUser).then((user) => { user.destroy(); });
+  const whereIsMine = { where: { userId: user.id }};
+  const models = [ Tag, Tachie, Activity, Parent, HashTag, Cheering, Personality ];
+  const destroyPromises = models.map(model => {
+    return model.destroy(whereIsMine);
+  });
+  return Promise.all(destroyPromises).then(() => {
+    User.findOne(whereIsMine).then( u => { u.destroy(); });
+  });
 }
 
 class ImageManager {
@@ -505,7 +501,8 @@ class ImageManager {
     this.username = username;
   }
 
-  async save(source, suffix, options) {
+  async save(source, suffix, options, oldPath) {
+    S3Client.delete(oldPath);
     const outPath = await ImageGenerator.create(source, options);
     const mimetype = options.mimetype || source.mimetype;
     const destPath = `i/${this.username}/${this.username}_${suffix}${ImageGenerator.getExt(mimetype)}`;
@@ -514,32 +511,25 @@ class ImageManager {
   }
   
   async updateProfileImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 });
+    return await this.update(source, 'tachie', { mode: 'resize', w: 1920, h: 1920 }, oldPath);
   }
   async updateProfileBackground (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" });
+    return await this.update(source, 'back', { mode: 'resize', w: 1920, h: 1920, mimetype: "image/jpeg" }), oldPath;
   }
   async updateThumbnail (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 });
+    return await this.update(source, 'thumbnail', { mode: 'resize', w: 400, h: 700 }, oldPath);
   }
   async updateTachie (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, `tachie_${Date.now()}`, { mode: 'resize', w: 700, h: 1000 });
+    return await this.update(source, `tachie_${Date.now()}`, { mode: 'resize', w: 700, h: 1000 }, oldPath);
   }
   async updateCharacterDesign (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'design', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+    return await this.update(source, 'design', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" }, oldPath);
   }
   async updateLogoImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'logo', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" });
+    return await this.update(source, 'logo', { mode: 'resize', w: 1920, h: 1080, mimetype: "image/jpeg" }, oldPath);
   }
   async updateOgpImage (source, oldPath) {
-    S3Client.delete(oldPath);
-    return await this.save(source, 'ogp', { mode: 'crop', w: 1200, h: 630, water: true, mimetype: "image/jpeg" });
+    return await this.update(source, 'ogp', { mode: 'crop', w: 1200, h: 630, water: true, mimetype: "image/jpeg" }, oldPath);
   }
 }
 

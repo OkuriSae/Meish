@@ -91,8 +91,8 @@ block modals
               option(value=hashTag.tagId) #{hashTag.name}
         each hashTag in hashTags
           input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
-        input(type="text" placeholder="タグ名（#は自動でつきます）[20文字まで]" name="name" maxlength="20")#HashTagNameForm.form-control.my-2
-        input(type="text" placeholder="タグの説明 [20文字まで]" name="comment" maxlength="20")#HashTagCommentForm.form-control.my-2
+        input(type="text" placeholder="タグ名（#は自動でつきます）[20文字まで]" name="name" maxlength="40")#HashTagNameForm.form-control.my-2
+        input(type="text" placeholder="タグの説明 [20文字まで]" name="comment" maxlength="40")#HashTagCommentForm.form-control.my-2
 
     // 活動場所モーダル
     +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
@@ -103,7 +103,7 @@ block modals
             option(value=activity.activityId) #{activity.name}
         each activity in activities
           input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
-        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#ActivityNameForm.form-control.my-2
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="40")#ActivityNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
 
     // 応援方法モーダル
@@ -115,7 +115,7 @@ block modals
             option(value=cheering.cheeringId) #{cheering.name}
         each cheering in cheerings
           input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
-        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="20")#CheeringNameForm.form-control.my-2
+        input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="40")#CheeringNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
 
     // ママ/パパモーダル
@@ -127,8 +127,8 @@ block modals
             option(value=parent.parentId) #{parent.name}
         each parent in parents
           input(type="hidden" class=parent.parentId name=parent.name relationship=parent.relationship link=parent.link).parentHidden
-        input(type="text" placeholder="関係 [20文字まで]" name="relationship" maxlength="20")#ParentRelationshipForm.form-control.my-2
-        input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="20")#ParentNameForm.form-control.my-2
+        input(type="text" placeholder="関係 [20文字まで]" name="relationship" maxlength="40")#ParentRelationshipForm.form-control.my-2
+        input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="40")#ParentNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
 
     // 立ち絵モーダル
@@ -159,7 +159,7 @@ block modals
         each tachie in tachies
           input(type="hidden" class=tachie.tachieId value=tachie.name).tachieNameHidden
           input(type="hidden" class=tachie.tachieId value=tachie.comment).tachieCommentHidden
-        input(type="text" placeholder="タイトル [20文字まで]" name="name" maxlength="20").tachieNameForm.form-control.my-2
+        input(type="text" placeholder="タイトル [20文字まで]" name="name" maxlength="40").tachieNameForm.form-control.my-2
         input(type="text" placeholder="コメント [60文字まで]" name="comment" maxlength="60").tachieCommentForm.form-control.my-2
         .text-secondary
           small 2MB以下, jpg/png, 300x600px以上推奨, 5枚まで
