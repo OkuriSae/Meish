@@ -68,7 +68,7 @@ block content
               .m-3
                 a(href=`/i/${result.username}`)
                   .thumbnail-frame.card
-                    div(style=`background-image: url(${s3+result.thumbnail_path});` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top.lozad
+                    div(data-background-image=`${s3+result.thumbnail_path}` class=`${result.isSensitive ? "sensitive sensitive_on" : ""}`).thumbnail.card-img-top.lozad
 
           .m-auto
             script(async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
