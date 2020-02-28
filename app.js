@@ -106,6 +106,12 @@ app.get(
   }
 );
 
+// robots.txtへアクセスが来た時は空の200レスポンスを返す
+// c.f. https://stackoverflow.com/a/20265155/11169807
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.status(200).end();
+});
 app.use('/', indexRouter);
 app.use('/i/', iRouter);
 app.use('/logout', logoutRouter); 
