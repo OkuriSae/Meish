@@ -28,7 +28,7 @@ block content
           b 今週のオススメタグ: 
           a(href=`/search?q="${recommendTag}"`)
             span(style=`background-color:hsl(${recommendTag.charCodeAt(0) % 36 * 10}, 50%, 45%); font-size:0.9rem; position:relative; top:-2px; line-height:inherit;`).badge.badge-secondary.p-2.m-1 #{recommendTag}
-        div(style="max-width:800px;").m-auto
+        div(style="max-width:1000px;").m-auto
           - recommendUsers = recommendUsers.slice(0, 5)
           div.d-flex.flex-wrap.justify-content-around
             each result in recommendUsers
