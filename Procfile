@@ -1,1 +1,1 @@
-web: bin/start-pgbouncer-stunnel node app.js
+web: node app.js
