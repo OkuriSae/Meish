@@ -10,10 +10,12 @@ const Tag = require('../models/tags');
 const authenticationEnsurer = require('./authentication-ensurer');
 
 router.get('/', (req, res, next) => {
-  let now = new Date();
-  let nowDate = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
-  let recommendTag = dailyTags.filter( i => { return i.day == nowDate; } );
-  recommendTag = recommendTag.length > 0 ? recommendTag[0].tag : null;
+  let isToday = (i) => {
+    let now = new Date();
+    return i.day == `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
+  }
+  let currentTag = dailyTags.filter(isToday);
+  currentTag = currentTag.length > 0 ? currentTag[0].tag : null;
   (async () => {
     res.render('index', {
       me: req.user,
@@ -21,8 +23,8 @@ router.get('/', (req, res, next) => {
       results: await getRandomUsers(),
       tags: await getTags(),
       userCount: await User.count(),
-      recommendTag: recommendTag,
-      recommendUsers: await getRandomUsers(recommendTag)
+      currentTag: currentTag,
+      recommendUsers: await getRandomUsers(currentTag)
     });
   })();
 });
@@ -144,34 +146,31 @@ router.get('/events', (req, res, next) => {
 });
 
 const dailyTags = [
-  { day: '2020/3/1', tag: 'ケモ耳' },
-  { day: '2020/3/2', tag: 'ケモ耳' },
-  { day: '2020/3/3', tag: 'ケモ耳' },
-  { day: '2020/3/4', tag: 'ケモ耳' },
-  { day: '2020/3/5', tag: 'ケモ耳' },
-  { day: '2020/3/6', tag: 'ケモ耳' },
-  { day: '2020/3/7', tag: 'ケモ耳' },
-  { day: '2020/3/8', tag: 'バーチャルキャスト' },
-  { day: '2020/3/9', tag: 'バーチャルキャスト' },
-  { day: '2020/3/10', tag: 'バーチャルキャスト' },
-  { day: '2020/3/11', tag: 'バーチャルキャスト' },
-  { day: '2020/3/12', tag: 'バーチャルキャスト' },
-  { day: '2020/3/13', tag: 'バーチャルキャスト' },
-  { day: '2020/3/14', tag: 'バーチャルキャスト' },
-  { day: '2020/3/15', tag: '緑髪' },
-  { day: '2020/3/16', tag: '緑髪' },
-  { day: '2020/3/17', tag: '緑髪' },
-  { day: '2020/3/18', tag: '緑髪' },
-  { day: '2020/3/19', tag: '緑髪' },
-  { day: '2020/3/20', tag: '緑髪' },
-  { day: '2020/3/21', tag: '緑髪' },
-  { day: '2020/3/22', tag: '和服' },
-  { day: '2020/3/23', tag: '和服' },
-  { day: '2020/3/24', tag: '和服' },
-  { day: '2020/3/25', tag: '和服' },
-  { day: '2020/3/26', tag: '和服' },
-  { day: '2020/3/27', tag: '和服' },
-  { day: '2020/3/28', tag: '和服' },
-];
+  { day: '2020/4/6', tag: 'あつ森' },
+  { day: '2020/4/7', tag: 'あつ森' },
+  { day: '2020/4/8', tag: 'あつ森' },
+  { day: '2020/4/9', tag: 'あつ森' },
+  { day: '2020/4/10', tag: 'あつ森' },
+  { day: '2020/4/11', tag: 'Ark' },
+  { day: '2020/4/12', tag: 'Ark' },
+  { day: '2020/4/13', tag: 'Ark' },
+  { day: '2020/4/14', tag: 'Ark' },
+  { day: '2020/4/15', tag: 'Ark' },
+  { day: '2020/4/16', tag: 'Apex' },
+  { day: '2020/4/17', tag: 'Apex' },
+  { day: '2020/4/18', tag: 'Apex' },
+  { day: '2020/4/19', tag: 'Apex' },
+  { day: '2020/4/20', tag: 'Apex' },
+  { day: '2020/4/21', tag: 'VRChat' },
+  { day: '2020/4/22', tag: 'VRChat' },
+  { day: '2020/4/23', tag: 'VRChat' },
+  { day: '2020/4/24', tag: 'VRChat' },
+  { day: '2020/4/25', tag: 'VRChat' },
+  { day: '2020/4/26', tag: '麻雀' },
+  { day: '2020/4/27', tag: '麻雀' },
+  { day: '2020/4/28', tag: '麻雀' },
+  { day: '2020/4/29', tag: '麻雀' },
+  { day: '2020/4/30', tag: '麻雀' },
+]
 
 module.exports = router;

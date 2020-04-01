@@ -7,36 +7,18 @@ block content
   
   div(style="width:100%; max-width:1200px; margin:auto;")#about.text-center
     section#TopSection.page-section
-      h1.mt-5 ウィークリー
-        span.d-inline-block オススメタグ
+      h1.mt-5 オススメタグイベント
       hr.text-primary
       p.mt-5
         b Meish*のTOPページに今週のオススメタグが表示されます！
-      img(src="/img/events/recommend_event.jpeg" width="50%").border.rounded.border-secondary
-      h2.mt-5 オススメタグカレンダー
-      h3(style="color: #A96;").m-4 - March -
-      .d-flex.justify-content-center
-        .text-left
-          - const split = (array, n) => array.reduce((a, c, i) => i % n == 0 ? [...a, [c]] : [...a.slice(0, -1), [...a[a.length - 1], c]], [])
-          - var monthlyTags = split(dailyTags, 7)
-          .d-flex.justify-content-center.text-center
-            div(style="width:9%; color:#C33;").m-1.text-center.font-weight-bold SUN
-            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold MON
-            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold TUE
-            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold WED
-            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold THU
-            div(style="width:9%; color:#666;").m-1.text-center.font-weight-bold FRI
-            div(style="width:9%; color:#0AA;").m-1.text-center.font-weight-bold SAT
-          hr(style="width:80%; border-top: 2px dotted #AAA;")
-          each weeklyTags in monthlyTags
-            p
-              .d-flex.justify-content-center
-                each dailyTag in weeklyTags
-                  div(style="width:9%;").mx-1.text-center.text-secondary
-                    //small
-                    b #{new Date(dailyTag.day).getDate()}
-              .d-flex.justify-content-center
-                each dailyTag in weeklyTags
-                  div(style="width:9%;min-height:60px;background-color: rgba(255,255,255,0.7);").mx-1.p-1.text-center.border.rounded.d-flex.align-items-center.justify-content-center
-                    a(href=`/search?q="${dailyTag.tag}"` target="_blank")
-                      b #{dailyTag.tag}
+      h3(style="color: #5A4;") 4月のオススメタグ
+      - var tags = []
+      - tags.push({range: "4/6 ~ 4/10", name: "あつ森"})
+      - tags.push({range: "4/11 ~ 4/15", name: "Ark"})
+      - tags.push({range: "4/16 ~ 4/20", name: "Apex"})
+      - tags.push({range: "4/21 ~ 4/25", name: "VRChat"})
+      - tags.push({range: "4/26 ~ 4/30", name: "麻雀"})
+      each tag in tags
+        h5 #{tag.range}
+        a(href=`/search?q="${tag.name}"`)
+          span(style=`background-color:hsl(${tag.name.charCodeAt(0) % 36 * 10}, 50%, 45%); font-size:0.9rem; position:relative; top:-2px; line-height:inherit;`).badge.badge-secondary.p-2.m-1 #{tag.name}
