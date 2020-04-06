@@ -16,6 +16,7 @@ router.get('/', (req, res, next) => {
   }
   let currentTag = dailyTags.filter(isToday);
   currentTag = currentTag.length > 0 ? currentTag[0].tag : null;
+  console.log(currentTag); 
   (async () => {
     res.render('index', {
       me: req.user,
@@ -23,7 +24,7 @@ router.get('/', (req, res, next) => {
       results: await getRandomUsers(),
       tags: await getTags(),
       userCount: await User.count(),
-      currentTag: currentTag,
+      recommendTag: currentTag,
       recommendUsers: await getRandomUsers(currentTag)
     });
   })();
