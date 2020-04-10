@@ -43,6 +43,7 @@ User.sync().then(() => {
 const TwitterStrategy = require('passport-twitter').Strategy;
 
 const iRouter = require('./routes/i');
+const chokaigi2020Router = require('./routes/chokaigi2020');
 const indexRouter = require('./routes/index');
 const logoutRouter = require('./routes/logout');
 
@@ -108,6 +109,7 @@ app.get(
 
 app.use('/', indexRouter);
 app.use('/i/', iRouter);
+app.use('/chokaigi2020', chokaigi2020Router);
 app.use('/logout', logoutRouter); 
 
 // catch 404 and forward to error handler
