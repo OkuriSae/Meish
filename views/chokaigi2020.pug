@@ -57,8 +57,9 @@ block content
                 // よみ,名前
                 div(style="margin-top:.83rem;").mx-2.my-3
                   div(style="font-size: 1.2rem;").text-secondary.shadow-gray.mx-1.nameEn #{character.personality.nameEn}
-                  div(style="font-size: 2.5rem; line-height:1.2;").name 
-                    b #{character.personality.nameJa}
+                  a(href="/i/"+character.user.username).text-dark
+                    div(style="font-size: 2.5rem; line-height:1.2;").name 
+                      b #{character.personality.nameJa}
 
                 hr.profHR
 
