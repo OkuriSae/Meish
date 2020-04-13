@@ -15,7 +15,7 @@ const Parent = require('../models/parents');
 // GET:超会議特設ページ
 router.get('/', (req, res, next) => {
   (async () => {
-    let characterList = await Tag.findAll({ where : { tagname: 'Vtuber' }});
+    let characterList = await Tag.findAll({ where : { tagname: '超会議2020' }});
 
     // shuffle
     for(var i = characterList.length - 1; i > 0; i--){
