@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const loader = require('../models/sequelize-loader');
 const Sequelize = loader.Sequelize;
-const { Op } = require("sequelize");
 const database = loader.database;
+const { Op } = require("sequelize");
 const User = require('../models/users');
 const Personality = require('../models/personalities');
 const Tag = require('../models/tags');
@@ -36,21 +36,6 @@ router.get('/tag_suggest', (req, res, next) => {
       me: req.user,
       tags: await getTags(),
       tag_suggest: true
-    });
-  })();
-});
-
-router.get('/search', (req, res, next) => {
-  let q = req.query.q;
-  (async () => {
-    let usersByUsername = await getUsersByUsername(q);
-    let usersByTag = await getUsersByTag(q);
-    let users = Array.from(new Set(usersByUsername.concat(usersByTag)));
-    res.render('index', {
-      me: req.user,
-      results: shuffle(users).slice(0,24),
-      tags: await getTags(),
-      q
     });
   })();
 });

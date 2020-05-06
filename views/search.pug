@@ -1,0 +1,117 @@
+extends layout/layout
+
+block meta
+
+  // OGP & Twitter Card
+  meta(property="og:type" content="article")
+  meta(property="og:title" content="Meish*")
+  meta(property="og:site_name" content="バーチャルプロフィール登録サービス")
+  meta(property="og:description" content="検索ワード:"+q)
+  meta(property="og:url" content="http://www.meish.me/search?q="+q)
+  meta(property="og:image" content='https://meish.s3-ap-northeast-1.amazonaws.com/meish_logo_ogp.jpg')
+  meta(name="twitter:card" content="summary_large_image")
+
+  link(rel="stylesheet" href="/css/i/i.css")
+
+  //背景を固定化するCSS（スマホで背景流れちゃう対策）
+  - var back = '/img/meish_back.jpg';
+  style(type="text/css").
+    body::before{
+      content: '';
+      display:block;
+      position:fixed;
+      top:0;
+      left:0;
+      z-index:-1;
+      width:100%;
+      height: 100vh;
+      background: url('/img/meish_back.jpg');
+      background-position:  center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      -webkit-background-size: cover;
+    }
+
+block content
+
+  div.text-center
+    div(style="height:100px;").logo.mt-5
+    h2.mt-5
+      b #{q} の検索結果(#{characters.length}件)
+
+  each character in characters
+    section#ProfileSection.page-section
+      .profile.container.justify-content-center.rounded
+
+        // 背景画像
+        div(style=`background-image:url(${character.personality.back_path});`)#profileBackground.row.m-0
+          // プロフィール画像
+          div(style=`background-image:url(${character.personality.tachie});`)#profileImage.row
+            .personalities.py-2
+              div
+                // よみ,名前
+                div(style="margin-top:.83rem;").mx-2.my-3
+                  div(style="font-size: 1.2rem;").text-secondary.shadow-gray.mx-1.nameEn #{character.personality.nameEn}
+                  a(href="/i/"+character.user.username).text-dark
+                    div(style="font-size: 2.5rem; line-height:1.2;").name 
+                      b #{character.personality.nameJa}
+
+                hr.profHR
+
+                // プロフィール
+                h5.m-2.text-secondary.shadow-gray #{character.personality.label}
+                p#introduction.shadow-gray.m-2 #{character.personality.introduction}
+                
+                hr.profHR
+
+              // カテゴリ情報
+              include i_icons.pug
+              .container.m-2.shadow-gray
+                .row
+                  mixin categorizedInfo(title, name)
+                    .subInfoPane.mt-2
+                      .mb-1.d-flex.align-items-center
+                        h3.category #{title}
+                      div
+                        block
+                    
+                  // ハッシュタグ
+                  if character.hashTags.length > 0
+                    +categorizedInfo('ハッシュタグ', 'HashTag')
+                      each tag in character.hashTags
+                        p.mx-2
+                          a(href="https://twitter.com/hashtag/"+tag.name target="_blank", rel="noopener").no-shadow.font-weight-bold ##{tag.name}
+                          if tag.comment
+                            span.text-secondary  - #{tag.comment}
+
+                  // 活動場所
+                  if character.activities.length > 0
+                    +categorizedInfo('活動場所', 'Activity')
+                      each activity in character.activities
+                        p.mx-2
+                          if activity.link
+                            a(href=activity.link target="_blank", rel="noopener").no-shadow.font-weight-bold
+                              img(src="/img/i/icons/"+getIcon(activity.link)).icon
+                              span.mx-2 #{activity.name}
+                          else
+                            span #{activity.name}
+
+                  // 応援方法
+                  if character.cheerings.length > 0
+                    +categorizedInfo('応援する', 'Cheering')
+                      each cheer in character.cheerings
+                        p.mx-2 
+                          if cheer.link
+                            a(href=cheer.link target="_blank", rel="noopener").no-shadow.font-weight-bold
+                              img(src="/img/i/icons/"+getIcon(cheer.link)).icon
+                              span.mx-2 #{cheer.name}
+                          else
+                            span #{cheer.name}
+              
+              // 検索タグ
+              div(style="text-shadow: none;")
+                each tag in character.tags
+                  a(href=`/search?q="${tag.tagname}"` style=`background-color:hsl(${tag.tagname.charCodeAt(0) % 36 * 10}, 50%, 45%);`).tag.badge.badge-secondary.p-2.m-1 #{tag.tagname}
+
+        .text-center
+          a(href="/i/"+character.user.username).btn.btn-info.mt-3 #{character.personality.nameJa} のプロフィールを見る

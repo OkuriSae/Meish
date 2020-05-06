@@ -19,8 +19,9 @@ block content
     div.text-center
 
       // ロゴ
-      div(style="height:100px;").logo.mb-4
-      h6.m-3 バーチャルキャラクターのためのプロフィール登録サービス
+      .mb-5
+        div(style="height:100px;").logo
+        h6.m-4 バーチャルキャラクターのためのプロフィール登録サービス
 
       // 今週のオススメタグ
       if recommendTag
@@ -85,12 +86,12 @@ block content
       .text-center
         if results && results.length == 24
           a(href="/allusers")
-            button.btn.btn-outline-info.m-3 全員見る（重いかも）
+            button.btn.btn-outline-info.m-3 全キャラクターを表示
 
         .align-middle.form-check
           input(type="checkbox" name="isSensitive" onclick="$('.sensitive').toggleClass('sensitive_on');")#sensitiveCheck.form-check-input.my-2
           label(for="sensitiveCheck").form-check-label
-            span センシティブなキャラクターも見る
+            span センシティブなキャラクターも表示する
 
       // 登録者数
       if userCount
