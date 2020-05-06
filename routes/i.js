@@ -227,7 +227,13 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
 
     let where = { where: { userId : req.user.id, tagId: parseTarget(req.body.target), deleted: 0 }};
     let hashtag = await HashTag.findOne(where);
-    if (hashtag) {
+    if (req.body.changeLastOrderForHashTag == 'on') {
+      // 再登録（表示順を一番下にする）
+      await Activity.create(updateData);
+      updateData.deleted = 1
+      await activity.update(updateData);
+
+    } else if (hashtag) {
       await hashtag.update(updateData);
     } else {
       await HashTag.create(updateData);
@@ -249,7 +255,13 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
 
     let where = { where: { userId : req.user.id, activityId: parseTarget(req.body.target), deleted: 0 }};
     let activity = await Activity.findOne(where);
-    if (activity) {
+    if (req.body.changeLastOrderForActivity == 'on') {
+      // 再登録（表示順を一番下にする）
+      await Activity.create(updateData);
+      updateData.deleted = 1
+      await activity.update(updateData);
+
+    } else if (activity) {
       await activity.update(updateData);
     } else {
       await Activity.create(updateData);
@@ -271,7 +283,13 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
 
     let where = {where: {userId : req.user.id, cheeringId: parseTarget(req.body.target), deleted: 0}};
     let cheering = await Cheering.findOne(where);
-    if (cheering) {
+    if (req.body.changeLastOrderForCheering == 'on') {
+      // 再登録（表示順を一番下にする）
+      await Activity.create(updateData);
+      updateData.deleted = 1
+      await activity.update(updateData);
+
+    } else if (cheering) {
       await cheering.update(updateData);
     } else {
       await Cheering.create(updateData);
@@ -294,7 +312,13 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
 
     let where = {where: {userId : req.user.id, parentId: parseTarget(req.body.target), deleted: 0}};
     let parent = await Parent.findOne(where);
-    if (parent) {
+    if (req.body.changeLastOrderForParent == 'on') {
+      // 再登録（表示順を一番下にする）
+      await Activity.create(updateData);
+      updateData.deleted = 1
+      await activity.update(updateData);
+
+    } else if (parent) {
       await parent.update(updateData);
     } else {
       await Parent.create(updateData);

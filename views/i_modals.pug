@@ -84,7 +84,7 @@ block modals
 
     // ハッシュタグモーダル
     +modal({name: 'HashTag', action: '/hashtag', title: 'ハッシュタグ', enctype: "application/x-www-form-urlencoded"})
-      .form-group
+      .form-group.text-center
         select(name="target")#HashTagSelection.form-control
           option(value="new" selected) 新規追加
             each hashTag in hashTags
@@ -93,10 +93,14 @@ block modals
           input(type="hidden" class=hashTag.tagId name=hashTag.name comment=hashTag.comment).hashTagHidden
         input(type="text" placeholder="タグ名（#は自動でつきます）[20文字まで]" name="name" maxlength="40")#HashTagNameForm.form-control.my-2
         input(type="text" placeholder="タグの説明 [20文字まで]" name="comment" maxlength="40")#HashTagCommentForm.form-control.my-2
+        div(style="display:none;")#HashTagOrderCheckForm.align-middle.form-check.defaultHide
+          input(type="checkbox" name="changeLastOrderForHashTag")#HashTagOrderCheck.form-check-input.my-2
+          label(for="HashTagOrderCheck").form-check-label 
+            small 表示順を一番下にする
 
     // 活動場所モーダル
     +modal({name: 'Activity', action: '/activity', title: '活動場所', enctype: "application/x-www-form-urlencoded"})
-      .form-group
+      .form-group.text-center
         select(name="target")#ActivitySelection.form-control
           option(value="new" selected) 新規追加
           each activity in activities
@@ -105,10 +109,14 @@ block modals
           input(type="hidden" class=activity.activityId name=activity.name link=activity.link).activityHidden
         input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="40")#ActivityNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ActivityLinkForm.form-control.my-2
+        div(style="display:none;")#ActivityOrderCheckForm.align-middle.form-check.defaultHide
+          input(type="checkbox" name="changeLastOrderForActivity")#ActivityOrderCheck.form-check-input.my-2
+          label(for="ActivityOrderCheck").form-check-label 
+            small 表示順を一番下にする
 
     // 応援方法モーダル
     +modal({name: 'Cheering', action: '/cheering', title: '応援方法', enctype: "application/x-www-form-urlencoded"})
-      .form-group
+      .form-group.text-center
         select(name="target")#CheeringSelection.form-control
           option(value="new" selected) 新規追加
           each cheering in cheerings
@@ -117,10 +125,14 @@ block modals
           input(type="hidden" class=cheering.cheeringId name=cheering.name link=cheering.link).cheeringHidden
         input(type="text" placeholder="表示名 [20文字まで]" name="name" maxlength="40")#CheeringNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#CheeringLinkForm.form-control.my-2
+        div(style="display:none;")#CheeringOrderCheckForm.align-middle.form-check.defaultHide
+          input(type="checkbox" name="changeLastOrderForCheering")#CheeringOrderCheck.form-check-input.my-2
+          label(for="CheeringOrderCheck").form-check-label 
+            small 表示順を一番下にする
 
     // ママ/パパモーダル
     +modal({name: 'Parent', action: '/parent', title: 'ママ/パパ', enctype: "application/x-www-form-urlencoded"})
-      .form-group
+      .form-group.text-center
         select(name="target")#ParentSelection.form-control
           option(value="new" selected) 新規追加
           each parent in parents
@@ -130,6 +142,10 @@ block modals
         input(type="text" placeholder="関係 [20文字まで]" name="relationship" maxlength="40")#ParentRelationshipForm.form-control.my-2
         input(type="text" placeholder="名前 [20文字まで]" name="name" maxlength="40")#ParentNameForm.form-control.my-2
         input(type="text" placeholder="URL [200文字まで]" name="link" maxlength="200")#ParentLinkForm.form-control.my-2
+        div(style="display:none;")#ParentOrderCheckForm.align-middle.form-check.defaultHide
+          input(type="checkbox" name="changeLastOrderForParent")#ParentOrderCheck.form-check-input.my-2
+          label(for="ParentOrderCheck").form-check-label 
+            small 表示順を一番下にする
 
     // 立ち絵モーダル
     +modal({name: 'Tachie', action: '/tachie', title: '立ち絵', enctype: "multipart/form-data"})
@@ -152,7 +168,7 @@ block modals
           span.btn.btn-primary ファイルを選択
             input(type="file" name="img" style="display:none" accept="image/jpeg, image/png" required)#TachieFileInput.form-control.my-2
         // 検索サムネにする
-        div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check
+        div(style="display:none;")#ThumbnailCheckForm.align-middle.form-check.defaultHide
           input(type="checkbox" name="useThumbnail")#ThumbnailCheck.form-check-input.my-2
           label(for="ThumbnailCheck").form-check-label 検索サムネにする
         // タイトル、説明

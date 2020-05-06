@@ -76,6 +76,7 @@ const targetSwitcher = (selection, deleteBtn, cb) => {
   $(selection).change(() => {
     let idx = $(selection).val();
     if (idx == "new") {
+      $('.defaultHide').hide();
       $(deleteBtn).hide();
     } else {
       $(deleteBtn).show();
@@ -86,19 +87,31 @@ const targetSwitcher = (selection, deleteBtn, cb) => {
 targetSwitcher('#HashTagSelection', '#HashTagDeleteBtn', i => {
   $(`#HashTagNameForm`).val($(`.${i}.hashTagHidden`).attr('name'));
   $(`#HashTagCommentForm`).val($(`.${i}.hashTagHidden`).attr('comment'));
+  if (i != "new") {
+    $('#HashTagOrderCheckForm').show();
+  }
 });
 targetSwitcher('#ActivitySelection', '#ActivityDeleteBtn', i => {
   $(`#ActivityNameForm`).val($(`.${i}.activityHidden`).attr('name'));
   $(`#ActivityLinkForm`).val($(`.${i}.activityHidden`).attr('link'));
+  if (i != "new") {
+    $('#ActivityOrderCheckForm').show();
+  }
 });
 targetSwitcher('#CheeringSelection', '#CheeringDeleteBtn', i => {
   $(`#CheeringNameForm`).val($(`.${i}.cheeringHidden`).attr('name'));
   $(`#CheeringLinkForm`).val($(`.${i}.cheeringHidden`).attr('link'));
+  if (i != "new") {
+    $('#CheeringOrderCheckForm').show();
+  }
 });
 targetSwitcher('#ParentSelection', '#ParentDeleteBtn', i => {
   $(`#ParentRelationshipForm`).val($(`.${i}.parentHidden`).attr('relationship'));
   $(`#ParentNameForm`).val($(`.${i}.parentHidden`).attr('name'));
   $(`#ParentLinkForm`).val($(`.${i}.parentHidden`).attr('link'));
+  if (i != "new") {
+    $('#ParentOrderCheckForm').show();
+  }
 });
 targetSwitcher('#TachieSelection', '#TachieDeleteBtn', i => {
   $(`.tachie.imagePreview`).hide();
