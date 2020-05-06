@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 const loader = require('../models/sequelize-loader');
 const Sequelize = loader.Sequelize;
+const { Op } = require("sequelize");
 const database = loader.database;
 const User = require('../models/users');
 const Personality = require('../models/personalities');
 const Tag = require('../models/tags');
-const authenticationEnsurer = require('./authentication-ensurer');
 
 router.get('/', (req, res, next) => {
   let isToday = (i) => {
@@ -16,16 +16,16 @@ router.get('/', (req, res, next) => {
   }
   let currentTag = dailyTags.filter(isToday);
   currentTag = currentTag.length > 0 ? currentTag[0].tag : null;
-  console.log(currentTag); 
   (async () => {
+    let users = await getAllUsers();
+    let recomendedUsers = await getUsersSearchByTag(currentTag);
     res.render('index', {
       me: req.user,
-      s3: process.env.s3Path,
-      results: await getRandomUsers(),
+      results: shuffle(users).slice(0,24),
       tags: await getTags(),
       userCount: await User.count(),
       recommendTag: currentTag,
-      recommendUsers: await getRandomUsers(currentTag)
+      recommendUsers: shuffle(recomendedUsers).slice(0,24)
     });
   })();
 });
@@ -34,7 +34,6 @@ router.get('/tag_suggest', (req, res, next) => {
   (async () => {
     res.render('index', {
       me: req.user,
-      s3: process.env.s3Path,
       tags: await getTags(),
       tag_suggest: true
     });
@@ -44,10 +43,11 @@ router.get('/tag_suggest', (req, res, next) => {
 router.get('/search', (req, res, next) => {
   let q = req.query.q;
   (async () => {
+    let users = await getUsersSearchByTag(q);
+    console.log(users);
     res.render('index', {
       me: req.user,
-      s3: process.env.s3Path,
-      results: await getAllUsers(q),
+      results: users,
       tags: await getTags(),
       q
     });
@@ -55,19 +55,40 @@ router.get('/search', (req, res, next) => {
 });
 
 router.get('/allusers', (req, res, next) => {
-  let query = req.query.query;
   (async () => {
     res.render('index', {
       me: req.user,
-      s3: process.env.s3Path,
-      results:await getAllUsers(query, 'latest'),
+      results:await getAllUsers(),
       tags: await getTags(),
       userCount: await User.count()
     });
   })();
 });
 
-async function getAllUsers(query, order) {
+async function getAllUsers() {
+  let users = await User.findAll({
+    include: [{
+      model: Personality,
+      where: { thumbnail_path: { [Op.ne]: null } }
+    }],
+    where : { visibility: 1 },
+    order: [
+      ['createdAt', 'DESC'],
+    ],
+  });
+  return users.map(
+    u => {
+      return {
+        username: u.username,
+        thumbnail_path: u.personality.thumbnail_path,
+        isSensitive: u.personality.isSensitive,
+        createdAt: u.createdAt
+      }
+    }
+  );
+}
+
+async function getUsersSearchByTag(query, order) {
   // sequelizeでうまくかけないのでベタがき
   // タグ検索文字列があれば、空白で区切られたタグの数だけJOINが増える（３つまで）
   let convLikeQery = i => i.match(`"`) ? i.replace(/"/gi, '') : `%${i}%`; // ""付きは全文一致、なしは部分一致
@@ -77,7 +98,7 @@ async function getAllUsers(query, order) {
     .slice(0,3)
     .map(convLikeQery) : [];
   let createTagJoinStr = (i) => { return `JOIN "tags" AS ${i} ON "users"."userId" = ${i}."userId" AND ${i}."tagname" like :${i} ` };
-  return database.query(`
+  let users = await database.query(`
     SELECT DISTINCT "username", "thumbnail_path", "isSensitive", "users"."createdAt"
     FROM "users" 
       JOIN "personalities" ON "users"."userId" = "personalities"."userId"
@@ -93,12 +114,19 @@ async function getAllUsers(query, order) {
     replacements: { a: q[0], b: q[1], c: q[2] },
     type: Sequelize.QueryTypes.SELECT
   });
+  return users.map(
+    u => { 
+      return {
+        username: u.username,
+        thumbnail_path: process.env.s3Path + u.thumbnail_path,
+        isSensitive: u.isSensitive,
+        createdAt: u.createdAt
+      }
+    }
+  );
 }
 
-async function getRandomUsers(query) {
-
-  let users = await getAllUsers(query);
-
+function shuffle(users) {
   // Fisher–Yates Shuffle
   for(var i = users.length - 1; i > 0; i--){
     var r = Math.floor(Math.random() * (i + 1));
@@ -106,8 +134,7 @@ async function getRandomUsers(query) {
     users[i] = users[r];
     users[r] = tmp;
   }
-  
-  return users.slice(0, 24);
+  return users
 }
 
 async function getTags() {
