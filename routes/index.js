@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
   currentTag = currentTag.length > 0 ? currentTag[0].tag : null;
   (async () => {
     let users = await getAllUsers();
-    let recomendedUsers = await getUsersSearchByTag(currentTag);
+    let recomendedUsers = await getUsersByTag(currentTag);
     res.render('index', {
       me: req.user,
       results: shuffle(users).slice(0,24),
@@ -43,11 +43,12 @@ router.get('/tag_suggest', (req, res, next) => {
 router.get('/search', (req, res, next) => {
   let q = req.query.q;
   (async () => {
-    let users = await getUsersSearchByTag(q);
-    console.log(users);
+    let usersByUsername = await getUsersByUsername(q);
+    let usersByTag = await getUsersByTag(q);
+    let users = Array.from(new Set(usersByUsername.concat(usersByTag)));
     res.render('index', {
       me: req.user,
-      results: users,
+      results: shuffle(users).slice(0,24),
       tags: await getTags(),
       q
     });
@@ -88,7 +89,33 @@ async function getAllUsers() {
   );
 }
 
-async function getUsersSearchByTag(query, order) {
+async function getUsersByUsername(query) {
+  let users = await User.findAll({
+    include: [{
+      model: Personality,
+      where: { 
+        nameJa: { [Op.like]: `%${query}%`},
+        thumbnail_path: { [Op.ne]: null }
+      }
+    }],
+    where : { visibility: 1 },
+    order: [
+      ['createdAt', 'DESC'],
+    ],
+  });
+  return users.map(
+    u => {
+      return {
+        username: u.username,
+        thumbnail_path: u.personality.thumbnail_path,
+        isSensitive: u.personality.isSensitive,
+        createdAt: u.createdAt
+      }
+    }
+  );
+}
+
+async function getUsersByTag(query) {
   // sequelizeでうまくかけないのでベタがき
   // タグ検索文字列があれば、空白で区切られたタグの数だけJOINが増える（３つまで）
   let convLikeQery = i => i.match(`"`) ? i.replace(/"/gi, '') : `%${i}%`; // ""付きは全文一致、なしは部分一致
@@ -108,7 +135,7 @@ async function getUsersSearchByTag(query, order) {
     WHERE
       "visibility" = 1
       AND "thumbnail_path" is not null
-    ${ order == 'latest' ? `ORDER BY "users"."createdAt" desc` : "" }
+    ORDER BY "users"."createdAt" desc
     `
     , {
     replacements: { a: q[0], b: q[1], c: q[2] },
