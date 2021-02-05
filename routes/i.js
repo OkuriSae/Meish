@@ -33,6 +33,8 @@ let isDeletePost = (req) => { return req.body.deleted % 2 == 1; };
 let getPageOwner = async (req) => { return await User.findOne({where: {username: req.params.username}}) };
 let getMe = async (req) => { return await User.findByPk(req.user.id) };
 
+const limitString = (str, length) => { return Array.from(str).slice(0, length).join(''); };
+
 // GET:ユーザーページ
 router.get('/:username', csrfProtection, (req, res, next) => {
   (async () => {
@@ -149,10 +151,10 @@ router.post(
     }
 
     let updateData = {
-      nameJa: req.body.nameJa.slice(0, 52),
-      nameEn: req.body.nameEn.slice(0, 52),
-      label: req.body.label.slice(0, 52),
-      introduction: req.body.introduction.slice(0, 600),
+      nameJa: limitString(req.body.nameJa, 52),
+      nameEn: limitString(req.body.nameEn, 52),
+      label: limitString(req.body.label, 52),
+      introduction: limitString(req.body.introduction, 600),
       isSensitive: req.body.isSensitive == "on" ? "on" : ""
     }
 
@@ -182,7 +184,7 @@ router.post(
     // data saving
     await personality.update(updateData);
     await Tag.destroy({where: { userId: req.user.id }});
-    for(let tag of req.body.tags.slice(0, 150).replace(/　/gi, ' ').split(' ')) {
+    for(let tag of limitString(req.body.tags, 150).replace(/　/gi, ' ').split(' ')) {
       if (tag) {
         await Tag.upsert({
           userId: req.user.id,
@@ -205,7 +207,7 @@ router.post('/:username/subprofile', authenticationEnsurer, csrfProtection, (req
     if (isDeletePost(req)) {
       updateData.subprofile = '';
     } else {
-      updateData.subprofile = req.body.subprofile.slice(0, 1200);
+      updateData.subprofile = limitString(req.body.subprofile, 1200);
     }
 
     await personality.update(updateData);
@@ -221,8 +223,8 @@ router.post('/:username/hashtag', authenticationEnsurer, csrfProtection, (req, r
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
       let format = (tag) => { return tag.replace('#', ''); };
-      updateData.name = format(req.body.name).slice(0, 80);
-      updateData.comment = req.body.comment.slice(0, 80);
+      updateData.name = limitString(format(req.body.name), 80);
+      updateData.comment = limitString(req.body.comment, 80);
     }
 
     let where = { where: { userId : req.user.id, tagId: parseTarget(req.body.target), deleted: 0 }};
@@ -249,8 +251,8 @@ router.post('/:username/activity', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = req.body.name.slice(0, 80);
-      updateData.link = linkSanitize(req.body.link).slice(0, 250);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = { where: { userId : req.user.id, activityId: parseTarget(req.body.target), deleted: 0 }};
@@ -277,8 +279,8 @@ router.post('/:username/cheering', authenticationEnsurer, csrfProtection, (req, 
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.name = req.body.name.slice(0, 80);
-      updateData.link = linkSanitize(req.body.link).slice(0, 250);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = {where: {userId : req.user.id, cheeringId: parseTarget(req.body.target), deleted: 0}};
@@ -305,9 +307,9 @@ router.post('/:username/parent', authenticationEnsurer, csrfProtection, (req, re
     updateData.userId = req.user.id,
     updateData.deleted = req.body.deleted % 2
     if (!isDeletePost(req)) {
-      updateData.relationship = req.body.relationship.slice(0, 80);
-      updateData.name = req.body.name.slice(0, 80);
-      updateData.link = linkSanitize(req.body.link).slice(0, 250);
+      updateData.relationship = limitString(req.body.relationship, 80);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.link = limitString(linkSanitize(req.body.link), 250);
     }
 
     let where = {where: {userId : req.user.id, parentId: parseTarget(req.body.target), deleted: 0}};
@@ -353,8 +355,8 @@ router.post('/:username/tachie', authenticationEnsurer, csrfProtection, upload.s
       // image upload / update 
       let updateData = {};
       updateData.userId = req.user.id;
-      updateData.name = req.body.name.slice(0, 80);
-      updateData.comment = req.body.comment.slice(0, 100);
+      updateData.name = limitString(req.body.name, 80);
+      updateData.comment = limitString(req.body.comment, 100);
 
       if (req.file) {
         const im = new ImageManager(req.user.username);
@@ -394,7 +396,7 @@ router.post('/:username/design', authenticationEnsurer, csrfProtection, upload.s
       await personality.update({ design_path: '', design_comment: '' })
 
     } else {
-      let updateData = { design_comment: req.body.comment.slice(0, 250) };
+      let updateData = { design_comment: limitString(req.body.comment, 250) };
       if (req.file) {
         const im = new ImageManager(req.user.username);
         updateData.design_path = await im.updateCharacterDesign(req.file, personality.design_path);
@@ -426,7 +428,7 @@ router.post('/:username/movie', authenticationEnsurer, csrfProtection, (req, res
         .replace('https://www.youtube.com/watch?v=', '')
         .replace('https://www.youtube.com/embed/', '').split('&')[0] : '';
       };
-      let updateData = { movie_id: getYouTubeId(req.body.movie_url).slice(0, 100) };
+      let updateData = { movie_id: limitString(getYouTubeId(req.body.movie_url), 100) };
       await personality.update(updateData);
     }
     redirectMyPage(req, res);
