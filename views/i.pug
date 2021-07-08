@@ -1,5 +1,12 @@
 extends layout/layout
 
+block title
+  title #{personality.nameJa}のプロフィール - Meish* バーチャルプロフィール登録サービス
+
+block description
+  //- ここの生成ルールog:titleに揃えている
+  meta(name="description" content=personality.introduction.slice(0,200))
+
 block meta
 
   // OGP & Twitter Card
