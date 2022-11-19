@@ -66,7 +66,7 @@
     "passport-stub": "^1.1.1",
     "supertest": "^3.1.0",
     "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": "~10"
