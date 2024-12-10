@@ -52,7 +52,7 @@
     "popper.js": "^1.14.0",
     "pug": "2.0.0-beta11",
     "sanitize-filename": "^1.6.3",
-    "sequelize": "^4.33.4",
+    "sequelize": "^5.15.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
