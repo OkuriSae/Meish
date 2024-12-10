@@ -38,7 +38,7 @@
     "helmet": "^3.8.2",
     "http-errors": "~1.6.2",
     "jimp": "^0.9.3",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "jquery.easing": "^1.4.1",
     "lozad": "^1.14.0",
     "magnific-popup": "^1.1.0",
